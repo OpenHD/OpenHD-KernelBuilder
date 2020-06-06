@@ -1,0 +1,23 @@
+language: cpp
+
+os: linux
+dist: bionic
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install devscripts build-essential ruby ruby-dev
+  - sudo gem install fpm
+compiler:
+  - gcc
+jobs:
+  include:
+  - name: "Pi stretch v6"
+    env: PLATFORM=pi DISTRO=stretch ISA=v6
+  - name: "Pi stretch v7"
+    env: PLATFORM=pi DISTRO=stretch ISA=v7 
+  - name: "Pi buster v6"
+    env: PLATFORM=pi DISTRO=buster ISA=v6
+  - name: "Pi buster v7"
+    env: PLATFORM=pi DISTRO=buster ISA=v7
+  - name: "Pi buster v7l"
+    env: PLATFORM=pi DISTRO=buster ISA=v7l
+script: ./build.sh $PLATFORM $DISTRO $ISA
