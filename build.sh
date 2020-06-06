@@ -21,7 +21,7 @@ V4L2LOOPBACK_BRANCH=openhd1
 
 CONFIGS=$(pwd)/configs
 
-J_CORES=5
+J_CORES=$(nproc)
 
 PACKAGE_DIR=$(pwd)/package
 
