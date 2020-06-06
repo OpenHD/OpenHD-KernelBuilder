@@ -40,6 +40,7 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     fi
 
     ARCH=arm
+    PACKAGE_ARCH=armhf
     CROSS_COMPILE=arm-linux-gnueabihf-
     KERNEL_REPO=https://github.com/OpenHD/linux.git
 fi
@@ -173,7 +174,7 @@ package() {
 
     VERSION=$(git describe)
 
-    fpm -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION//v} -C ${PACKAGE_DIR} -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
+    fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION//v} -C ${PACKAGE_DIR} -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
 
     ls -l *.deb
 }
