@@ -165,6 +165,10 @@ build_pi_kernel() {
         sudo cp arch/arm/boot/dts/*.dtb "${PACKAGE_DIR}/boot/" || exit 1
         sudo cp arch/arm/boot/dts/overlays/*.dtb* "${PACKAGE_DIR}/boot/overlays/" || exit 1
         sudo cp arch/arm/boot/dts/overlays/README "${PACKAGE_DIR}/boot/overlays/" || exit 1
+
+        # prevents the inclusion of firmware that can conflict with normal firmware packages, dpkg will complain. there
+        # should be a kernel config to stop installing this into the package dir in the first place
+        rm -r "${PACKAGE_DIR}/lib/firmware"
     popd
 }
 
