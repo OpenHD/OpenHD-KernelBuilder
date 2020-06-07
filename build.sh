@@ -147,6 +147,8 @@ package() {
     fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
 
     ls -l *.deb
+
+    curl -T ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb -usteveatinfincia:${BINTRAY_APIKEY} "https://api.bintray.com/content/openhd/raspbian/${PACKAGE_NAME}/${VERSION}/pool/${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb;deb_distribution=${DISTRO};deb_component=main;deb_architecture=${PACKAGE_ARCH}"
 }
 
 
