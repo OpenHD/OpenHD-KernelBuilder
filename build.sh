@@ -46,42 +46,8 @@ if [[ "${PLATFORM}" == "pi" ]]; then
 fi
 
 
-#
-# This is a quick solution to building different kernels for different architectures on each distro,
-# and will not stay like this much longer. 
-#
-
-# only one pi zero kernel on stretch and buster, 4.9.35 until we can track down the softirq/ath9k bug
-if [[ "${PLATFORM}" == "pi" && "${DISTRO}" == "stretch" && "${ISA}" == "v6" ]]; then
-    KERNEL=kernel
-    KERNEL_BRANCH="rpi-4.9.35-openhd"
-    KERNEL_COMMIT="e03e0bcdbdf10a45962ffc145dbeb140d2231db5"
-fi
-if [[ "${PLATFORM}" == "pi" && "${DISTRO}" == "buster" && "${ISA}" == "v6" ]]; then
-    KERNEL=kernel
-    KERNEL_BRANCH="rpi-4.9.35-openhd"
-    KERNEL_COMMIT="e03e0bcdbdf10a45962ffc145dbeb140d2231db5"
-fi
-
-
-# still building both stretch and buster kernels for the pi3 and cm3
-if [[ "${PLATFORM}" == "pi" && "${DISTRO}" == "stretch" && "${ISA}" == "v7" ]]; then
-    KERNEL=kernel7
-    KERNEL_BRANCH="rpi-4.14.71-openhd"
-    KERNEL_COMMIT="f7b90465e3a1c70394ad441eb8515fa0f80b9fb5"
-fi
-if [[ "${PLATFORM}" == "pi" && "${DISTRO}" == "buster" && "${ISA}" == "v7" ]]; then
-    KERNEL=kernel7
-    KERNEL_BRANCH="rpi-4.19.122-openhd"
-    KERNEL_COMMIT="0bf946db01701cdeeba0be32207b7df3aa3520fa"
-fi
-
-# there is no stretch pi4 kernel, the script will not even be run with that configuration in Travis CI
-if [[ "${PLATFORM}" == "pi" && "${DISTRO}" == "buster" && "${ISA}" == "v7l" ]]; then
-    KERNEL=kernel7l
-    KERNEL_BRANCH="rpi-4.19.122-openhd"
-    KERNEL_COMMIT="0bf946db01701cdeeba0be32207b7df3aa3520fa"
-fi
+# load the builder configuration 
+source $(pwd)/kernels/${PLATFORM}-${DISTRO}-${ISA}
 
 
 LINUX_DIR=linux-${PLATFORM}-${KERNEL_BRANCH}
