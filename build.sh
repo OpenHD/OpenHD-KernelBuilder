@@ -142,7 +142,7 @@ build_pi_kernel() {
 package() {
     PACKAGE_NAME=openhd-linux-${PLATFORM}-${ISA}
 
-    VERSION=$(git describe)
+    VERSION=$(git describe --tags | sed 's/\(.*\)-.*/\1/')
 
     fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
 
