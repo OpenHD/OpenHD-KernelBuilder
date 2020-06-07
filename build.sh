@@ -148,7 +148,7 @@ package() {
 
     ls -l *.deb
 
-    curl -T ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb -usteveatinfincia:${BINTRAY_APIKEY} "https://api.bintray.com/content/openhd/raspbian/${PACKAGE_NAME}/${VERSION}/pool/${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb;deb_distribution=${DISTRO};deb_component=main;deb_architecture=${PACKAGE_ARCH}"
+    curl -T ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb -usteveatinfincia:${BINTRAY_APIKEY} "https://api.bintray.com/content/openhd/raspios/${PACKAGE_NAME}/${VERSION}/pool/${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb;deb_distribution=${DISTRO};deb_component=main;deb_architecture=${PACKAGE_ARCH}"
 }
 
 
