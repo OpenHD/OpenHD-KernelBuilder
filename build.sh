@@ -144,7 +144,7 @@ package() {
 
     VERSION=$(git describe)
 
-    fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION//v} -C ${PACKAGE_DIR} -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
+    fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
 
     ls -l *.deb
 }
