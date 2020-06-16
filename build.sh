@@ -55,7 +55,7 @@ LINUX_DIR=linux-${PLATFORM}-${KERNEL_BRANCH}
 fetch_pi_source() {
     if [[ ! -d "${LINUX_DIR}" ]]; then
         echo "Download the pi kernel source"
-        git clone --depth=100 -b ${KERNEL_BRANCH} ${KERNEL_REPO} ${LINUX_DIR}
+        git clone -b ${KERNEL_BRANCH} ${KERNEL_REPO} ${LINUX_DIR}
     fi
 
     pushd ${LINUX_DIR}
