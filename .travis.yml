@@ -12,14 +12,8 @@ compiler:
   - gcc
 jobs:
   include:
-  - name: "Pi stretch v6"
-    env: PLATFORM=pi DISTRO=stretch ISA=v6
-  - name: "Pi stretch v7"
-    env: PLATFORM=pi DISTRO=stretch ISA=v7 
-  - name: "Pi buster v6"
-    env: PLATFORM=pi DISTRO=buster ISA=v6
-  - name: "Pi buster v7"
-    env: PLATFORM=pi DISTRO=buster ISA=v7
-  - name: "Pi buster v7l"
-    env: PLATFORM=pi DISTRO=buster ISA=v7l
-script: ./build.sh $PLATFORM $DISTRO $ISA
+  - name: "Pi stretch"
+    env: PLATFORM=pi DISTRO=stretch
+  - name: "Pi buster"
+    env: PLATFORM=pi DISTRO=buster
+script: ./build.sh $PLATFORM $DISTRO

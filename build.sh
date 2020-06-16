@@ -3,7 +3,6 @@
 
 PLATFORM=$1
 DISTRO=$2
-ISA=$3
 
 
 PI_TOOLS_REPO=https://github.com/raspberrypi/tools.git
@@ -46,11 +45,6 @@ if [[ "${PLATFORM}" == "pi" ]]; then
 fi
 
 
-# load the builder configuration 
-source $(pwd)/kernels/${PLATFORM}-${DISTRO}-${ISA}
-
-
-LINUX_DIR=linux-${PLATFORM}-${KERNEL_BRANCH}
 
 fetch_pi_source() {
     if [[ ! -d "${LINUX_DIR}" ]]; then
@@ -59,8 +53,8 @@ fetch_pi_source() {
     fi
 
     pushd ${LINUX_DIR}
+        git fetch
         git reset --hard
-        git pull
         git checkout ${KERNEL_COMMIT}
     popd
 }
@@ -140,7 +134,7 @@ build_pi_kernel() {
 
 
 package() {
-    PACKAGE_NAME=openhd-linux-${PLATFORM}-${ISA}
+    PACKAGE_NAME=openhd-linux-${PLATFORM}
 
     VERSION=$(git describe --tags | sed 's/\(.*\)-.*/\1/')
 
@@ -150,16 +144,33 @@ package() {
 }
 
 
+
 if [[ "${PLATFORM}" == "pi" ]]; then
+    # a simple hack, we want 3 kernels in one package so we source 3 different configs and build them all
+    source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v6
+    LINUX_DIR=linux-${PLATFORM}-${KERNEL_BRANCH}
     fetch_pi_source
-fi
-
-fetch_rtl8812_driver
-fetch_v4l2loopback_driver
+    fetch_rtl8812_driver
+    fetch_v4l2loopback_driver
 
 
-if [[ "${PLATFORM}" == "pi" ]]; then
     build_pi_kernel
+
+    source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7
+    LINUX_DIR=linux-${PLATFORM}-${KERNEL_BRANCH}
+    fetch_pi_source
+    fetch_rtl8812_driver
+    fetch_v4l2loopback_driver
+    build_pi_kernel
+
+    if [[ -f "$(pwd)/kernels/${PLATFORM}-${DISTRO}-v7l" ]]; then
+        source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7l
+        LINUX_DIR=linux-${PLATFORM}-${KERNEL_BRANCH}
+        fetch_pi_source
+        fetch_rtl8812_driver
+        fetch_v4l2loopback_driver
+        build_pi_kernel
+    fi
 fi
 
 package
