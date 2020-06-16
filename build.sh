@@ -151,8 +151,6 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     fetch_pi_source
     fetch_rtl8812_driver
     fetch_v4l2loopback_driver
-
-
     build_pi_kernel
 
     source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7
