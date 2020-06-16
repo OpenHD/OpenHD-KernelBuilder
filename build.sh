@@ -16,7 +16,7 @@ V4L2LOOPBACK_REPO=https://github.com/OpenHD/v4l2loopback.git
 V4L2LOOPBACK_BRANCH=openhd1
 
 
-
+LINUX_DIR=linux-${PLATFORM}
 
 CONFIGS=$(pwd)/configs
 
@@ -49,7 +49,7 @@ fi
 fetch_pi_source() {
     if [[ ! -d "${LINUX_DIR}" ]]; then
         echo "Download the pi kernel source"
-        git clone -b ${KERNEL_BRANCH} ${KERNEL_REPO} ${LINUX_DIR}
+        git clone ${KERNEL_REPO} ${LINUX_DIR}
     fi
 
     pushd ${LINUX_DIR}
@@ -148,7 +148,6 @@ package() {
 if [[ "${PLATFORM}" == "pi" ]]; then
     # a simple hack, we want 3 kernels in one package so we source 3 different configs and build them all
     source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v6
-    LINUX_DIR=linux-${PLATFORM}-${KERNEL_BRANCH}
     fetch_pi_source
     fetch_rtl8812_driver
     fetch_v4l2loopback_driver
@@ -157,7 +156,6 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     build_pi_kernel
 
     source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7
-    LINUX_DIR=linux-${PLATFORM}-${KERNEL_BRANCH}
     fetch_pi_source
     fetch_rtl8812_driver
     fetch_v4l2loopback_driver
@@ -165,7 +163,6 @@ if [[ "${PLATFORM}" == "pi" ]]; then
 
     if [[ -f "$(pwd)/kernels/${PLATFORM}-${DISTRO}-v7l" ]]; then
         source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7l
-        LINUX_DIR=linux-${PLATFORM}-${KERNEL_BRANCH}
         fetch_pi_source
         fetch_rtl8812_driver
         fetch_v4l2loopback_driver
