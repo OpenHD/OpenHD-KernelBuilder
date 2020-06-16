@@ -61,7 +61,7 @@ fetch_pi_source() {
     pushd ${LINUX_DIR}
         git reset --hard
         git pull
-        git checkout $GIT_KERNEL_SHA1
+        git checkout ${KERNEL_COMMIT}
     popd
 }
 
