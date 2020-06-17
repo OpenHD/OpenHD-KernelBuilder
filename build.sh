@@ -159,7 +159,7 @@ package() {
     # Only push to cloudsmith for tags. If you don't want something to be pushed to the repo, 
     # don't create a tag. You can build packages and test them locally without tagging.
     #
-    git describe --exact-match HEAD
+    git describe --exact-match HEAD > /dev/null 2>&1
     if [[ $? -eq 0 ]]; then
         cloudsmith push deb openhd/openhd/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
     fi
