@@ -140,7 +140,14 @@ package() {
 
     fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
 
-    cloudsmith push deb openhd/openhd/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
+    #
+    # Only push to cloudsmith for tags. If you don't want something to be pushed to the repo, 
+    # don't create a tag. You can build packages and test them locally without tagging.
+    #
+    git describe --exact-match HEAD
+    if [[ $? -eq 0 ]]; then
+        cloudsmith push deb openhd/openhd/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
+    fi
 }
 
 
