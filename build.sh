@@ -61,11 +61,17 @@ fetch_pi_source() {
 
 
 fetch_rtl8812_driver() {
-    echo "Download the rtl8812au driver"
 
-    rm -r rtl8812au > /dev/null 2>&1
-    git clone --depth=1 -b ${RTL_8812AU_BRANCH} ${RTL_8812AU_REPO}
+    if [[ ! -d rtl8812au ]]; then    
+        echo "Download the rtl8812au driver"
+        git clone ${RTL_8812AU_REPO}
+    fi
 
+    pushd rtl8812au
+        git fetch
+        git reset --hard
+        git checkout ${RTL_8812AU_BRANCH}
+    popd
 
     pushd rtl8812au
         if [[ "${PLATFORM}" == "pi" ]]; then
@@ -91,9 +97,16 @@ fetch_rtl8812_driver() {
 
 
 fetch_v4l2loopback_driver() {
-    echo "Download the v4l2loopback driver"
-    rm -r v4l2loopback > /dev/null 2>&1
-    git clone --depth=1 -b ${V4L2LOOPBACK_BRANCH} ${V4L2LOOPBACK_REPO}
+    if [[ ! -d v4l2loopback ]]; then    
+        echo "Download the v4l2loopback driver"
+        git clone ${V4L2LOOPBACK_REPO}
+    fi
+
+    pushd rtl8812au
+        git fetch
+        git reset --hard
+        git checkout ${V4L2LOOPBACK_BRANCH}
+    popd
 
     echo "Merge the v4l2loopback driver into the kernel"
     cp -a v4l2loopback/. ${LINUX_DIR}/drivers/media/v4l2loopback/
