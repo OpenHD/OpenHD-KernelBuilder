@@ -26,8 +26,10 @@ PACKAGE_DIR=$(pwd)/package
 
 rm -rf ${PACKAGE_DIR}
 
-mkdir -p ${PACKAGE_DIR}/boot/overlays
-mkdir -p ${PACKAGE_DIR}/lib/modules
+mkdir -p ${PACKAGE_DIR}/boot/overlays || exit 1
+mkdir -p ${PACKAGE_DIR}/lib/modules || exit 1
+mkdir -p ${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays || exit 1
+mkdir -p ${PACKAGE_DIR}/usr/local/share/openhd/kernel/dtb || exit 1
 
 
 if [[ "${PLATFORM}" == "pi" ]]; then
@@ -129,15 +131,15 @@ build_pi_kernel() {
         KERNEL=${KERNEL} ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} make -j $J_CORES zImage modules dtbs || exit 1
 
         echo "Copy kernel"
-        cp arch/arm/boot/zImage "${PACKAGE_DIR}/boot/${KERNEL}.img" || exit 1
+        cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/${KERNEL}.img" || exit 1
 
         echo "Copy kernel modules"
         make -j $J_CORES ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE}  INSTALL_MOD_PATH="${PACKAGE_DIR}" modules_install || exit 1
 
         echo "Copy DTBs"
-        sudo cp arch/arm/boot/dts/*.dtb "${PACKAGE_DIR}/boot/" || exit 1
-        sudo cp arch/arm/boot/dts/overlays/*.dtb* "${PACKAGE_DIR}/boot/overlays/" || exit 1
-        sudo cp arch/arm/boot/dts/overlays/README "${PACKAGE_DIR}/boot/overlays/" || exit 1
+        sudo cp arch/arm/boot/dts/*.dtb "${PACKAGE_DIR}/usr/local/share/openhd/kernel/dtb/" || exit 1
+        sudo cp arch/arm/boot/dts/overlays/*.dtb* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || exit 1
+        sudo cp arch/arm/boot/dts/overlays/README "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || exit 1
 
         # prevents the inclusion of firmware that can conflict with normal firmware packages, dpkg will complain. there
         # should be a kernel config to stop installing this into the package dir in the first place
@@ -153,7 +155,9 @@ package() {
 
     rm ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb > /dev/null 2>&1
 
-    fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
+    fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} \
+    --after-install after-install.sh \
+    -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
 
     #
     # Only push to cloudsmith for tags. If you don't want something to be pushed to the repo, 
