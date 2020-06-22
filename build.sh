@@ -104,7 +104,7 @@ fetch_v4l2loopback_driver() {
         git clone ${V4L2LOOPBACK_REPO}
     fi
 
-    pushd rtl8812au
+    pushd v4l2loopback
         git fetch
         git reset --hard
         git checkout ${V4L2LOOPBACK_BRANCH}
