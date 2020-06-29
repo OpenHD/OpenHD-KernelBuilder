@@ -12,6 +12,10 @@ PI_TOOLS_BRANCH=master
 RTL_8812AU_REPO=https://github.com/aircrack-ng/rtl8812au.git
 RTL_8812AU_BRANCH=v5.2.20
 
+RTL_8812BU_REPO=https://github.com/OpenHD/rtl88x2bu.git
+RTL_8812BU_BRANCH=5.6.1_30362.20181109_COEX20180928-6a6a
+
+
 V4L2LOOPBACK_REPO=https://github.com/OpenHD/v4l2loopback.git
 V4L2LOOPBACK_BRANCH=openhd1
 
@@ -97,6 +101,33 @@ fetch_rtl8812au_driver() {
     cp -a rtl8812au/. ${LINUX_DIR}/drivers/net/wireless/realtek/rtl8812au/
 }
 
+fetch_rtl8812bu_driver() {
+
+    if [[ ! -d rtl88x2bu ]]; then    
+        echo "Download the rtl8812bu driver"
+        git clone ${RTL_8812BU_REPO}
+    fi
+
+    pushd rtl88x2bu
+        git fetch
+        git reset --hard
+        git checkout ${RTL_8812BU_BRANCH}
+    popd
+
+    pushd rtl88x2bu
+        if [[ "${PLATFORM}" == "pi" ]]; then
+            sudo sed -i 's/CONFIG_PLATFORM_I386_PC = y/CONFIG_PLATFORM_I386_PC = n/' Makefile
+            sudo sed -i 's/CONFIG_PLATFORM_ARM_RPI = n/CONFIG_PLATFORM_ARM_RPI = y/' Makefile
+        fi
+
+        sudo sed -i 's/export TopDIR ?= $(shell pwd)/export TopDIR2 ?= $(shell pwd)/' Makefile
+        sudo sed -i '/export TopDIR2 ?= $(shell pwd)/a export TopDIR := $(TopDIR2)/drivers/net/wireless/realtek/rtl88x2bu/' Makefile
+    popd
+
+    echo "Merge the rtl8812bu driver into the kernel"
+    cp -a rtl88x2bu/. ${LINUX_DIR}/drivers/net/wireless/realtek/rtl88x2bu/
+}
+
 
 fetch_v4l2loopback_driver() {
     if [[ ! -d v4l2loopback ]]; then    
@@ -179,12 +210,14 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v6
     fetch_pi_source
     fetch_rtl8812au_driver
+    fetch_rtl8812bu_driver
     fetch_v4l2loopback_driver
     build_pi_kernel
 
     source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7
     fetch_pi_source
     fetch_rtl8812au_driver
+    fetch_rtl8812bu_driver
     fetch_v4l2loopback_driver
     build_pi_kernel
 
@@ -192,6 +225,7 @@ if [[ "${PLATFORM}" == "pi" ]]; then
         source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7l
         fetch_pi_source
         fetch_rtl8812au_driver
+        fetch_rtl8812bu_driver
         fetch_v4l2loopback_driver
         build_pi_kernel
     fi
