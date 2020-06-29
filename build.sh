@@ -62,7 +62,7 @@ fetch_pi_source() {
 }
 
 
-fetch_rtl8812_driver() {
+fetch_rtl8812au_driver() {
 
     if [[ ! -d rtl8812au ]]; then    
         echo "Download the rtl8812au driver"
@@ -93,7 +93,7 @@ fetch_rtl8812_driver() {
 
     popd
 
-    echo "Merge the RTL8812 driver into the kernel"
+    echo "Merge the rtl8812au driver into the kernel"
     cp -a rtl8812au/. ${LINUX_DIR}/drivers/net/wireless/realtek/rtl8812au/
 }
 
@@ -178,20 +178,20 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     # a simple hack, we want 3 kernels in one package so we source 3 different configs and build them all
     source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v6
     fetch_pi_source
-    fetch_rtl8812_driver
+    fetch_rtl8812au_driver
     fetch_v4l2loopback_driver
     build_pi_kernel
 
     source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7
     fetch_pi_source
-    fetch_rtl8812_driver
+    fetch_rtl8812au_driver
     fetch_v4l2loopback_driver
     build_pi_kernel
 
     if [[ -f "$(pwd)/kernels/${PLATFORM}-${DISTRO}-v7l" ]]; then
         source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7l
         fetch_pi_source
-        fetch_rtl8812_driver
+        fetch_rtl8812au_driver
         fetch_v4l2loopback_driver
         build_pi_kernel
     fi
