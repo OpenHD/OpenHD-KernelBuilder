@@ -20,7 +20,7 @@ V4L2LOOPBACK_REPO=https://github.com/OpenHD/v4l2loopback.git
 V4L2LOOPBACK_BRANCH=openhd1
 
 
-LINUX_DIR=linux-${PLATFORM}
+LINUX_DIR=$(pwd)/linux-${PLATFORM}
 
 CONFIGS=$(pwd)/configs
 
