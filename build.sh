@@ -115,9 +115,6 @@ fetch_rtl8812bu_driver() {
         sudo sed -i 's/export TopDIR ?= $(shell pwd)/export TopDIR2 ?= $(shell pwd)/' Makefile
         sudo sed -i '/export TopDIR2 ?= $(shell pwd)/a export TopDIR := $(TopDIR2)/drivers/net/wireless/realtek/rtl88x2bu/' Makefile
     popd
-
-    echo "Merge the rtl8812bu driver into the kernel"
-    cp -a rtl88x2bu/. ${LINUX_DIR}/drivers/net/wireless/realtek/rtl88x2bu/
 }
 
 
@@ -175,6 +172,11 @@ build_pi_kernel() {
         make -j $J_CORES ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} INSTALL_MOD_PATH="${PACKAGE_DIR}" -C ${LINUX_DIR} M=$(pwd) modules_install || exit 1
     popd
 
+    pushd rtl88x2bu
+        make clean
+        make -j $J_CORES ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} INSTALL_MOD_PATH="${PACKAGE_DIR}" -C ${LINUX_DIR} M=$(pwd) modules || exit 1
+        make -j $J_CORES ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} INSTALL_MOD_PATH="${PACKAGE_DIR}" -C ${LINUX_DIR} M=$(pwd) modules_install || exit 1
+    popd
 }
 
 
