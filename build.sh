@@ -85,20 +85,12 @@ fetch_rtl8812au_driver() {
             sudo sed -i 's/CONFIG_PLATFORM_ARM_RPI = n/CONFIG_PLATFORM_ARM_RPI = y/' Makefile
         fi
 
-        # per justins request commented out
-        # sudo sed -i 's/CONFIG_USB2_EXTERNAL_POWER = n/CONFIG_USB2_EXTERNAL_POWER = y/' Makefile
-        sudo sed -i 's/export TopDIR ?= $(shell pwd)/export TopDIR2 ?= $(shell pwd)/' Makefile
-        sudo sed -i '/export TopDIR2 ?= $(shell pwd)/a export TopDIR := $(TopDIR2)/drivers/net/wireless/realtek/rtl8812au/' Makefile
-
         pushd core
             # Change the STBC value to make all antennas send with awus036ACH
             sudo sed -i 's/u8 fixed_rate = MGN_1M, sgi = 0, bwidth = 0, ldpc = 0, stbc = 0;/u8 fixed_rate = MGN_1M, sgi = 0, bwidth = 0, ldpc = 0, stbc = 1;/' rtw_xmit.c
         popd
 
     popd
-
-    echo "Merge the rtl8812au driver into the kernel"
-    cp -a rtl8812au/. ${LINUX_DIR}/drivers/net/wireless/realtek/rtl8812au/
 }
 
 fetch_rtl8812bu_driver() {
@@ -176,6 +168,13 @@ build_pi_kernel() {
         # should be a kernel config to stop installing this into the package dir in the first place
         rm -r "${PACKAGE_DIR}/lib/firmware"
     popd
+
+    pushd rtl8812au
+        make clean
+        make -j $J_CORES ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} INSTALL_MOD_PATH="${PACKAGE_DIR}" -C ${LINUX_DIR} M=$(pwd) modules || exit 1
+        make -j $J_CORES ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} INSTALL_MOD_PATH="${PACKAGE_DIR}" -C ${LINUX_DIR} M=$(pwd) modules_install || exit 1
+    popd
+
 }
 
 
