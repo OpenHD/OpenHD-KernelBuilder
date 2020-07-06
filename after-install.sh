@@ -8,3 +8,5 @@ cp -a /usr/local/share/openhd/kernel/kernel.img /boot/
 cp -a /usr/local/share/openhd/kernel/kernel7.img /boot/
 cp -a /usr/local/share/openhd/kernel/kernel7l.img /boot/
 cp -a /usr/local/share/openhd/kernel/dtb/* /boot/
+
+mount -oremount,ro /boot
