@@ -32,6 +32,7 @@ rm -rf ${PACKAGE_DIR}
 
 mkdir -p ${PACKAGE_DIR}/boot/overlays || exit 1
 mkdir -p ${PACKAGE_DIR}/lib/modules || exit 1
+mkdir -p ${PACKAGE_DIR}/lib/firmware || exit 1
 mkdir -p ${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays || exit 1
 mkdir -p ${PACKAGE_DIR}/usr/local/share/openhd/kernel/dtb || exit 1
 
@@ -208,6 +209,10 @@ package() {
 }
 
 
+copy_overlay() {
+    cp ${SRC_DIR}/overlay/lib/firmware/* "${PACKAGE_DIR}/lib/firmware/" || exit 1
+}
+
 
 if [[ "${PLATFORM}" == "pi" ]]; then
     # a simple hack, we want 3 kernels in one package so we source 3 different configs and build them all
@@ -235,4 +240,5 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     fi
 fi
 
+copy_overlay
 package
