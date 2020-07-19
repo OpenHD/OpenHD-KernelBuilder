@@ -20,6 +20,8 @@ V4L2LOOPBACK_REPO=https://github.com/OpenHD/v4l2loopback.git
 V4L2LOOPBACK_BRANCH=openhd1
 
 
+SRC_DIR=$(pwd)
+
 LINUX_DIR=$(pwd)/linux-${PLATFORM}
 
 CONFIGS=$(pwd)/configs
@@ -31,6 +33,7 @@ PACKAGE_DIR=$(pwd)/package
 rm -rf ${PACKAGE_DIR}
 
 mkdir -p ${PACKAGE_DIR}/etc/modprobe.d || exit 1
+mkdir -p ${PACKAGE_DIR}/boot || exit 1
 mkdir -p ${PACKAGE_DIR}/boot/overlays || exit 1
 mkdir -p ${PACKAGE_DIR}/lib/modules || exit 1
 mkdir -p ${PACKAGE_DIR}/lib/firmware || exit 1
@@ -181,6 +184,8 @@ build_pi_kernel() {
         make -j $J_CORES ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} INSTALL_MOD_PATH="${PACKAGE_DIR}" -C ${LINUX_DIR} M=$(pwd) modules || exit 1
         make -j $J_CORES ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} INSTALL_MOD_PATH="${PACKAGE_DIR}" -C ${LINUX_DIR} M=$(pwd) modules_install || exit 1
     popd
+
+    cp ${SRC_DIR}/boot/* "${PACKAGE_DIR}/boot/" || exit 1
 }
 
 
