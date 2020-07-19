@@ -30,6 +30,7 @@ PACKAGE_DIR=$(pwd)/package
 
 rm -rf ${PACKAGE_DIR}
 
+mkdir -p ${PACKAGE_DIR}/etc/modprobe.d || exit 1
 mkdir -p ${PACKAGE_DIR}/boot/overlays || exit 1
 mkdir -p ${PACKAGE_DIR}/lib/modules || exit 1
 mkdir -p ${PACKAGE_DIR}/lib/firmware || exit 1
@@ -210,6 +211,7 @@ package() {
 
 
 copy_overlay() {
+    cp ${SRC_DIR}/overlay/etc/modprobe.d/* "${PACKAGE_DIR}/etc/modprobe.d/" || exit 1
     cp ${SRC_DIR}/overlay/lib/firmware/* "${PACKAGE_DIR}/lib/firmware/" || exit 1
 }
 
