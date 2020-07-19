@@ -175,8 +175,8 @@ build_pi_kernel() {
 
     pushd rtl8812au
         make clean
-        make -j $J_CORES ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} INSTALL_MOD_PATH="${PACKAGE_DIR}" -C ${LINUX_DIR} M=$(pwd) modules || exit 1
-        make -j $J_CORES ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} INSTALL_MOD_PATH="${PACKAGE_DIR}" -C ${LINUX_DIR} M=$(pwd) modules_install || exit 1
+        ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
+        install -p -m 644 88XXau.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/" || exit 1
     popd
 
     pushd rtl88x2bu
