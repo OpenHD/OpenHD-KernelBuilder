@@ -6,7 +6,7 @@ mkdir -p /boot/overlays
 cp -a /usr/local/share/openhd/kernel/overlays/* /boot/overlays/
 cp -a /usr/local/share/openhd/kernel/kernel.img /boot/
 cp -a /usr/local/share/openhd/kernel/kernel7.img /boot/
-cp -a /usr/local/share/openhd/kernel/kernel7l.img /boot/ || true
+cp -a /usr/local/share/openhd/kernel/kernel7l.img /boot/ > /dev/null 2>&1 || true
 cp -a /usr/local/share/openhd/kernel/dtb/* /boot/
 
 cp -a /usr/local/share/openhd/kernel/1to3b_x.elf /boot/ || true
