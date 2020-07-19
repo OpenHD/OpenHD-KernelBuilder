@@ -170,7 +170,7 @@ build_pi_kernel() {
 
         # prevents the inclusion of firmware that can conflict with normal firmware packages, dpkg will complain. there
         # should be a kernel config to stop installing this into the package dir in the first place
-        rm -r "${PACKAGE_DIR}/lib/firmware"
+        rm -r "${PACKAGE_DIR}/lib/firmware/*"
     popd
 
     pushd rtl8812au
