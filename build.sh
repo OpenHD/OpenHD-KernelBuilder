@@ -181,8 +181,8 @@ build_pi_kernel() {
 
     pushd rtl88x2bu
         make clean
-        make -j $J_CORES ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} INSTALL_MOD_PATH="${PACKAGE_DIR}" -C ${LINUX_DIR} M=$(pwd) modules || exit 1
-        make -j $J_CORES ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} INSTALL_MOD_PATH="${PACKAGE_DIR}" -C ${LINUX_DIR} M=$(pwd) modules_install || exit 1
+        ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
+        install -p -m 644 88x2bu.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/" || exit 1
     popd
 
     cp ${SRC_DIR}/overlay/boot/* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/" || exit 1
