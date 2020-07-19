@@ -77,6 +77,7 @@ fetch_rtl8812au_driver() {
         git fetch
         git reset --hard
         git checkout ${RTL_8812AU_BRANCH}
+        git pull
     popd
 
     pushd rtl8812au
@@ -104,6 +105,7 @@ fetch_rtl8812bu_driver() {
         git fetch
         git reset --hard
         git checkout ${RTL_8812BU_BRANCH}
+        git pull
     popd
 
     pushd rtl88x2bu
