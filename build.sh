@@ -10,7 +10,7 @@ PI_TOOLS_BRANCH=master
 
 # Fixed at v5.2.20 until 5.3.4 works for injection
 RTL_8812AU_REPO=https://github.com/OpenHD/rtl8812au.git
-RTL_8812AU_BRANCH=v5.2.20
+RTL_8812AU_BRANCH=20200719.1
 
 RTL_8812BU_REPO=https://github.com/OpenHD/rtl88x2bu.git
 RTL_8812BU_BRANCH=5.6.1_30362.20181109_COEX20180928-6a6a
