@@ -176,12 +176,14 @@ build_pi_kernel() {
     pushd rtl8812au
         make clean
         ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
+        mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au
         install -p -m 644 88XXau.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au/" || exit 1
     popd
 
     pushd rtl88x2bu
         make clean
         ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
+        mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl88x2bu
         install -p -m 644 88x2bu.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl88x2bu/" || exit 1
     popd
 
