@@ -185,7 +185,7 @@ build_pi_kernel() {
         make -j $J_CORES ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} INSTALL_MOD_PATH="${PACKAGE_DIR}" -C ${LINUX_DIR} M=$(pwd) modules_install || exit 1
     popd
 
-    cp ${SRC_DIR}/overlay/boot/* "${PACKAGE_DIR}/boot/" || exit 1
+    cp ${SRC_DIR}/overlay/boot/* "${PACKAGE_DIR}/${PACKAGE_DIR}/usr/local/share/openhd/kernel/" || exit 1
 }
 
 
