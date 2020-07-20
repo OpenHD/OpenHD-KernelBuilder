@@ -274,33 +274,26 @@ copy_overlay() {
     cp ${SRC_DIR}/overlay/lib/firmware/* "${PACKAGE_DIR}/lib/firmware/" || exit 1
 }
 
+prepare_build() {
+    check_time
+    fetch_pi_source
+    fetch_rtl8812au_driver
+    fetch_rtl8812bu_driver
+    fetch_v4l2loopback_driver
+    build_pi_kernel
+}
 
 if [[ "${PLATFORM}" == "pi" ]]; then
     # a simple hack, we want 3 kernels in one package so we source 3 different configs and build them all
     source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v6
-    check_time
-    fetch_pi_source
-    fetch_rtl8812au_driver
-    fetch_rtl8812bu_driver
-    fetch_v4l2loopback_driver
-    build_pi_kernel
+    prepare_build
 
     source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7
-    check_time
-    fetch_pi_source
-    fetch_rtl8812au_driver
-    fetch_rtl8812bu_driver
-    fetch_v4l2loopback_driver
-    build_pi_kernel
+    prepare_build
 
     if [[ -f "$(pwd)/kernels/${PLATFORM}-${DISTRO}-v7l" ]]; then
         source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7l
-        check_time
-        fetch_pi_source
-        fetch_rtl8812au_driver
-        fetch_rtl8812bu_driver
-        fetch_v4l2loopback_driver
-        build_pi_kernel
+        prepare_build
     fi
 fi
 
