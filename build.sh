@@ -58,7 +58,7 @@ fi
 
 
 fetch_pi_source() {
-    if [[ ! -d "${LINUX_DIR}" ]]; then
+     if [[ ! "$(ls -A ${LINUX_DIR})" ]]; then
         echo "Download the pi kernel source"
         git clone ${KERNEL_REPO} ${LINUX_DIR}
     fi
