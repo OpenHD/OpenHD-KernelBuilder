@@ -16,4 +16,4 @@ cp -a /usr/local/share/openhd/kernel/zeroup_x.dat /boot/ || true
 
 depmod -a
 
-mount -oremount,ro /boot
+mount -oremount,ro /boot || true
