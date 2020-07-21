@@ -254,5 +254,12 @@ fi
 copy_overlay
 package
 
+
+echo "Clean kernel build for cache optimization"
+
+pushd ${LINUX_DIR}
+    make clean
+popd
+
 # Show cache stats
 ccache -s
