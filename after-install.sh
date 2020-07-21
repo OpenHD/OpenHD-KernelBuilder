@@ -17,3 +17,8 @@ cp -a /usr/local/share/openhd/kernel/zeroup_x.dat /boot/ || true
 depmod -a
 
 mount -oremount,ro /boot || true
+
+grep "i2c-dev" /etc/modules
+if [[ "$?" -ne 0 ]]; then
+    echo "i2c-dev" >> /etc/modules
+fi
