@@ -253,3 +253,6 @@ fi
 
 copy_overlay
 package
+
+# Show cache stats
+ccache -s
