@@ -42,7 +42,7 @@ mkdir -p ${PACKAGE_DIR}/usr/local/share/openhd/kernel/dtb || exit 1
 
 
 if [[ "${PLATFORM}" == "pi" ]]; then
-    if [ ! -d $(pwd)/tools ]; then
+    if [ ! "$(ls -A ${PWD}/tools)" ]; then
         echo "Downloading Raspberry Pi toolchain"
         git clone --depth=1 -b ${PI_TOOLS_BRANCH} ${PI_TOOLS_REPO} $(pwd)/tools
         export PATH=$(pwd)/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin:${PATH}
@@ -73,7 +73,7 @@ fetch_pi_source() {
 
 fetch_rtl8812au_driver() {
 
-    if [[ ! -d rtl8812au ]]; then    
+    if [[ ! "$(ls -A rtl8812au)" ]]; then    
         echo "Download the rtl8812au driver"
         git clone ${RTL_8812AU_REPO}
     fi
@@ -101,7 +101,7 @@ fetch_rtl8812au_driver() {
 
 fetch_rtl8812bu_driver() {
 
-    if [[ ! -d rtl88x2bu ]]; then    
+    if [[ ! "$(ls -A rtl88x2bu)" ]]; then    
         echo "Download the rtl8812bu driver"
         git clone ${RTL_8812BU_REPO}
     fi
@@ -128,7 +128,7 @@ fetch_rtl8812bu_driver() {
 
 
 fetch_v4l2loopback_driver() {
-    if [[ ! -d v4l2loopback ]]; then    
+    if [[ ! "$(ls -A v4l2loopback)" ]]; then    
         echo "Download the v4l2loopback driver"
         git clone ${V4L2LOOPBACK_REPO}
     fi
