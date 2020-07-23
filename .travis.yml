@@ -1,15 +1,22 @@
 language: cpp
 env:
-  secure: "XnHCkLfZD19KfeYyQez1Rm2lXDTYsGmwyWaBooPHhlg9lsAsLDwxCxEeZw5sq4tDTcvCTY+ovT6AIBUqYQQ7G9oejKWzvifIEXcmY08ZHr5MZSbP3cHAONlfbnY5E4Ma31JqflSJKW1hzPHkSQo2wXuI/FDzs7muv/hwHrYfn61t96bnhQ9OFR0CrzT7Mq2qzqQwvck17daUJd859TkHTxf+A7AqaMFaBURA6NlON/bcw+UlpD+qvvTJ3Zw7mX30m6BQqTSO6VlQpbvu1J+ZLI8Szry6ds6FW164xBQDpddpzWggr10OSpO+lyo+4byhnyHzIsRSlWUv3Ukz/1zDel22uKlXf88TofgWu/3qG92N8+IwthyK4CaWKN1Gtg8qLTMb8dpzSdU26jMzGGqXA9xOL+wUOOECEx6BPagmL7VLMN1Ep/BmDOqnFJNKJfMr+M6TO/seLuaPz9a/XLA9gKSH3sR0gjdrc3ekuFyWpKrEW9M843+He2fp4UEIqsrJJtwaWAFfm9lSY89o+OXlpb+wUrXYQ6JPKoNlstfsFA3RYNcea6McoTMc35Gvd3bNrlHkmmJyl1Ig7YZaZGrv5+fv/RuWdcseotEFaL3lxZ1YLXHHCJtq8L8OSBVewH2flR3KDqkBdwQfL1jM7Z4NqiTAvdPO/bKlZ0IOsIm/1rw="
+  global:
+  - secure: "XnHCkLfZD19KfeYyQez1Rm2lXDTYsGmwyWaBooPHhlg9lsAsLDwxCxEeZw5sq4tDTcvCTY+ovT6AIBUqYQQ7G9oejKWzvifIEXcmY08ZHr5MZSbP3cHAONlfbnY5E4Ma31JqflSJKW1hzPHkSQo2wXuI/FDzs7muv/hwHrYfn61t96bnhQ9OFR0CrzT7Mq2qzqQwvck17daUJd859TkHTxf+A7AqaMFaBURA6NlON/bcw+UlpD+qvvTJ3Zw7mX30m6BQqTSO6VlQpbvu1J+ZLI8Szry6ds6FW164xBQDpddpzWggr10OSpO+lyo+4byhnyHzIsRSlWUv3Ukz/1zDel22uKlXf88TofgWu/3qG92N8+IwthyK4CaWKN1Gtg8qLTMb8dpzSdU26jMzGGqXA9xOL+wUOOECEx6BPagmL7VLMN1Ep/BmDOqnFJNKJfMr+M6TO/seLuaPz9a/XLA9gKSH3sR0gjdrc3ekuFyWpKrEW9M843+He2fp4UEIqsrJJtwaWAFfm9lSY89o+OXlpb+wUrXYQ6JPKoNlstfsFA3RYNcea6McoTMc35Gvd3bNrlHkmmJyl1Ig7YZaZGrv5+fv/RuWdcseotEFaL3lxZ1YLXHHCJtq8L8OSBVewH2flR3KDqkBdwQfL1jM7Z4NqiTAvdPO/bKlZ0IOsIm/1rw="
 os: linux
 dist: focal
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install devscripts build-essential ruby ruby-dev
-  - sudo gem install fpm
-  - sudo pip install --upgrade cloudsmith-cli
+  - ccache --set-config=compiler_check=content
+  - ccache --set-config=hash_dir=false
+install: 
+  - gem install --no-document fpm
+  - pip install --upgrade cloudsmith-cli
 compiler:
   - gcc
+cache:
+  - ccache
+  - pip
+  - bundler
+  - $TRAVIS_BUILD_DIR/linux-pi
 jobs:
   include:
   - name: "Pi stretch"

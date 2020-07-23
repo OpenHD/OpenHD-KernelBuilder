@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echoerr() { echo "$@" 1>&2; }
 
 PLATFORM=$1
 DISTRO=$2
@@ -42,7 +43,7 @@ mkdir -p ${PACKAGE_DIR}/usr/local/share/openhd/kernel/dtb || exit 1
 
 
 if [[ "${PLATFORM}" == "pi" ]]; then
-    if [ ! -d $(pwd)/tools ]; then
+    if [ ! "$(ls -A ${PWD}/tools)" ]; then
         echo "Downloading Raspberry Pi toolchain"
         git clone --depth=1 -b ${PI_TOOLS_BRANCH} ${PI_TOOLS_REPO} $(pwd)/tools
         export PATH=$(pwd)/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin:${PATH}
@@ -55,10 +56,59 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     KERNEL_REPO=https://github.com/OpenHD/linux.git
 fi
 
+#######################################
+### START TRAVIS TIMEOUT PREVENTION ###
+#######################################
 
+# System uptime in seconds
+get_uptime_in_seconds() {
+    # https://gist.github.com/OndroNR/0a36f97cd612b75fbf92f22cf72851a3
+    local  __resultvar=$1
+    
+    if [ -e /proc/uptime ] ; then
+       local uptime=`cat /proc/uptime | awk '{printf "%0.f", $1}'`
+    else
+        set +e
+        sysctl kern.boottime &> /dev/null
+        if [ $? -eq 0 ] ; then
+            local kern_boottime=`sysctl kern.boottime 2> /dev/null | sed "s/.* sec\ =\ //" | sed "s/,.*//"`
+            local time_now=`date +%s`
+            local uptime=$((${time_now} - ${kern_boottime}))
+        else
+            
+            exit 1
+        fi
+        set -e
+    fi    
+    eval $__resultvar="'${uptime}'"
+}
+get_uptime_in_seconds start_time
+
+# Script runtime in seconds
+get_running_time() {
+    local  __resultvar=$1
+    get_uptime_in_seconds now
+    local result=$(echo "${now} - ${start_time}" | bc)   
+    eval $__resultvar="'$result'"
+}
+
+# This is for Travis, if build takes too long, just exit out and warm up the cache
+check_time() {
+    get_running_time uptime
+
+    # If script is running more then 20 minutes, exit out and prevent Travis from timeout
+    if [[ -n $TRAVIS && ${uptime} -gt $((20*60)) ]]; then
+        echoerr "Uptime: ${uptime}s"
+        echoerr "Please restart this Travis build. The cache isn't warm!"
+        exit 1
+    fi
+}
+#####################################
+### END TRAVIS TIMEOUT PREVENTION ###
+#####################################
 
 fetch_pi_source() {
-    if [[ ! -d "${LINUX_DIR}" ]]; then
+     if [[ ! "$(ls -A ${LINUX_DIR})" ]]; then
         echo "Download the pi kernel source"
         git clone ${KERNEL_REPO} ${LINUX_DIR}
     fi
@@ -73,7 +123,7 @@ fetch_pi_source() {
 
 fetch_rtl8812au_driver() {
 
-    if [[ ! -d rtl8812au ]]; then    
+    if [[ ! "$(ls -A rtl8812au)" ]]; then    
         echo "Download the rtl8812au driver"
         git clone ${RTL_8812AU_REPO}
     fi
@@ -101,7 +151,7 @@ fetch_rtl8812au_driver() {
 
 fetch_rtl8812bu_driver() {
 
-    if [[ ! -d rtl88x2bu ]]; then    
+    if [[ ! "$(ls -A rtl88x2bu)" ]]; then    
         echo "Download the rtl8812bu driver"
         git clone ${RTL_8812BU_REPO}
     fi
@@ -128,7 +178,7 @@ fetch_rtl8812bu_driver() {
 
 
 fetch_v4l2loopback_driver() {
-    if [[ ! -d v4l2loopback ]]; then    
+    if [[ ! "$(ls -A v4l2loopback)" ]]; then    
         echo "Download the v4l2loopback driver"
         git clone ${V4L2LOOPBACK_REPO}
     fi
@@ -228,6 +278,7 @@ copy_overlay() {
 if [[ "${PLATFORM}" == "pi" ]]; then
     # a simple hack, we want 3 kernels in one package so we source 3 different configs and build them all
     source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v6
+    check_time
     fetch_pi_source
     fetch_rtl8812au_driver
     fetch_rtl8812bu_driver
@@ -235,6 +286,7 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     build_pi_kernel
 
     source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7
+    check_time
     fetch_pi_source
     fetch_rtl8812au_driver
     fetch_rtl8812bu_driver
@@ -243,6 +295,7 @@ if [[ "${PLATFORM}" == "pi" ]]; then
 
     if [[ -f "$(pwd)/kernels/${PLATFORM}-${DISTRO}-v7l" ]]; then
         source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7l
+        check_time
         fetch_pi_source
         fetch_rtl8812au_driver
         fetch_rtl8812bu_driver
@@ -253,3 +306,13 @@ fi
 
 copy_overlay
 package
+
+
+echo "Clean kernel build for cache optimization"
+
+pushd ${LINUX_DIR}
+    make clean
+popd
+
+# Show cache stats
+ccache -s
