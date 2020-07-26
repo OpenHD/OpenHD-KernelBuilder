@@ -50,9 +50,9 @@ if [[ "${PLATFORM}" == "pi" ]]; then
         echo "Path: ${PATH}"
     fi
 
-    ARCH=arm
+    export ARCH=arm
     PACKAGE_ARCH=armhf
-    CROSS_COMPILE=arm-linux-gnueabihf-
+    export CROSS_COMPILE=arm-linux-gnueabihf-
     KERNEL_REPO=https://github.com/OpenHD/linux.git
 fi
 
@@ -205,15 +205,15 @@ build_pi_kernel() {
 
         make clean
 
-        yes "" | KERNEL=${KERNEL} ARCH=${ARCH} CROSS_COMPILE="ccache ${CROSS_COMPILE}" make oldconfig || exit 1
+        yes "" | make oldconfig || exit 1
 
-        KERNEL=${KERNEL} ARCH=${ARCH} CROSS_COMPILE="ccache ${CROSS_COMPILE}" KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
+        KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
 
         echo "Copy kernel"
         cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/${KERNEL}.img" || exit 1
 
         echo "Copy kernel modules"
-        make -j $J_CORES ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} INSTALL_MOD_PATH="${PACKAGE_DIR}" modules_install || exit 1
+        make -j $J_CORES INSTALL_MOD_PATH="${PACKAGE_DIR}" modules_install || exit 1
 
         echo "Copy DTBs"
         cp arch/arm/boot/dts/*.dtb "${PACKAGE_DIR}/usr/local/share/openhd/kernel/dtb/" || exit 1
@@ -227,14 +227,14 @@ build_pi_kernel() {
 
     pushd rtl8812au
         make clean
-        ARCH=${ARCH} CROSS_COMPILE="${CROSS_COMPILE}" make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
+        make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
         mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au
         install -p -m 644 88XXau.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au/" || exit 1
     popd
 
     pushd rtl88x2bu
         make clean
-        ARCH=${ARCH} CROSS_COMPILE="${CROSS_COMPILE}" make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
+        make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
         mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl88x2bu
         install -p -m 644 88x2bu.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl88x2bu/" || exit 1
     popd
@@ -300,6 +300,7 @@ fi
 copy_overlay
 package
 
+unset ARCH CROSS_COMPILE
 
 echo "Clean kernel build for cache optimization"
 
