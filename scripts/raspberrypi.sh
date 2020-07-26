@@ -22,7 +22,6 @@ function setup_pi_env() {
                 ln -s $(which ccache) arm-linux-gnueabihf-cpp
                 ln -s $(which ccache) arm-linux-gnueabihf-c++
             popd
-            export PATH=${CCACHE_PATH}:${PATH}
         fi
         if [[ ${PATH} != *${CCACHE_PATH}* ]]; then
             export PATH=${CCACHE_PATH}:${PATH}
