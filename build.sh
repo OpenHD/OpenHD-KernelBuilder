@@ -85,6 +85,8 @@ build_pi_kernel() {
     build_rtl8812bu_driver
 
     cp ${SRC_DIR}/overlay/boot/* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/" || exit 1
+
+    depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
 }
 
 prepare_build() {
