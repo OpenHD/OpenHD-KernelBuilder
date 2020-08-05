@@ -17,6 +17,8 @@ RTL_8812AU_BRANCH=20200719.1
 RTL_8812BU_REPO=https://github.com/OpenHD/rtl88x2bu.git
 RTL_8812BU_BRANCH=5.6.1_30362.20181109_COEX20180928-6a6a
 
+RTL_8188EUS_REPO=https://github.com/OpenHD/rtl8188eus.git
+RTL_8188EUS_BRANCH=v5.3.9
 
 V4L2LOOPBACK_REPO=https://github.com/OpenHD/v4l2loopback.git
 V4L2LOOPBACK_BRANCH=openhd1
@@ -83,6 +85,7 @@ build_pi_kernel() {
     # Build Realtek drivers
     build_rtl8812au_driver
     build_rtl8812bu_driver
+    build_rtl8188eus_driver
 
     cp ${SRC_DIR}/overlay/boot/* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/" || exit 1
 
@@ -94,6 +97,7 @@ prepare_build() {
     fetch_pi_source
     fetch_rtl8812au_driver
     fetch_rtl8812bu_driver
+    fetch_rtl8188eus_driver
     fetch_v4l2loopback_driver
     build_pi_kernel
 }

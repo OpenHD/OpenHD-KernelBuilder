@@ -70,3 +70,35 @@ function build_rtl8812bu_driver() {
         install -p -m 644 88x2bu.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl88x2bu/" || exit 1
     popd
 }
+
+
+# ========================================================== #
+
+function fetch_rtl8188eus_driver() {
+
+    if [[ ! "$(ls -A rtl8188eus)" ]]; then    
+        echo "Download the rtl8188eus driver"
+        git clone ${RTL_8188EUS_REPO}
+    fi
+
+    pushd rtl8188eus
+        git fetch
+        git reset --hard
+        git checkout ${RTL_8188EUS_BRANCH}
+        git pull
+
+        if [[ "${PLATFORM}" == "pi" ]]; then
+            sed -i 's/CONFIG_PLATFORM_I386_PC = y/CONFIG_PLATFORM_I386_PC = n/' Makefile
+            sed -i 's/CONFIG_PLATFORM_ARM_RPI = n/CONFIG_PLATFORM_ARM_RPI = y/' Makefile
+        fi
+    popd
+}
+
+function build_rtl8188eus_driver() {
+    pushd rtl8188eus
+        make clean
+        make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
+        mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8188eus
+        install -p -m 644 rtl8188eus.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8188eus/" || exit 1
+    popd
+}
