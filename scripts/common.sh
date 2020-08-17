@@ -36,7 +36,8 @@ function package() {
         echo "Pushing package to OpenHD repository"
         cloudsmith push deb openhd/openhd-2-0/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
     else
-        echo "Not a tagged release, skipping push to OpenHD repository"
+        echo "Pushing package to OpenHD testing repository"
+        cloudsmith push deb openhd/openhd-2-0-testing/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
     fi
 }
 
