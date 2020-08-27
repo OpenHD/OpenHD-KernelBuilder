@@ -28,8 +28,9 @@ function package() {
     -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
 
     #
-    # Only push to cloudsmith for tags. If you don't want something to be pushed to the repo, 
-    # don't create a tag. You can build packages and test them locally without tagging.
+    # You can build packages and test them locally without tagging or uploading to the repo, which is only done for
+    # releases. Note that we push the same kernel to multiple versions of the repo because there isn't much reason
+    # to separate them, and it would create a bit of overhead to manage it that way.
     #
     git describe --exact-match HEAD > /dev/null 2>&1
     if [[ $? -eq 0 ]]; then
