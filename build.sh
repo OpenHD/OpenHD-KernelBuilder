@@ -80,6 +80,11 @@ build_pi_kernel() {
         # prevents the inclusion of firmware that can conflict with normal firmware packages, dpkg will complain. there
         # should be a kernel config to stop installing this into the package dir in the first place
         rm -r "${PACKAGE_DIR}/lib/firmware/*"
+
+        pushd tools/perf
+            ARCH=${ARCH} KERNEL=${KERNEL} make perf || exit 1
+            cp perf ${PACKAGE_DIR}/usr/local/bin/perf-${KERNEL_VERSION} || exit 1
+        popd
     popd
 
     # Build Realtek drivers

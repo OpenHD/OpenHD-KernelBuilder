@@ -13,6 +13,7 @@ function init() {
     mkdir -p ${PACKAGE_DIR}/lib/firmware || exit 1
     mkdir -p ${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays || exit 1
     mkdir -p ${PACKAGE_DIR}/usr/local/share/openhd/kernel/dtb || exit 1
+    mkdir -p ${PACKAGE_DIR}/usr/local/bin || exit 1
 }
 
 function package() {
