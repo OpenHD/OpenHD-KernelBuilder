@@ -118,6 +118,11 @@ if [[ "${PLATFORM}" == "pi" ]]; then
         source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7l
         prepare_build
     fi
+
+    if [[ -f "$(pwd)/kernels/${PLATFORM}-${DISTRO}-v6" ]]; then
+        source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v6
+        prepare_build
+    fi
 fi
 
 copy_overlay
