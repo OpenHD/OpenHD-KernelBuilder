@@ -82,8 +82,8 @@ build_pi_kernel() {
         rm -r "${PACKAGE_DIR}/lib/firmware/*"
 
         pushd tools/perf
-            ARCH=${ARCH} KERNEL=${KERNEL} make perf || exit 1
-            cp perf ${PACKAGE_DIR}/usr/local/bin/perf-${KERNEL_VERSION} || exit 1
+            #ARCH=${ARCH} KERNEL=${KERNEL} make perf || exit 1
+            #cp perf ${PACKAGE_DIR}/usr/local/bin/perf-${KERNEL_VERSION} || exit 1
         popd
     popd
 
