@@ -2501,7 +2501,7 @@ CONFIG_88EU_AP_MODE=y
 # Speakup console speech
 #
 # CONFIG_SPEAKUP is not set
-# CONFIG_STAGING_MEDIA is not set
+CONFIG_STAGING_MEDIA=y
 
 #
 # Android
