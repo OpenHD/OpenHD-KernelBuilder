@@ -23,6 +23,8 @@ RTL_8188EUS_BRANCH=openhd1
 V4L2LOOPBACK_REPO=https://github.com/OpenHD/v4l2loopback.git
 V4L2LOOPBACK_BRANCH=openhd1
 
+EXFAT_REPO=https://github.com/OpenHD/exfat-linux.git
+EXFAT_BRANCH=openhd2
 
 
 #####################
@@ -104,6 +106,7 @@ prepare_build() {
     fetch_rtl8812bu_driver
     fetch_rtl8188eus_driver
     fetch_v4l2loopback_driver
+    fetch_exfat_driver
     build_pi_kernel
 }
 
