@@ -103,7 +103,10 @@ prepare_build() {
     fetch_rtl8812bu_driver
     fetch_rtl8188eus_driver
     fetch_v4l2loopback_driver
-    fetch_exfat_driver
+    # on the pi our kernel is new enough that we don't need to add the exfat driver anymore
+    if [[ ! "${PLATFORM}" == "pi" ]]; then
+        fetch_exfat_driver
+    fi 
     build_pi_kernel
 }
 
