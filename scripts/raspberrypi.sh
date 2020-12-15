@@ -2,15 +2,7 @@
 
 function setup_pi_env() {
     if [[ "${PLATFORM}" == "pi" ]]; then
-        PI_TOOLS_COMPILER_PATH="$(pwd)/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin"
-        if [ ! "$(ls -A ${PWD}/tools)" ]; then
-            echo "Downloading Raspberry Pi toolchain"
-            git clone --depth=1 -b ${PI_TOOLS_BRANCH} ${PI_TOOLS_REPO} $(pwd)/tools
-        fi
-        if [[ ${PATH} != *${PI_TOOLS_COMPILER_PATH}* ]]; then
-            export PATH=${PI_TOOLS_COMPILER_PATH}:${PATH}
-            echo "Path: ${PATH}"
-        fi
+        apt -y install crossbuild-essential-armhf
         # CCACHE workaround
         CCACHE_PATH=${PI_TOOLS_COMPILER_PATH}/../bin-ccache
     
