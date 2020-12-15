@@ -36,11 +36,9 @@ function package() {
     git describe --exact-match HEAD > /dev/null 2>&1
     if [[ $? -eq 0 ]]; then
         echo "Pushing package to OpenHD repository"
-        cloudsmith push deb openhd/openhd-2-0/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
         cloudsmith push deb openhd/openhd-2-1/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
     else
         echo "Pushing package to OpenHD testing repository"
-        cloudsmith push deb openhd/openhd-2-0-testing/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
         cloudsmith push deb openhd/openhd-2-1-testing/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
     fi
 }
