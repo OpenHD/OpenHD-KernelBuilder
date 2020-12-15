@@ -18,7 +18,7 @@ RTL_8188EUS_REPO=https://github.com/OpenHD/rtl8188eus.git
 RTL_8188EUS_BRANCH=openhd1
 
 V4L2LOOPBACK_REPO=https://github.com/OpenHD/v4l2loopback.git
-V4L2LOOPBACK_BRANCH=openhd1
+V4L2LOOPBACK_BRANCH=openhd2
 
 EXFAT_REPO=https://github.com/OpenHD/exfat-linux.git
 EXFAT_BRANCH=openhd2
