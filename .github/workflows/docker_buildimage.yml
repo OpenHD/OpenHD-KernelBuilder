@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'Dockerfile' # only update the image if the dockerfile changed
+      - '.github/workflows/docker_buildimage.yml'
   schedule:
   - cron: '0 0 * * 1' # weekly every monday
 
