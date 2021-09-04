@@ -10,3 +10,5 @@ RUN apt-get update && apt-get install -y \
 
 RUN gem install --no-document fpm
 RUN pip3 install --upgrade cloudsmith-cli
+
+WORKDIR /kernelbuilder
