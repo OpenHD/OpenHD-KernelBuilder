@@ -11,7 +11,7 @@ jobs:
         DISTRO: [stretch, buster]
 
     container:
-      image: limitlessgreen/ohdkernelbuilder:latest
+      image: openhd/ohdkernelbuilder:latest
     steps:
       - uses: actions/checkout@v2
       - name: "Build images"
