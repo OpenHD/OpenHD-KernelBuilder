@@ -1,0 +1,18 @@
+name: Build
+
+on: [push]
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+   
+    - uses: actions/checkout@v2
+    - run: ccache --set-config=compiler_check=content
+    - run: ccache --set-config=hash_dir=false
+    
+    include:
+    - name: "Pi stretch"
+      env: PLATFORM=pi DISTRO=stretch
+    - name: "Pi buster"
+      env: PLATFORM=pi DISTRO=buster
