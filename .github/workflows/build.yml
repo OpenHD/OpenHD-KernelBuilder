@@ -12,8 +12,6 @@ jobs:
 
     container:
       image: limitlessgreen/ohdkernelbuilder:latest
-      volumes: 
-        - root/.ccache:/root/.ccache
     steps:
       - uses: actions/checkout@v2
       - name: "Build images"
