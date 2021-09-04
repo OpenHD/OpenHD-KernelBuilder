@@ -5,7 +5,9 @@ RUN apt-get update && apt-get install -y \
     bison\
     ccache\
     crossbuild-essential-armhf\
+    flex\
     git\
+    libssl-dev\
     python3-pip\
     ruby    
 
