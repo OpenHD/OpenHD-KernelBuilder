@@ -1,9 +1,9 @@
 name: build_dockerimage
 
 on: 
-  push
+  push:
   schedule:
-    - cron: '0 0 * * 0' # weekly
+  - cron: '0 0 * * 1' # weekly every monday
 
 jobs:
   docker:
