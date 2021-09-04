@@ -12,9 +12,6 @@ jobs:
     steps:
    
     - uses: actions/checkout@v2
-    - run: ccache --set-config=compiler_check=content
-    - run: ccache --set-config=hash_dir=false
-    
 
     - name: "Build images"
       run: bash build.sh ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }}
