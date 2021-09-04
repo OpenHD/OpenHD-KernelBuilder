@@ -4,14 +4,18 @@ on: [push]
   
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu:latest
     strategy:
       matrix:
         PLATFORM: [pi]
         DISTRO: [stretch, buster]
-    steps:
-   
-    - uses: actions/checkout@v2
 
-    - name: "Build images"
-      run: bash build.sh ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }}
+    container:
+      image: limitlessgreen/ohdkernelbuilder:latest
+      volumes: 
+        - root/.ccache:/root/.ccache
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Build images"
+        run: bash build.sh ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }}
+  
