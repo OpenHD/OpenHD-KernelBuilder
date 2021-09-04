@@ -1,7 +1,3 @@
-.DS_Store
-package
-tools
-linux*
-rtl8812au
-rtl88x2bu
-v4l2loopback
+.DS_Store package tools linux* rtl8812au rtl88x2bu v4l2loopback
+.config
+./linux-pi/
