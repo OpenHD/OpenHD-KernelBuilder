@@ -2,6 +2,8 @@ name: build_dockerimage
 
 on: 
   push:
+    paths:
+      - 'Dockerfile' # only update the image if the dockerfile changed
   schedule:
   - cron: '0 0 * * 1' # weekly every monday
 
