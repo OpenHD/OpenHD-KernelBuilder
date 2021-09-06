@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     crossbuild-essential-armhf\
     flex\
     git\
+    kmod\
     libssl-dev\
     python3-pip\
     ruby    
