@@ -17,7 +17,7 @@ jobs:
       - name: Cache
         uses: actions/cache@v2
         env:
-          cache_name: cache-kernelbuilder
+          cache-name: cache-kernelbuilder
         with:
           path: |
             ~/.ccache
