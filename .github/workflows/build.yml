@@ -14,11 +14,14 @@ jobs:
       image: openhd/ohdkernelbuilder:latest
     steps:
       - uses: actions/checkout@v2
-      - name: Cache Gradle packages
+      - name: Cache
         uses: actions/cache@v2
+        env:
+          cache_name: cache-kernelbuilder
         with:
           path: |
             ~/.ccache
+          key: ${{ runner.os }}-build-${{ env.cache-name }}
       - name: "Build images"
         run: bash build.sh ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }}
   
