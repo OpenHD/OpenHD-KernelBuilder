@@ -21,6 +21,7 @@ jobs:
         with:
           path: |
             ~/.ccache
+            /__w/OpenHDKernelBuilder/OpenHDKernelBuilder/linux-pi
           key: ${{ runner.os }}-build-${{ env.cache-name }}
       - name: "Build images"
         run: bash build.sh ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }}
