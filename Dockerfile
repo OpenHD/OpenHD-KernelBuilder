@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     flex\
     git\
     kmod\
-    #libssl-dev\
+    libssl-dev\
     python3-pip\
     ruby    
 
