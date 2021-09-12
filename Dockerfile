@@ -3,11 +3,13 @@ FROM ubuntu:18.04
 RUN apt-get update && apt-get install -y \
     bc\
     bison\
+    build-essential\
     ccache\
     crossbuild-essential-armhf\
     flex\
     git\
     kmod\
+    libelf-dev\
     libssl-dev\
     python3-pip\
     ruby    
