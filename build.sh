@@ -135,7 +135,7 @@ if [[ "${PLATFORM}" == "pi" ]]; then
 fi
 
 copy_overlay
-package
+#package
 
 post_processing
 
