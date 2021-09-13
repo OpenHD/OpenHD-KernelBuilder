@@ -16,6 +16,10 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        PLATFORM: [pi]
+        DISTRO: [buster, stretch]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -56,8 +60,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-ccache
             ${{ runner.os }}-ccache-
-      - name: Build
+      - name: Build ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }}
         run: |
           export PATH=/usr/lib/ccache:$PATH
-          bash build.sh pi buster
+          bash build.sh ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }}
      
