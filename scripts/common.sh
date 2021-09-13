@@ -26,7 +26,7 @@ function package() {
     echo "Package the kernel with fpm"
     fpm -a ${PACKAGE_ARCH} --name ${PACKAGE_NAME} --after-install after-install.sh --before-install before-install.sh\
     -p ${PACKAGE_NAME}_VERSION_ARCH.deb -s dir -t deb\
-    --version ${VERSION} --chdir ${PACKAGE_DIR} || exit 1
+    -C ${PACKAGE_DIR} --version ${VERSION}  || exit 1
 
     #
     # You can build packages and test them locally without tagging or uploading to the repo, which is only done for
