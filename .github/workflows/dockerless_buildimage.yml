@@ -28,7 +28,7 @@ jobs:
       - name: Install depencies
         run: |
           sudo apt update
-          sudo apt install bc bison build-essential ccache crossbuild-essential-armhf fakeroot flex git kmod libelf-dev libssl-dev python3-pip ruby  
+          sudo apt install bc bison ccache gcc-arm-linux-gnueabihf fakeroot flex git kmod libelf-dev libssl-dev make python3-pip ruby  
       - name: Setup env
         run: |
           echo "DT=$(date +'%Y-%m-%d_%H%M')" >> $GITHUB_ENV
