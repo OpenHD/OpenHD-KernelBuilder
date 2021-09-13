@@ -21,7 +21,7 @@ RTL_8812BU_BRANCH=5.8.7.1_35809.20191129_COEX20191120-7777
 #RTL_8188EUS_REPO=https://github.com/OpenHD/rtl8188eus.git
 #RTL_8188EUS_BRANCH=openhd1
 RTL_8188EUS_REPO=https://github.com/aircrack-ng/rtl8188eus.git
-RTL_8188EUS_BRANCH=v5.3.9
+RTL_8188EUS_BRANCH=OpenHD-v5.3.9
 
 V4L2LOOPBACK_REPO=https://github.com/OpenHD/v4l2loopback.git
 V4L2LOOPBACK_BRANCH=openhd2
@@ -135,7 +135,7 @@ if [[ "${PLATFORM}" == "pi" ]]; then
 fi
 
 copy_overlay
-#package
+package
 
 post_processing
 
