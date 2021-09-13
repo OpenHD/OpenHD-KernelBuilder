@@ -3,9 +3,9 @@ FROM ubuntu:18.04
 RUN apt-get update && apt-get install -y \
     bc\
     bison\
-    build-essential\
     ccache\
-    crossbuild-essential-armhf\
+    gcc-arm-linux-gnueabihf\
+    fakeroot\
     flex\
     git\
     kmod\
