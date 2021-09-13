@@ -25,16 +25,21 @@ jobs:
         with:
           fetch-depth: 10
 
+      - name: Set up Ruby 2.6
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+      
       - name: Install depencies
         run: |
           sudo apt update
-          sudo apt install bc bison ccache gcc-arm-linux-gnueabihf fakeroot flex git kmod libelf-dev libssl-dev make python3-pip ruby
+          sudo apt install bc bison ccache gcc-arm-linux-gnueabihf fakeroot flex git kmod libelf-dev libssl-dev make python3-pip
           gem install --no-document fpm
           pip3 install --upgrade cloudsmith-cli
-          ccache --set-config=compiler_check=content && ccache --set-config=hash_dir=false
-          
+                
       - name: Setup env
         run: |
+          ccache --set-config=compiler_check=content && ccache --set-config=hash_dir=false
           echo "DT=$(date +'%Y-%m-%d_%H%M')" >> $GITHUB_ENV
           echo "KERNELVER=$(make kernelversion)" >> $GITHUB_ENV
           echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
