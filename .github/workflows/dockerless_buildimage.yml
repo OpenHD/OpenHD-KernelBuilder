@@ -28,7 +28,11 @@ jobs:
       - name: Install depencies
         run: |
           sudo apt update
-          sudo apt install bc bison ccache gcc-arm-linux-gnueabihf fakeroot flex git kmod libelf-dev libssl-dev make python3-pip ruby  
+          sudo apt install bc bison ccache gcc-arm-linux-gnueabihf fakeroot flex git kmod libelf-dev libssl-dev make python3-pip ruby
+          gem install --no-document fpm
+          pip3 install --upgrade cloudsmith-cli
+          ccache --set-config=compiler_check=content && ccache --set-config=hash_dir=false
+          
       - name: Setup env
         run: |
           echo "DT=$(date +'%Y-%m-%d_%H%M')" >> $GITHUB_ENV
