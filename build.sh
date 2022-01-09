@@ -8,7 +8,7 @@ DISTRO=$2
 ##############
 
 # Fixed at v5.2.20 until 5.3.4 works for injection
-RTL_8812AU_REPO=https://github.com/OpenHD/rtl8812au.git
+RTL_8812AU_REPO=https://github.com/aircrack-ng/rtl8812au.git
 RTL_8812AU_BRANCH=v5.6.4.2
 
 RTL_8812BU_REPO=https://github.com/OpenHD/rtl88x2bu.git
