@@ -11,11 +11,11 @@ DISTRO=$2
 RTL_8812AU_REPO=https://github.com/aircrack-ng/rtl8812au.git
 RTL_8812AU_BRANCH=v5.6.4.2
 
-RTL_8812BU_REPO=https://github.com/cilynx/rtl88x2bu.git
+RTL_8812BU_REPO=https://github.com/OpenHD/rtl88x2bu.git
 RTL_8812BU_BRANCH=5.6.1_30362.20181109_COEX20180928-6a6a
 
 RTL_8188EUS_REPO=https://github.com/OpenHD/rtl8188eus.git
-RTL_8188EUS_BRANCH=v5.3.9
+RTL_8188EUS_BRANCH=openhd1
 
 V4L2LOOPBACK_REPO=https://github.com/OpenHD/v4l2loopback.git
 V4L2LOOPBACK_BRANCH=openhd2
