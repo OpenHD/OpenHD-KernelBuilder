@@ -46,7 +46,7 @@ EXFAT_BRANCH=openhd2
 
 SRC_DIR=$(pwd)
 	if [[ "${PLATFORM}" == "pi" ]]; then
-	LINUX_DIR=$(pwd)/linux-${PLATFORM}
+	LINUX_DIR=$(pwd)/workdir/linux-${PLATFORM}
 	else
 	LINUX_DIR=$(pwd)/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9
 	fi
@@ -171,7 +171,8 @@ prepare_build() {
     if [[ "${PLATFORM}" == "pi" ]]; then
     check_time
     fetch_SBC_source
-    #fetch_exfat_driver
+    mkdir $SRC_DIR/workdir/mods/
+    cd $SRC_DIR/workdir/mods/
     fetch_rtl8812au_driver
     fetch_rtl8812bu_driver
     fetch_rtl8188eus_driver
