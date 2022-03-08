@@ -14,6 +14,7 @@ cp -a /usr/local/share/openhd/kernel/1to3bup.dat /boot/ || true
 cp -a /usr/local/share/openhd/kernel/zero_x.elf /boot/ || true
 cp -a /usr/local/share/openhd/kernel/zeroup_x.dat /boot/ || true
 
+
 depmod -a
 
 mount -oremount,ro /boot || true

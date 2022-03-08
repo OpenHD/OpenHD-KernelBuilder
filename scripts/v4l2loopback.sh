@@ -12,7 +12,9 @@ function fetch_v4l2loopback_driver() {
         git checkout ${V4L2LOOPBACK_BRANCH}
     popd
 
+if [[ "${PLATFORM}" == "pi" ]]; then
     echo "Merge the v4l2loopback driver into the kernel"
     cp -a v4l2loopback/. ${LINUX_DIR}/drivers/media/v4l2loopback/
+fi
 
 }

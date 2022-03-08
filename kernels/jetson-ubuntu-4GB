@@ -1,0 +1,5 @@
+KERNEL=kernel
+KERNEL_BRANCH="jetson-nano-4.9.253-openhd"
+KERNEL_VERSION="4.9.253"
+KERNEL_COMMIT="xxx"
+ISA=4GB

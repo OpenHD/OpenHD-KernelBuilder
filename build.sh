@@ -2,6 +2,21 @@
 
 PLATFORM=$1
 DISTRO=$2
+ONLINE=$3
+
+if  [[ "${PLATFORM}" != "pi" ]] && [[ "${PLATFORM}" != "jetson" ]];  then
+    echo "Usage: ./build.sh pi buster"
+    echo ""
+    echo "Target kernels:"
+    echo ""
+    ls -1 kernels/
+    echo ""
+    exit 1
+fi
+
+
+echo "Youre building for $PLATFORM"
+
 
 ##############
 ### Config ###
@@ -18,7 +33,7 @@ RTL_8188EUS_REPO=https://github.com/OpenHD/rtl8188eus.git
 RTL_8188EUS_BRANCH=openhd1
 
 V4L2LOOPBACK_REPO=https://github.com/OpenHD/v4l2loopback.git
-V4L2LOOPBACK_BRANCH=openhd2
+V4L2LOOPBACK_BRANCH=openhd
 
 EXFAT_REPO=https://github.com/OpenHD/exfat-linux.git
 EXFAT_BRANCH=openhd2
@@ -28,8 +43,13 @@ EXFAT_BRANCH=openhd2
 ### BUILD HELPERS ###
 #####################
 
+
 SRC_DIR=$(pwd)
-LINUX_DIR=$(pwd)/linux-${PLATFORM}
+	if [[ "${PLATFORM}" == "pi" ]]; then
+	LINUX_DIR=$(pwd)/linux-${PLATFORM}
+	else
+	LINUX_DIR=$(pwd)/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9
+	fi
 CONFIGS=$(pwd)/configs
 J_CORES=$(nproc)
 PACKAGE_DIR=$(pwd)/package
@@ -47,11 +67,12 @@ init
 ### BUILD ENV's ###   and $CROSS_COMPILE
 ###################   are set here
 
-setup_pi_env
+setup_platform_env
 
 
 
 build_pi_kernel() {
+
     echo "Building pi kernel"
 
     pushd ${LINUX_DIR}
@@ -66,7 +87,7 @@ build_pi_kernel() {
         KERNEL=${KERNEL} KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
 
         echo "Copy kernel"
-        cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/${KERNEL}.img" || exit 1
+        cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel.img" || exit 1
 
         echo "Copy kernel modules"
         make -j $J_CORES INSTALL_MOD_PATH="${PACKAGE_DIR}" modules_install || exit 1
@@ -89,25 +110,91 @@ build_pi_kernel() {
     # Build Realtek drivers
     build_rtl8812au_driver
     build_rtl8812bu_driver
-    build_rtl8188eus_driver
+    #build_rtl8188eus_driver
 
     cp ${SRC_DIR}/overlay/boot/* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/" || exit 1
 
     depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
+
 }
 
+build_jetson_kernel() {
+
+    
+	echo "Building jetson kernel"
+	
+	TEGRA_KERNEL_OUT=$LINUX_DIR/build
+	KERNEL_MODULES_OUT=$LINUX_DIR/modules		
+	export CROSS_COMPILE=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
+	
+
+	cd $JETSON_NANO_KERNEL_SOURCE
+	
+	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} tegra_defconfig
+	echo "replacing original kernel-config with OpenHD-config"
+	rm $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/.config
+	cp $SRC_DIR/configs/.config-jetson-4.9.253-openhd $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/.config
+	echo "using OpenHD-config"
+	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES --output-sync=target zImage
+	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES --output-sync=target modules
+	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES --output-sync=target dtbs
+	echo "Entering packaging Stage"
+	
+	echo "Copy kernel"
+        cp $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/arch/arm64/boot/Image "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel.img" || exit 1
+	
+ 	echo "Copy kernel modules"
+	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra INSTALL_MOD_PATH=${PACKAGE_DIR} modules_install
+
+	echo "Copy DTBs"
+        cp $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/arch/arm64/boot/dts/*.dtb "${PACKAGE_DIR}/usr/local/share/openhd/kernel/dtb/" || exit 1
+	#are those blobs @dtbs?
+	cp $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/arch/arm64/boot/dts/nvidia/* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || exit 1
+
+
+	# prevents the inclusion of firmware that can conflict with normal firmware packages, dpkg will complain. there
+        # should be a kernel config to stop installing this into the package dir in the first place
+        rm -r "${PACKAGE_DIR}/lib/firmware/*"
+
+
+	cd $SRC_DIR
+    	cp ${SRC_DIR}/overlay/boot/* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/" || exit 1
+	depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
+
+	
+}
+
+
 prepare_build() {
+    
+    # on the pi our kernel is new enough that we don't need to add the exfat driver anymore
+    if [[ "${PLATFORM}" == "pi" ]]; then
     check_time
-    fetch_pi_source
+    fetch_SBC_source
+    #fetch_exfat_driver
     fetch_rtl8812au_driver
     fetch_rtl8812bu_driver
     fetch_rtl8188eus_driver
     fetch_v4l2loopback_driver
-    # on the pi our kernel is new enough that we don't need to add the exfat driver anymore
-    if [[ ! "${PLATFORM}" == "pi" ]]; then
-        fetch_exfat_driver
     fi 
-    build_pi_kernel
+
+    if [[ "${PLATFORM}" == "jetson" ]]; then
+      check_time
+      fetch_SBC_source
+      echo "Downloading additional modules and fixes"
+      	mkdir $SRC_DIR/workdir/mods/
+	cd $SRC_DIR/workdir/mods/
+     echo "Download the exfat driver"
+      git clone ${EXFAT_REPO}
+        cp -a exfat-linux/. $JETSON_NANO_KERNEL_SOURCE/kernel/kernel-4.9/fs/exfat/
+     echo "Download the v4l2loopback_driver"
+	fetch_v4l2loopback_driver
+        cp -a v4l2loopback/. $JETSON_NANO_KERNEL_SOURCE/kernel/kernel-4.9/drivers/media/v4l2loopback/
+     echo "Download Realtek drivers"
+	fetch_rtl8812au_driver
+    	fetch_rtl8812bu_driver
+    	fetch_rtl8188eus_driver
+    fi 
 }
 
 if [[ "${PLATFORM}" == "pi" ]]; then
@@ -116,18 +203,27 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     # kernel build. this is a temporary thing due to the unique issues with USB on the pi zero.
     source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7
     prepare_build
+    build_pi_kernel
 
     if [[ -f "$(pwd)/kernels/${PLATFORM}-${DISTRO}-v7l" ]]; then
         source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7l
         prepare_build
+	build_pi_kernel
     fi
 
     if [[ -f "$(pwd)/kernels/${PLATFORM}-${DISTRO}-v6" ]]; then
         source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v6
         prepare_build
+	build_pi_kernel
     fi
 fi
 
+if [[ "${PLATFORM}" == "jetson" ]]; then
+    prepare_build
+    build_jetson_kernel
+
+    
+fi
 copy_overlay
 package
 

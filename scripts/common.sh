@@ -22,11 +22,20 @@ function package() {
     VERSION=$(git describe --tags | sed 's/\(.*\)-.*/\1/')
 
     rm ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb > /dev/null 2>&1
+    if [[ "${PLATFORM}" == "pi" ]]; then
 
-    fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} \
-    --after-install after-install.sh \
-    --before-install before-install.sh \
-    -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
+	fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} \
+    	--after-install after-install.sh \
+    	--before-install before-install.sh \
+    	-p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
+    fi
+    if [[ "${PLATFORM}" == "jetson" ]]; then
+
+	fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} \
+    	--after-install after-install-jetson.sh \
+    	--before-install before-install.sh \
+    	-p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
+    fi
 
     #
     # You can build packages and test them locally without tagging or uploading to the repo, which is only done for
@@ -34,6 +43,10 @@ function package() {
     # to separate them, and it would create a bit of overhead to manage it that way.
     #
     git describe --exact-match HEAD > /dev/null 2>&1
+
+
+if [[ "${ONLINE}" == "ONLINE" ]]; then
+
     if [[ $? -eq 0 ]]; then
         echo "Pushing package to OpenHD repository"
         cloudsmith push deb openhd/openhd-2-1/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
@@ -41,6 +54,7 @@ function package() {
         echo "Pushing package to OpenHD testing repository"
         cloudsmith push deb openhd/openhd-2-1-testing/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
     fi
+fi
 }
 
 
