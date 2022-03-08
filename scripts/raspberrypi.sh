@@ -2,6 +2,7 @@
 
 function setup_pi_env() {
     if [[ "${PLATFORM}" == "pi" ]]; then
+        apt -y install crossbuild-essential-armhf
         # CCACHE workaround
         CCACHE_PATH=${PI_TOOLS_COMPILER_PATH}/../bin-ccache
     
