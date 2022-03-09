@@ -17,7 +17,7 @@ function init() {
 }
 
 function package() {
-    PACKAGE_NAME=openhd-linux-${PLATFORM}
+    PACKAGE_NAME=openhd-linux-${PLATFORM}-${DISTRO}
 
     VERSION=$(git describe --tags | sed 's/\(.*\)-.*/\1/')
 

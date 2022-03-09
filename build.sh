@@ -15,7 +15,7 @@ if  [[ "${PLATFORM}" != "pi" ]] && [[ "${PLATFORM}" != "jetson" ]];  then
 fi
 
 
-echo "Youre building for $PLATFORM"
+echo "Youre building for $PLATFORM $DISTRO"
 
 
 ##############
