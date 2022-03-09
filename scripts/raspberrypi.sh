@@ -2,17 +2,16 @@
 
 function setup_pi_env() {
     if [[ "${PLATFORM}" == "pi" ]]; then
-        apt -y install crossbuild-essential-armhf
         # CCACHE workaround
         CCACHE_PATH=${PI_TOOLS_COMPILER_PATH}/../bin-ccache
-    
+
         if [[ ! "$(ls -A ${CCACHE_PATH})" ]]; then
             mkdir -p ${CCACHE_PATH}
             pushd ${CCACHE_PATH}
-                ln -s $(which ccache) arm-linux-gnueabihf-gcc
-                ln -s $(which ccache) arm-linux-gnueabihf-g++
-                ln -s $(which ccache) arm-linux-gnueabihf-cpp
-                ln -s $(which ccache) arm-linux-gnueabihf-c++
+            ln -s $(which ccache) arm-linux-gnueabihf-gcc
+            ln -s $(which ccache) arm-linux-gnueabihf-g++
+            ln -s $(which ccache) arm-linux-gnueabihf-cpp
+            ln -s $(which ccache) arm-linux-gnueabihf-c++
             popd
         fi
         if [[ ${PATH} != *${CCACHE_PATH}* ]]; then
@@ -33,8 +32,8 @@ function fetch_pi_source() {
     fi
 
     pushd ${LINUX_DIR}
-        git fetch
-        git reset --hard
-        git checkout ${KERNEL_COMMIT}
+    git fetch
+    git reset --hard
+    git checkout ${KERNEL_COMMIT}
     popd
 }
