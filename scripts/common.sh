@@ -21,20 +21,20 @@ function package() {
 
     VERSION=$(git describe --tags | sed 's/\(.*\)-.*/\1/')
 
-    rm ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb > /dev/null 2>&1
+    rm ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb >/dev/null 2>&1
     if [[ "${PLATFORM}" == "pi" ]]; then
-	cd ${SRC_DIR}
-	fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} \
-    	--after-install after-install.sh \
-    	--before-install before-install.sh \
-    	-p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
+        cd ${SRC_DIR}
+        fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} \
+            --after-install after-install.sh \
+            --before-install before-install.sh \
+            -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
     fi
     if [[ "${PLATFORM}" == "jetson" ]]; then
 
-	fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} \
-    	--after-install after-install-jetson.sh \
-    	--before-install before-install.sh \
-    	-p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
+        fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} \
+            --after-install after-install-jetson.sh \
+            --before-install before-install.sh \
+            -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
     fi
 
     #
@@ -42,21 +42,19 @@ function package() {
     # releases. Note that we push the same kernel to multiple versions of the repo because there isn't much reason
     # to separate them, and it would create a bit of overhead to manage it that way.
     #
-    git describe --exact-match HEAD > /dev/null 2>&1
+    git describe --exact-match HEAD >/dev/null 2>&1
 
+    if [[ "${ONLINE}" == "ONLINE" ]]; then
 
-if [[ "${ONLINE}" == "ONLINE" ]]; then
-
-    if [[ $? -eq 0 ]]; then
-        echo "Pushing package to OpenHD repository"
-        cloudsmith push deb openhd/openhd-2-1/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
-    else
-        echo "Pushing package to OpenHD testing repository"
-        cloudsmith push deb openhd/openhd-2-1-testing/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
+        if [[ $? -eq 0 ]]; then
+            echo "Pushing package to OpenHD repository"
+            cloudsmith push deb openhd/openhd-2-1/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
+        else
+            echo "Pushing package to OpenHD testing repository"
+            cloudsmith push deb openhd/openhd-2-1-testing/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
+        fi
     fi
-fi
 }
-
 
 function copy_overlay() {
     cp ${SRC_DIR}/overlay/etc/modprobe.d/* "${PACKAGE_DIR}/etc/modprobe.d/" || exit 1
@@ -69,6 +67,6 @@ function post_processing() {
     echo "Clean kernel build for cache optimization"
 
     pushd ${LINUX_DIR}
-        make clean
+    make clean
     popd
 }
