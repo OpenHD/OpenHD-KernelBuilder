@@ -61,7 +61,7 @@ jobs:
 
       - name: directory check
         run: |
-          bash tree
+          bash ls -a
 
 
       - name: Compose release filename
@@ -71,7 +71,6 @@ jobs:
       - name: Package firmware ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }}
         uses: 'actions/upload-artifact@v2'
         with:
-          name: "${{ env.artifact_name }}"
           path: |
             *.deb
             *.log
