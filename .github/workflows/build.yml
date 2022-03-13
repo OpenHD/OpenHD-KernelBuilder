@@ -69,6 +69,6 @@ jobs:
           name: "${{ env.artifact_name }}"
           path: |
             *.deb
-	    *.log
+            *.log
           if-no-files-found: error
      
