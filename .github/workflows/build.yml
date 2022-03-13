@@ -59,9 +59,11 @@ jobs:
           export PATH=/usr/lib/ccache:$PATH
           bash buildwithlog.sh ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }} ONLINE
 
-    - name: tree
-      run: sudo tree
-         
+      - name: directory check
+        run: |
+          bash tree
+
+
       - name: Compose release filename
         # https://stackoverflow.com/questions/58033366/how-to-get-current-branch-within-github-actions
         run: echo "artifact_name=openhd-linux-${{ matrix.PLATFORM }}-${{ matrix.DISTRO }}-${GITHUB_REF##*/}" >> $GITHUB_ENV
