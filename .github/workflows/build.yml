@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        PLATFORM: [pi, jetson]
-        DISTRO: [buster, bullseye, bionic]
+        PLATFORM: [jetson]
+        DISTRO: [bionic]
     env:
       CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
 

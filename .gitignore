@@ -5,8 +5,9 @@ linux*
 rtl8812au
 rtl88x2bu
 v4l2loopback
-
+workdir
 .config
+buildlog.log
 
 arm-linux-gnueabihf-c\+\+
 
