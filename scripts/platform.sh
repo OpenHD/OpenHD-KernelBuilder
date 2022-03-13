@@ -35,7 +35,7 @@ function setup_platform_env() {
 		cd $Tools
 
 		rm -Rf *
-		wget http://releases.linaro.org/components/toolchain/binaries/7.3-2018.05/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz
+		wget -q --show-progress --progress=bar:force:noscroll http://releases.linaro.org/components/toolchain/binaries/7.3-2018.05/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz
 		tar xf gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz
 		export CROSS_COMPILE=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
 
@@ -45,8 +45,8 @@ function setup_platform_env() {
 
 		cd $WorkDir
 		echo "Download the original kernel source"
-		wget https://developer.nvidia.com/embedded/l4t/r32_release_v6.1/sources/t210/public_sources.tbz2
-		tar -xvf public_sources.tbz2
+		wget -q --show-progress --progress=bar:force:noscroll https://developer.nvidia.com/embedded/l4t/r32_release_v6.1/sources/t210/public_sources.tbz2
+		tar -xf public_sources.tbz2
 		cd Linux_for_Tegra/source/public
 		JETSON_NANO_KERNEL_SOURCE=$(pwd)
 		tar -xf kernel_src.tbz2
