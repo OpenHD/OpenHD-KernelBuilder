@@ -154,12 +154,12 @@ build_jetson_kernel() {
 
 	# prevents the inclusion of firmware that can conflict with normal firmware packages, dpkg will complain. there
         # should be a kernel config to stop installing this into the package dir in the first place
-        rm -r "${PACKAGE_DIR}/lib/firmware/*"
+        #rm -r "${PACKAGE_DIR}/lib/firmware/*"
 
 
 	cd $SRC_DIR
     	cp ${SRC_DIR}/overlay/boot/* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/" || exit 1
-	depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
+	#depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
 
 	
 }

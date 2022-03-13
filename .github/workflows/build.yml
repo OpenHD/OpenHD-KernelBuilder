@@ -57,7 +57,7 @@ jobs:
       - name: Build ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }}
         run: |
           export PATH=/usr/lib/ccache:$PATH
-          bash build.sh ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }} ONLINE
+          bash buildwithlog.sh ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }} ONLINE
           
       - name: Compose release filename
         # https://stackoverflow.com/questions/58033366/how-to-get-current-branch-within-github-actions
@@ -69,5 +69,6 @@ jobs:
           name: "${{ env.artifact_name }}"
           path: |
             *.deb
+	    *.log
           if-no-files-found: error
      
