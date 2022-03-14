@@ -60,6 +60,8 @@ jobs:
   
       - name: Using Docker
         run: |
+          cd /home/runner/work/OpenHDKernelBuilder/OpenHDKernelBuilder/
+          ls -a
           bash docker build . -t ohdkb
           bash docker run -it ohdkb jetson
 
