@@ -60,6 +60,8 @@ jobs:
   
       - name: Using Docker
         run: |
+          cd /usr/bin/
+          ls -a
           cd /home/runner/work/OpenHDKernelBuilder/OpenHDKernelBuilder/
           ls -a
           bash docker build . -t ohdkb
