@@ -34,7 +34,7 @@ jobs:
       - name: Install depencies
         run: |
           sudo apt update
-          sudo apt install docker docker.io
+          sudo apt install docker
                 
       - name: Setup env
         run: |
