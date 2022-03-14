@@ -62,7 +62,7 @@ jobs:
         run: |
           ls -a
           docker build . -t ohdkb
-          docker run -it ohdkb jetson
+          docker run ohdkb jetson
 
      
       - name: Compose release filename
