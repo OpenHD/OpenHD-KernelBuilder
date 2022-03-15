@@ -7,7 +7,7 @@ RUN apt-get update; \
     DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install tzdata; \
     apt-get install crossbuild-essential-armhf gcc-arm-linux-gnueabihf \
             crossbuild-essential-arm64 build-essential bc bison ccache git fakeroot \
-            flex git kmod libelf-dev libssl-dev make python3-pip ruby-dev -y;
+            flex git kmod libelf-dev libssl-dev make python3-pip ruby-dev wget -y;
 
 #Create Output Directory
 RUN mkdir -p /out
