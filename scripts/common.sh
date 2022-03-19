@@ -17,7 +17,7 @@ function init() {
 }
 
 function package() {
-    PACKAGE_NAME=openhd-linux-${PLATFORM}-${DISTRO}
+    PACKAGE_NAME=openhd-linux-${PLATFORM}
 
     VERSION="2.1-$(date '+%m%d')"
 
