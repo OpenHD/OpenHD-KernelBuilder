@@ -19,7 +19,7 @@ function init() {
 function package() {
     PACKAGE_NAME=openhd-linux-${PLATFORM}-${DISTRO}
 
-    VERSION=$(git describe --tags | sed 's/\(.*\)-.*/\1/')
+    VERSION="2.1-$(date '+%m%d')"
 
     rm ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb >/dev/null 2>&1
     if [[ "${PLATFORM}" == "pi" ]]; then
@@ -42,14 +42,15 @@ function package() {
     # releases. Note that we push the same kernel to multiple versions of the repo because there isn't much reason
     # to separate them, and it would create a bit of overhead to manage it that way.
     #
-    git describe --exact-match HEAD >/dev/null 2>&1
 
     if [[ "${ONLINE}" == "ONLINE" ]]; then
 
         if [[ $? -eq 0 ]]; then
+	    git describe --exact-match HEAD >/dev/null 2>&1
             echo "Pushing package to OpenHD repository"
             cloudsmith push deb openhd/openhd-2-1/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
         else
+	    git describe --exact-match HEAD >/dev/null 2>&1
             echo "Pushing package to OpenHD testing repository"
             cloudsmith push deb openhd/openhd-2-1-testing/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
         fi
