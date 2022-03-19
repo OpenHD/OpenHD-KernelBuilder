@@ -45,6 +45,8 @@ function package() {
 
     if [[ "${ONLINE}" == "ONLINE" ]]; then
 
+	cloudsmith list distros deb
+
         if [[ $? -eq 0 ]]; then
 	    git describe --exact-match HEAD >/dev/null 2>&1
             echo "Pushing package to OpenHD repository"
