@@ -57,7 +57,7 @@ jobs:
   
       - name: Building with logs 
         run: |
-          bash buildwithlog.sh jetson ONLINE
+          bash buildwithlog.sh jetson bionic ONLINE
           
 
      
