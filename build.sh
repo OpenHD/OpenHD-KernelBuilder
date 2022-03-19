@@ -206,17 +206,13 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     prepare_build
     build_pi_kernel
 
-    if [[ -f "$(pwd)/kernels/${PLATFORM}-${DISTRO}-v7l" ]]; then
-        source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7l
-        prepare_build
-	build_pi_kernel
-    fi
+    source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7l
+    prepare_build
+    build_pi_kernel
 
-    if [[ -f "$(pwd)/kernels/${PLATFORM}-${DISTRO}-v6" ]]; then
-        source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v6
-        prepare_build
-	build_pi_kernel
-    fi
+    source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v6
+    prepare_build
+    build_pi_kernel
 fi
 
 if [[ "${PLATFORM}" == "jetson" ]]; then
