@@ -202,15 +202,15 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     # a simple hack, we want 2 kernels in one package so we source 2 different configs and build them all.
     # note that pi zero kernels are not being generated here because they are prepackaged with a specific 
     # kernel build. this is a temporary thing due to the unique issues with USB on the pi zero.
-    source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7
+    source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7
     prepare_build
     build_pi_kernel
 
-    source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v7l
+    source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7l
     prepare_build
     build_pi_kernel
 
-    source $(pwd)/kernels/${PLATFORM}-${DISTRO}-v6
+    source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v6
     prepare_build
     build_pi_kernel
 fi
