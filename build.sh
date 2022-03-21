@@ -15,7 +15,7 @@ RTL_8812BU_REPO=https://github.com/OpenHD/rtl88x2bu.git
 RTL_8812BU_BRANCH=5.6.1_30362.20181109_COEX20180928-6a6a
 
 RTL_8188EUS_REPO=https://github.com/OpenHD/rtl8188eus.git
-RTL_8188EUS_BRANCH=openhd1
+RTL_8188EUS_BRANCH=v5.3.9-fix
 
 V4L2LOOPBACK_REPO=https://github.com/OpenHD/v4l2loopback.git
 V4L2LOOPBACK_BRANCH=openhd2
