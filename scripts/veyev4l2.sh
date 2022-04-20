@@ -3,7 +3,7 @@
 function fetch_veyev4l2_driver() {
     if [[ ! "$(ls -A veyev4l2)" ]]; then    
         echo "Download the veyev4l2 driver"
-        git clone ${VEYEV4L2REPO}
+        git clone ${VEYEV4L2_REPO}
     fi
 
     pushd veyev4l2
