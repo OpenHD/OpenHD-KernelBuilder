@@ -38,7 +38,7 @@ V4L2LOOPBACK_BRANCH=openhd
 EXFAT_REPO=https://github.com/OpenHD/exfat-linux.git
 EXFAT_BRANCH=openhd2
 
-VEYEV4L2_REPO=https://github.com/OpenHD/veyev4l2
+VEYEV4L2_REPO=https://github.com/OpenHD/veyev4l2.git
 VEYEV4L2_BRANCH=2.1-milestones
 
 
