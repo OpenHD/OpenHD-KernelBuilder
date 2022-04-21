@@ -38,6 +38,9 @@ V4L2LOOPBACK_BRANCH=openhd
 EXFAT_REPO=https://github.com/OpenHD/exfat-linux.git
 EXFAT_BRANCH=openhd2
 
+VEYEV4L2_REPO=https://github.com/OpenHD/veyev4l2.git
+VEYEV4L2_BRANCH=2.1-milestones
+
 
 #####################
 ### BUILD HELPERS ###
@@ -111,6 +114,7 @@ build_pi_kernel() {
     build_rtl8812au_driver
     build_rtl8812bu_driver
     build_rtl8188eus_driver
+    build_veyev4l2_driver
 
     cp ${SRC_DIR}/overlay/boot/* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/" || exit 1
 
@@ -177,6 +181,7 @@ prepare_build() {
     fetch_rtl8812bu_driver
     fetch_rtl8188eus_driver
     fetch_v4l2loopback_driver
+    fetch_veyev4l2_driver
     fi 
 
     if [[ "${PLATFORM}" == "jetson" ]]; then
