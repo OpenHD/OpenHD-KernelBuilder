@@ -16,23 +16,11 @@ function fetch_veyev4l2_driver() {
 
 function build_veyev4l2_driver() {
     pushd veyev4l2
-        install -p -m 644 ./pi/5.10.92-v7+/veyecam2m.ko  /lib/modules/5.10.92-v7+/kernel/drivers/media/i2c/
-        install -p -m 644 ./pi/5.10.92-v7+/veyecam2m.dtbo /boot/overlays/
-        install -p -m 644 ./pi/5.10.92-v7+/csimx307.ko  /lib/modules/5.10.92-v7+/kernel/drivers/media/i2c/
-        install -p -m 644 ./pi/5.10.92-v7+/csimx307.dtbo /boot/overlays/
-        install -p -m 644 ./pi/5.10.92-v7l+/veyecam2m.ko  /lib/modules/5.10.92-v7l+/kernel/drivers/media/i2c/
-        install -p -m 644 ./pi/5.10.92-v7l+/veyecam2m.dtbo /boot/overlays/
-        install -p -m 644 ./pi/5.10.92-v7l+/csimx307.ko  /lib/modules/5.10.92-v7l+/kernel/drivers/media/i2c/
-        install -p -m 644 ./pi/5.10.92-v7l+/csimx307.dtbo /boot/overlays/
-        install -p -m 644 ./pi/5.10.92-v8+/veyecam2m.ko  /lib/modules/5.10.92-v8+/kernel/drivers/media/i2c/
-        install -p -m 644 ./pi/5.10.92-v8+/veyecam2m.dtbo /boot/overlays/
-        install -p -m 644 ./pi/5.10.92-v8+/csimx307.ko  /lib/modules/5.10.92-v8+/kernel/drivers/media/i2c/
-        install -p -m 644 ./pi/5.10.92-v8+/csimx307.dtbo /boot/overlays/
-        /sbin/depmod -a 5.10.92-v7+
-        /sbin/depmod -a 5.10.92-v7l+
-        /sbin/depmod -a 5.10.92-v8+
+        mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/media/i2c/
+        install -p -m 644 ./pi/${KERNEL_VERSION}/veyecam2m.ko  "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/media/i2c/"
+        install -p -m 644 ./pi/${KERNEL_VERSION}/veyecam2m.dtbo "${PACKAGE_DIR}/boot/overlays/"
+        install -p -m 644 ./pi/${KERNEL_VERSION}/csimx307.ko  "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/media/i2c/"
+        install -p -m 644 ./pi/${KERNEL_VERSION}/csimx307.dtbo "${PACKAGE_DIR}/boot/overlays/"
+        /sbin/depmod -a ${KERNEL_VERSION}
     popd
 }
-5.10.92-v7+
-5.10.92-v7l+
-5.10.92-v8+
