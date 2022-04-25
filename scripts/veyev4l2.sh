@@ -16,9 +16,6 @@ function fetch_veyev4l2_driver() {
 
 function build_veyev4l2_driver() {
     pushd veyev4l2
-        mkdir -p ${PACKAGE_DIR}/lib/modules/5.10.92-v7+/kernel/drivers/media/i2c/
-        mkdir -p ${PACKAGE_DIR}/lib/modules/5.10.92-v7l+/kernel/drivers/media/i2c/
-        mkdir -p ${PACKAGE_DIR}/lib/modules/5.10.92-v8+/kernel/drivers/media/i2c/
 	install -p -m 644 ./pi/5.10.92-v7+/veyecam2m.ko  "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/media/i2c/"	
         install -p -m 644 ./pi/5.10.92-v7+/veyecam2m.dtbo "${PACKAGE_DIR}/boot/overlays/"
         install -p -m 644 ./pi/5.10.92-v7+/csimx307.ko  "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/media/i2c/"
