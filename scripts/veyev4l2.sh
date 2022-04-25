@@ -28,8 +28,6 @@ function build_veyev4l2_driver() {
         install -p -m 644 ./pi/5.10.92-v8+/veyecam2m.dtbo "${PACKAGE_DIR}/boot/overlays/"
         install -p -m 644 ./pi/5.10.92-v8+/csimx307.ko  "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/media/i2c/"
         install -p -m 644 ./pi/5.10.92-v8+/csimx307.dtbo "${PACKAGE_DIR}/boot/overlays/"
-        /sbin/depmod -a 5.10.92-v7+
-        /sbin/depmod -a 5.10.92-v7l+
-        /sbin/depmod -a 5.10.92-v8+
-    popd
+        /sbin/depmod -a ${KERNEL_VERSION}
+   popd
 }
