@@ -89,9 +89,6 @@ build_pi_kernel() {
 
         KERNEL=${KERNEL} KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
 
-        echo "Copy kernel"
-        cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel.img" || exit 1
-
         echo "Copy kernel modules"
         make -j $J_CORES INSTALL_MOD_PATH="${PACKAGE_DIR}" modules_install || exit 1
 
@@ -208,14 +205,24 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7
     prepare_build
     build_pi_kernel
+	echo "Copy kernel"
+        cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7.img" || exit 1
+
 
     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7l
     prepare_build
     build_pi_kernel
+	echo "Copy kernel"
+        cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7l.img" || exit 1
+
 
     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v6
     prepare_build
     build_pi_kernel
+	echo "Copy kernel"
+        cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel.img" || exit 1
+
+
 fi
 
 if [[ "${PLATFORM}" == "jetson" ]]; then
