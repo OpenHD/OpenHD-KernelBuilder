@@ -213,14 +213,14 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     prepare_build
     build_pi_kernel
 	echo "Copy kernel"
-        cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7l.img" || exit 1
+        cp ${LINUX_DIR}/arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7l.img" || exit 1
 
 
     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v6
     prepare_build
     build_pi_kernel
 	echo "Copy kernel"
-        cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel.img" || exit 1
+        cp ${LINUX_DIR}/arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel.img" || exit 1
 
 
 fi
