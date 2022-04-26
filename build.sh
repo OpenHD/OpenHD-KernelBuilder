@@ -205,22 +205,25 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7
     prepare_build
     build_pi_kernel
-	echo "Copy kernel"
+	echo "Copy kernel7"
+	pushd ${LINUX_DIR}
         cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7.img" || exit 1
 
 
     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7l
     prepare_build
     build_pi_kernel
-	echo "Copy kernel"
-        cp ${LINUX_DIR}/arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7l.img" || exit 1
+	echo "Copy kernel7l"
+	pushd ${LINUX_DIR}
+        cp $SRC_DIR/workdir/arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7l.img" || exit 1
 
 
     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v6
     prepare_build
     build_pi_kernel
-	echo "Copy kernel"
-        cp ${LINUX_DIR}/arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel.img" || exit 1
+	echo "Copy kernel6"
+	pushd ${LINUX_DIR}
+        arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel.img" || exit 1
 
 
 fi
