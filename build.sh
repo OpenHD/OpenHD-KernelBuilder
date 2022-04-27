@@ -216,7 +216,7 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     build_pi_kernel
 	echo "Copy kernel7l"
 	pushd ${LINUX_DIR}
-	la -a
+	ls -a
         cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7l.img" || exit 1
 
 
