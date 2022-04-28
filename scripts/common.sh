@@ -48,7 +48,7 @@ function package() {
 	if [[ "${PLATFORM}" == "jetson" ]]; then
 	    git describe --exact-match HEAD >/dev/null 2>&1
             echo "Pushing package to OpenHD repository"
-            cloudsmith push deb openhd/openhd-2-1/ubuntu/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
+            cloudsmith push deb openhd/openhd-2-1-alpha/ubuntu/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
         fi
 
 
