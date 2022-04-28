@@ -157,7 +157,6 @@ build_jetson_kernel() {
 
 
 	cd $SRC_DIR
-    	cp ${SRC_DIR}/overlay/boot/* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/" || exit 1
 	#depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
 
 	
