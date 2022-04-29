@@ -158,6 +158,12 @@ build_jetson_kernel() {
 
 	cd $SRC_DIR
 	#depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
+	
+	 # Build Realtek drivers
+   	build_rtl8812au_driver
+    	build_rtl8812bu_driver
+    	build_rtl8188eus_driver
+    	build_veyev4l2_driver
 
 	
 }
