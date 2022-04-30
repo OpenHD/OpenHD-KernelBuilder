@@ -165,7 +165,8 @@ build_jetson_kernel() {
  	mkdir $SRC_DIR/workdir/mods/
 	cd $SRC_DIR/workdir/mods/
 
-
+	apt install gcc-10-aarch64-linux-gnu
+	
 	fetch_rtl8812au_driver
     
    	build_rtl8812au_driver
