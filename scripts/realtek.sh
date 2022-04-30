@@ -45,7 +45,7 @@ function build_rtl8812au_driver() {
 	echo "lets get weird, but hey it works"
 	echo "we start with kernel headers, yes I don't know why but the kernel-sources do not work for this"
 	
-        make CROSS_COMPILE= KSRC=$SRC_DIR/workdir/mods/headers/linux-headers-4.9.253-tegra-linux_x86_64/kernel-4.9  -j $J_CORES  || exit 1
+        make CROSS_COMPILE= KSRC=$SRC_DIR/workdir/headers/linux-headers-4.9.253-tegra-linux_x86_64/kernel-4.9  -j $J_CORES  || exit 1
         fi
 
 
