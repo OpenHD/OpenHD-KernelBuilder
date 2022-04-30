@@ -25,12 +25,20 @@ function setup_platform_env() {
 	fi
 
 	if [[ "${PLATFORM}" == "jetson" ]]; then
+		
 		mkdir workdir
 		mkdir workdir/tools
 
 		WorkDir=$(pwd)/workdir
 		Tools=$(pwd)/workdir/tools
 
+		if test -f "$WorkDir/jetsonkernel"; then
+		
+		echo "Kernel is already downloaded."
+		
+
+		else
+	
 		echo "Download the kernel tools"
 		cd $Tools
 
@@ -44,7 +52,7 @@ function setup_platform_env() {
 		export CROSS_COMPILE=arm-linux-aarch64-
 
 		cd $WorkDir
-		echo "Download the original kernel source"
+    		echo "Download the original kernel source"
 		wget -q --show-progress --progress=bar:force:noscroll https://developer.nvidia.com/embedded/l4t/r32_release_v6.1/sources/t210/public_sources.tbz2
 		tar -xf public_sources.tbz2
 		cd Linux_for_Tegra/source/public
@@ -52,8 +60,9 @@ function setup_platform_env() {
 		tar -xf kernel_src.tbz2
 		cd $JETSON_NANO_KERNEL_SOURCE
 		TOOLCHAIN_PREFIX=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
-		rm -Rf $WorkDir/Linux_for_Tegra/source/public/kernel/kernel-4.9
+		touch $WorkDir/jetsonkernel
 		cd $SRC_DIR
+		fi
 	fi
 }
 
@@ -74,9 +83,19 @@ function fetch_SBC_source() {
 	fi
 
 	if [[ "${PLATFORM}" == "jetson" ]]; then
+		if test -f "$WorkDir/jetsonkernelpatch"; then
+    		echo "Kernelpatch is already downloaded."
+		else
+		rm -Rf $WorkDir/Linux_for_Tegra/source/public/kernel/kernel-4.9
 		echo "clone kernel source jetson"
-		git clone --branch jetson-nano-4.9.253-openhd https://github.com/raphaelscholle/linux.git $WorkDir/Linux_for_Tegra/source/public/kernel/kernel-4.9
-
+		git clone --branch jetson-nano-4.9.253-openhd https://github.com/OpenHD/linux.git $WorkDir/Linux_for_Tegra/source/public/kernel/kernel-4.9
+		touch $WorkDir/jetsonkernelpatch
+		mkdir $WorkDir/headers
+		cd headers
+		wget -q --show-progress --progress=bar:force:noscroll https://developer.download.nvidia.com/embedded/L4T/r32_Release_v6.1/T210/Jetson-210_Linux_R32.6.1_aarch64.tbz2
+		tar -xjf Jetson-210_Linux_R32.6.1_aarch64.tbz2
+		tar -xjf Linux_for_Tegra/kernel/kernel_headers.tbz2
+		fi
 	fi
 
 }

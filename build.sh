@@ -134,6 +134,8 @@ build_jetson_kernel() {
 	rm $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/.config
 	cp $SRC_DIR/configs/.config-jetson-4.9.253-openhd $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/.config
 	echo "using OpenHD-config"
+
+
 	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES --output-sync=target zImage
 	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES --output-sync=target modules
 	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES --output-sync=target dtbs
@@ -150,7 +152,6 @@ build_jetson_kernel() {
 	#are those blobs @dtbs?
 	cp $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/arch/arm64/boot/dts/nvidia/* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || exit 1
 
-
 	# prevents the inclusion of firmware that can conflict with normal firmware packages, dpkg will complain. there
         # should be a kernel config to stop installing this into the package dir in the first place
         #rm -r "${PACKAGE_DIR}/lib/firmware/*"
@@ -159,11 +160,17 @@ build_jetson_kernel() {
 	cd $SRC_DIR
 	#depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
 	
+
 	 # Build Realtek drivers
+ 	mkdir $SRC_DIR/workdir/mods/
+	cd $SRC_DIR/workdir/mods/
+
+
+	fetch_rtl8812au_driver
+    
    	build_rtl8812au_driver
-    	build_rtl8812bu_driver
-    	build_rtl8188eus_driver
-    	build_veyev4l2_driver
+    
+    
 
 	
 }
@@ -196,10 +203,6 @@ prepare_build() {
      echo "Download the v4l2loopback_driver"
 	fetch_v4l2loopback_driver
         cp -a v4l2loopback/. $JETSON_NANO_KERNEL_SOURCE/kernel/kernel-4.9/drivers/media/v4l2loopback/
-     echo "Download Realtek drivers"
-	fetch_rtl8812au_driver
-    	fetch_rtl8812bu_driver
-    	fetch_rtl8188eus_driver
     fi 
 }
 

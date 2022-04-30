@@ -18,6 +18,13 @@ function fetch_rtl8812au_driver() {
             sed -i 's/CONFIG_PLATFORM_ARM_RPI = n/CONFIG_PLATFORM_ARM_RPI = y/' Makefile
         fi
 
+	if [[ "${PLATFORM}" == "jetson" ]]; then
+	    sed -i 's/CONFIG_PLATFORM_I386_PC = y/CONFIG_PLATFORM_I386_PC = n/g' Makefile
+	    sed -i 's/CONFIG_PLATFORM_ARM64_RPI = n/CONFIG_PLATFORM_ARM64_RPI = y/g' Makefile
+	    echo "jetsonSBC"
+        fi
+	
+
         pushd core
             # Change the STBC value to make all antennas send with awus036ACH
             sed -i 's/u8 fixed_rate = MGN_1M, sgi = 0, bwidth = 0, ldpc = 0, stbc = 0;/u8 fixed_rate = MGN_1M, sgi = 0, bwidth = 0, ldpc = 0, stbc = 1;/' rtw_xmit.c
@@ -29,7 +36,22 @@ function fetch_rtl8812au_driver() {
 function build_rtl8812au_driver() {
     pushd rtl8812au
         make clean
-        make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
+	
+	if [[ "${PLATFORM}" == "pi" ]]; then
+         make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
+        fi
+	
+	if [[ "${PLATFORM}" == "jetson" ]]; then
+	echo "lets get weird, but hey it works"
+	echo "we start with kernel headers, yes I don't know why but the kernel-sources do not work for this"
+	
+	export CROSS_COMPILE=
+	export KSRC=$SRC_DIR/workdir/mods/headers/linux-headers-4.9.253-tegra-linux_x86_64/kernel-4.9
+
+        make  -j $J_CORES  || exit 1
+        fi
+
+
         mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au
         install -p -m 644 88XXau.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au/" || exit 1
     popd
