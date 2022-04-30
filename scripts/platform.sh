@@ -86,12 +86,13 @@ function fetch_SBC_source() {
 		if test -f "$WorkDir/jetsonkernelpatch"; then
     		echo "Kernelpatch is already downloaded."
 		else
+		JETSON_NANO_KERNEL_SOURCE=$WorkDir/Linux_for_Tegra/source/public/kernel/kernel-4.9
 		rm -Rf $WorkDir/Linux_for_Tegra/source/public/kernel/kernel-4.9
 		echo "clone kernel source jetson"
 		git clone --branch jetson-nano-4.9.253-openhd https://github.com/OpenHD/linux.git $WorkDir/Linux_for_Tegra/source/public/kernel/kernel-4.9
 		touch $WorkDir/jetsonkernelpatch
 		mkdir $WorkDir/headers
-		cd headers
+		cd $WorkDir/headers
 		wget -q --show-progress --progress=bar:force:noscroll https://developer.download.nvidia.com/embedded/L4T/r32_Release_v6.1/T210/Jetson-210_Linux_R32.6.1_aarch64.tbz2
 		tar -xjf Jetson-210_Linux_R32.6.1_aarch64.tbz2
 		tar -xjf Linux_for_Tegra/kernel/kernel_headers.tbz2
