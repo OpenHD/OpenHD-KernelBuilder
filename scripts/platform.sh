@@ -85,8 +85,8 @@ function fetch_SBC_source() {
 	if [[ "${PLATFORM}" == "jetson" ]]; then
 		if test -f "$WorkDir/jetsonkernelpatch"; then
     		echo "Kernelpatch is already downloaded."
+		JETSON_NANO_KERNEL_SOURCE=$WorkDir/Linux_for_Tegra/source/public
 		else
-		JETSON_NANO_KERNEL_SOURCE=$WorkDir/Linux_for_Tegra/source/public/kernel/kernel-4.9
 		rm -Rf $WorkDir/Linux_for_Tegra/source/public/kernel/kernel-4.9
 		echo "clone kernel source jetson"
 		git clone --branch jetson-nano-4.9.253-openhd https://github.com/OpenHD/linux.git $WorkDir/Linux_for_Tegra/source/public/kernel/kernel-4.9
