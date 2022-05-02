@@ -149,7 +149,6 @@ build_jetson_kernel() {
 
 	echo "Copy DTBs"
         cp $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/arch/arm64/boot/dts/*.dtb "${PACKAGE_DIR}/usr/local/share/openhd/kernel/dtb/" || exit 1
-	#are those blobs @dtbs?
 	cp $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/arch/arm64/boot/dts/nvidia/* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || exit 1
 
 	# prevents the inclusion of firmware that can conflict with normal firmware packages, dpkg will complain. there
@@ -167,9 +166,13 @@ build_jetson_kernel() {
 
 	apt install gcc-10-aarch64-linux-gnu
 	
-	fetch_rtl8812au_driver
-    
+	fetch_rtl8812au_driver    
    	build_rtl8812au_driver
+	fetch_rtl8812bu_driver
+	build_rtl8812bu_driver
+	fetch_rtl8188eus_driver
+    	build_rtl8188eus_driver
+
     
     
 
