@@ -42,11 +42,11 @@ function build_rtl8812au_driver() {
         fi
 	
 	if [[ "${PLATFORM}" == "jetson" ]]; then
-	echo "lets get weird, but hey it works"
-	echo "we start with kernel headers, yes I don't know why but the kernel-sources do not work for this"
-	export CROSS_COMPILE=$Tools/gcc-arm-11.2-2022.02-x86_64-aarch64_be-none-linux-gnu/bin/aarch64_be-none-linux-gnu-
-        make KSRC=$SRC_DIR/workdir/headers/linux-headers-4.9.253-tegra-linux_x86_64/kernel-4.9  -j $J_CORES  || exit 1
-        fi
+		export CROSS_COMPILE=$Tools/gcc-arm-11.2-2022.02-x86_64-aarch64_be-none-linux-gnu/bin/aarch64_be-none-linux-gnu-
+	        make KSRC=$SRC_DIR/workdir/headers/linux-headers-4.9.253-tegra-linux_x86_64/kernel-4.9  -j $J_CORES  || exit 1
+		else
+        	make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
+		fi
 
 
         mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au
@@ -85,9 +85,12 @@ function build_rtl8812bu_driver() {
     pushd rtl88x2bu
         make clean
 		if [[ "${PLATFORM}" == "jetson" ]]; then
-		export CROSS_COMPILE=$Tools/gcc-arm-11.2-2022.02-x86_64-aarch64_be-none-linux-gnu/bin/aarch64_be-none-linux-gnu-
-		fi
-        make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
+		make KSRC=$SRC_DIR/workdir/headers/linux-headers-4.9.253-tegra-linux_x86_64/kernel-4.9  -j $J_CORES  || exit 1
+		else
+        	make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
+		fiexport CROSS_COMPILE=$Tools/gcc-arm-11.2-2022.02-x86_64-aarch64_be-none-linux-gnu/bin/aarch64_be-none-linux-gnu-
+	        fi
+
         mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl88x2bu
         install -p -m 644 88x2bu.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl88x2bu/" || exit 1
     popd
@@ -120,9 +123,10 @@ function build_rtl8188eus_driver() {
     pushd rtl8188eus
         make clean
 	if [[ "${PLATFORM}" == "jetson" ]]; then
-		export CROSS_COMPILE=$Tools/gcc-arm-11.2-2022.02-x86_64-aarch64_be-none-linux-gnu/bin/aarch64_be-none-linux-gnu-
-	fi
-        make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
+		make KSRC=$SRC_DIR/workdir/headers/linux-headers-4.9.253-tegra-linux_x86_64/kernel-4.9  -j $J_CORES  || exit 1
+		else
+        	make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
+		fi 
         mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8188eus
         install -p -m 644 8188eu.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8188eus/" || exit 1
     popd
