@@ -33,37 +33,39 @@ function setup_platform_env() {
 		Tools=$(pwd)/workdir/tools
 
 		if test -f "$WorkDir/jetsonkernel"; then
-		
-		echo "Kernel is already downloaded."
-		
-
+			echo "Kernel is already downloaded."
 		else
-	
-		echo "Download the kernel tools"
-		cd $Tools
-
-		rm -Rf *
-		wget -q --show-progress --progress=bar:force:noscroll http://releases.linaro.org/components/toolchain/binaries/7.3-2018.05/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz
-		tar xf gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz
-		wget -q --show-progress --progress=bar:force:noscroll https://developer.arm.com/-/media/Files/downloads/gnu/11.2-2022.02/binrel/gcc-arm-11.2-2022.02-x86_64-aarch64_be-none-linux-gnu.tar.xz
-		tar xf gcc-arm-11.2-2022.02-x86_64-aarch64_be-none-linux-gnu.tar.xz
-		export CROSS_COMPILE=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
-
-		export ARCH=arm64
-		PACKAGE_ARCH=arm64
-		export CROSS_COMPILE=arm-linux-aarch64-
-
-		cd $WorkDir
+			echo "Download the kernel tools"
+			cd $Tools
+			rm -Rf *
+			wget -q --show-progress --progress=bar:force:noscroll http://releases.linaro.org/components/toolchain/binaries/7.3-2018.05/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz
+			tar xf gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz
+			wget -q --show-progress --progress=bar:force:noscroll https://developer.arm.com/-/media/Files/downloads/gnu/11.2-2022.02/binrel/gcc-arm-11.2-2022.02-x86_64-aarch64_be-none-linux-gnu.tar.xz
+			tar xf gcc-arm-11.2-2022.02-x86_64-aarch64_be-none-linux-gnu.tar.xz
+			export CROSS_COMPILE=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
+			export ARCH=arm64
+			PACKAGE_ARCH=arm64
+			export CROSS_COMPILE=arm-linux-aarch64-
+			cd $WorkDir
     		echo "Download the original kernel source"
-		wget -q --show-progress --progress=bar:force:noscroll https://developer.nvidia.com/embedded/l4t/r32_release_v6.1/sources/t210/public_sources.tbz2
-		tar -xf public_sources.tbz2
-		cd Linux_for_Tegra/source/public
-		JETSON_NANO_KERNEL_SOURCE=$(pwd)
-		tar -xf kernel_src.tbz2
-		cd $JETSON_NANO_KERNEL_SOURCE
-		TOOLCHAIN_PREFIX=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
-		touch $WorkDir/jetsonkernel
-		cd $SRC_DIR
+			wget -q --show-progress --progress=bar:force:noscroll https://developer.nvidia.com/embedded/l4t/r32_release_v6.1/sources/t210/public_sources.tbz2
+			tar -xf public_sources.tbz2
+			cd Linux_for_Tegra/source/public
+			JETSON_NANO_KERNEL_SOURCE=$(pwd)
+			tar -xf kernel_src.tbz2
+			cd $JETSON_NANO_KERNEL_SOURCE
+			TOOLCHAIN_PREFIX=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
+			touch $WorkDir/jetsonkernel
+			cd $SRC_DIR
+			echo "replacing original kernel-config with OpenHD-config"
+			rm $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/.config
+			cp $SRC_DIR/configs/.config-jetson-4.9.253-openhd $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/.config
+			echo "using OpenHD-config"
+			echo "removing Nvidia Wifi-Drivers"
+			rm $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/net/wireless/Kconfig
+			rm $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/net/wireless/Makefile
+			cp $SRC_DIR/additional/Makefile_wireless $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/net/wireless/Makefile
+			cp $SRC_DIR/additional/Kconfig_wireless $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/net/wireless/Kconfig
 		fi
 	fi
 }
