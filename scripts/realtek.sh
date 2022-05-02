@@ -42,10 +42,9 @@ function build_rtl8812au_driver() {
         fi
 	
 	if [[ "${PLATFORM}" == "jetson" ]]; then
+		export KERNEL_VERSION="4.9.253"
 		export CROSS_COMPILE=$Tools/gcc-arm-11.2-2022.02-x86_64-aarch64_be-none-linux-gnu/bin/aarch64_be-none-linux-gnu-
-	        make KSRC=$SRC_DIR/workdir/headers/linux-headers-4.9.253-tegra-linux_x86_64/kernel-4.9  -j $J_CORES  || exit 1
-		else
-        	make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
+	        make KSRC=$SRC_DIR/workdir/headers/linux-headers-4.9.253-tegra-linux_x86_64/kernel-4.9 -j $J_CORES M=$(pwd) modules || exit 1
 		fi
 
 
@@ -85,10 +84,11 @@ function build_rtl8812bu_driver() {
     pushd rtl88x2bu
         make clean
 		if [[ "${PLATFORM}" == "jetson" ]]; then
-		make KSRC=$SRC_DIR/workdir/headers/linux-headers-4.9.253-tegra-linux_x86_64/kernel-4.9  -j $J_CORES  || exit 1
+		export KERNEL_VERSION="4.9.253"
+		export CROSS_COMPILE=$Tools/gcc-arm-11.2-2022.02-x86_64-aarch64_be-none-linux-gnu/bin/aarch64_be-none-linux-gnu-
+		make KSRC=$SRC_DIR/workdir/headers/linux-headers-4.9.253-tegra-linux_x86_64/kernel-4.9 -j $J_CORES M=$(pwd) modules || exit 1
 		else
         	make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
-		fiexport CROSS_COMPILE=$Tools/gcc-arm-11.2-2022.02-x86_64-aarch64_be-none-linux-gnu/bin/aarch64_be-none-linux-gnu-
 	        fi
 
         mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl88x2bu
@@ -123,7 +123,9 @@ function build_rtl8188eus_driver() {
     pushd rtl8188eus
         make clean
 	if [[ "${PLATFORM}" == "jetson" ]]; then
-		make KSRC=$SRC_DIR/workdir/headers/linux-headers-4.9.253-tegra-linux_x86_64/kernel-4.9  -j $J_CORES  || exit 1
+		export KERNEL_VERSION="4.9.253"
+		export CROSS_COMPILE=$Tools/gcc-arm-11.2-2022.02-x86_64-aarch64_be-none-linux-gnu/bin/aarch64_be-none-linux-gnu-
+		make KSRC=$SRC_DIR/workdir/headers/linux-headers-4.9.253-tegra-linux_x86_64/kernel-4.9 -j $J_CORES M=$(pwd) modules || exit 1
 		else
         	make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
 		fi 
