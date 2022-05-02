@@ -157,15 +157,13 @@ build_jetson_kernel() {
 
 
 	cd $SRC_DIR
-	#depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
+	depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
 	
 
 	 # Build Realtek drivers
  	mkdir $SRC_DIR/workdir/mods/
 	cd $SRC_DIR/workdir/mods/
 
-	apt install gcc-10-aarch64-linux-gnu
-	
 	fetch_rtl8812au_driver    
    	build_rtl8812au_driver
 	fetch_rtl8812bu_driver
