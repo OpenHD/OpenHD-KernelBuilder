@@ -40,8 +40,6 @@ function setup_platform_env() {
 			rm -Rf *
 			wget -q --show-progress --progress=bar:force:noscroll http://releases.linaro.org/components/toolchain/binaries/7.3-2018.05/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz
 			tar xf gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz
-			wget -q --show-progress --progress=bar:force:noscroll https://developer.arm.com/-/media/Files/downloads/gnu/11.2-2022.02/binrel/gcc-arm-11.2-2022.02-x86_64-aarch64_be-none-linux-gnu.tar.xz
-			tar xf gcc-arm-11.2-2022.02-x86_64-aarch64_be-none-linux-gnu.tar.xz
 			export CROSS_COMPILE=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
 			export ARCH=arm64
 			PACKAGE_ARCH=arm64
@@ -58,9 +56,6 @@ function setup_platform_env() {
 			touch $WorkDir/jetsonkernel
 			cd $SRC_DIR
 			echo "replacing original kernel-config with OpenHD-config"
-			rm $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/.config
-			cp $SRC_DIR/configs/.config-jetson-4.9.253-openhd $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/.config
-			echo "using OpenHD-config"
 			echo "removing Nvidia Wifi-Drivers"
 			rm $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/net/wireless/Kconfig
 			rm $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/net/wireless/Makefile
@@ -95,11 +90,6 @@ function fetch_SBC_source() {
 		echo "clone kernel source jetson"
 		git clone --branch jetson-nano-4.9.253-openhd https://github.com/OpenHD/linux.git $WorkDir/Linux_for_Tegra/source/public/kernel/kernel-4.9
 		touch $WorkDir/jetsonkernelpatch
-		mkdir $WorkDir/headers
-		cd $WorkDir/headers
-		wget -q --show-progress --progress=bar:force:noscroll https://developer.download.nvidia.com/embedded/L4T/r32_Release_v6.1/T210/Jetson-210_Linux_R32.6.1_aarch64.tbz2
-		tar -xjf Jetson-210_Linux_R32.6.1_aarch64.tbz2
-		tar -xjf Linux_for_Tegra/kernel/kernel_headers.tbz2
 		fi
 	fi
 
