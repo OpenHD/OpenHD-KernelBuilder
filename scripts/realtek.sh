@@ -88,7 +88,7 @@ function build_rtl8812bu_driver() {
         make clean
 		if [[ "${PLATFORM}" == "jetson" ]]; then
 		export KERNEL_VERSION="4.9.253OpenHD-2.1-tegra"
-		export CROSS_COMPILE=$Tools/gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-
+		export CROSS_COMPILE=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
 	        make KSRC=${LINUX_DIR}/build -j $J_CORES M=$(pwd) modules || exit 1
 		else
         	make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
@@ -127,7 +127,7 @@ function build_rtl8188eus_driver() {
         make clean
 	if [[ "${PLATFORM}" == "jetson" ]]; then
 		export KERNEL_VERSION="4.9.253OpenHD-2.1-tegra"
-		export CROSS_COMPILE=$Tools/gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-
+		export CROSS_COMPILE=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
 	        make KSRC=${LINUX_DIR}/build -j $J_CORES M=$(pwd) modules || exit 1
 		else
         	make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
