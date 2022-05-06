@@ -58,9 +58,6 @@ function setup_platform_env() {
 			touch $WorkDir/jetsonkernel
 			cd $SRC_DIR
 			echo "replacing original kernel-config with OpenHD-config"
-			rm $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/.config
-			cp $SRC_DIR/configs/.config-jetson-4.9.253-openhd $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/.config
-			echo "using OpenHD-config"
 			echo "removing Nvidia Wifi-Drivers"
 			rm $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/net/wireless/Kconfig
 			rm $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/net/wireless/Makefile
@@ -95,11 +92,6 @@ function fetch_SBC_source() {
 		echo "clone kernel source jetson"
 		git clone --branch jetson-nano-4.9.253-openhd https://github.com/OpenHD/linux.git $WorkDir/Linux_for_Tegra/source/public/kernel/kernel-4.9
 		touch $WorkDir/jetsonkernelpatch
-		mkdir $WorkDir/headers
-		cd $WorkDir/headers
-		wget -q --show-progress --progress=bar:force:noscroll https://developer.download.nvidia.com/embedded/L4T/r32_Release_v6.1/T210/Jetson-210_Linux_R32.6.1_aarch64.tbz2
-		tar -xjf Jetson-210_Linux_R32.6.1_aarch64.tbz2
-		tar -xjf Linux_for_Tegra/kernel/kernel_headers.tbz2
 		fi
 	fi
 
