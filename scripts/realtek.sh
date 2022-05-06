@@ -50,7 +50,7 @@ function build_rtl8812au_driver() {
 	        make KSRC=$SRC_DIR/workdir/headers/linux-headers-4.9.253-tegra-linux_x86_64/kernel-4.9 -j $J_CORES M=$(pwd) modules || exit 1
 		mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au
          	install -p -m 644 88XXau.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au/" || exit 1
-    		cp ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au/88XXau.ko ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au/8812au.ko
+    		cp ${PACKAGE_DIR}lib/modules/4.9.253OpenHD-2.1-tegra/kernel/drivers/net/wireless/realtek/rtl8812au/88XXau.ko ${PACKAGE_DIR}lib/modules/4.9.253OpenHD-2.1-tegra/kernel/drivers/net/wireless/realtek/rtl8812au/8812au.ko
 	
 	fi
 
