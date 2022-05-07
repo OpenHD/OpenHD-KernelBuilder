@@ -57,10 +57,6 @@ function setup_platform_env() {
 			cd $SRC_DIR
 			echo "replacing original kernel-config with OpenHD-config"
 			echo "removing Nvidia Wifi-Drivers"
-			rm $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/net/wireless/Kconfig
-			rm $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/net/wireless/Makefile
-			cp $SRC_DIR/additional/Makefile_wireless $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/net/wireless/Makefile
-			cp $SRC_DIR/additional/Kconfig_wireless $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/net/wireless/Kconfig
 		fi
 	fi
 }
