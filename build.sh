@@ -153,9 +153,6 @@ build_jetson_kernel() {
         # should be a kernel config to stop installing this into the package dir in the first place
         #rm -r "${PACKAGE_DIR}/lib/firmware/*"
 
-
-	cd $SRC_DIR
-	depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
 	
 
 	 # Build Realtek drivers
@@ -169,6 +166,8 @@ build_jetson_kernel() {
 	fetch_rtl8188eus_driver
     	build_rtl8188eus_driver
 	
+        depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
+
 	cd $SRC_DIR
     
     
