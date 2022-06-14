@@ -133,10 +133,11 @@ build_jetson_kernel() {
 	rm $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/.config
 	cp $SRC_DIR/configs/.config-jetson-4.9.253-openhd $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/.config
    	echo "using OpenHD-config"
-    cp $SRC_DIR/configs/additional/imx519/*.dtsi $SRC_DIR/workdir/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts/porg-platforms
-    cp $SRC_DIR/configs/additional/imx519/*.dts $SRC_DIR/workdir/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts
-    cp $SRC_DIR/configs/additional/imx519/imx519_mode_tbls.h $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/media/i2c
-    cp $SRC_DIR/configs/additional/imx519/imx519.c $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/media/i2c
+
+    cp $SRC_DIR/additional/imx519/*.dtsi $SRC_DIR/workdir/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts/porg-platforms
+    cp $SRC_DIR/additional/imx519/*.dts $SRC_DIR/workdir/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts
+    cp $SRC_DIR/additional/imx519/imx519_mode_tbls.h $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/media/i2c
+    cp $SRC_DIR/additional/imx519/imx519.c $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/media/i2c
 
     sed -i '27 i #include "porg-platforms/tegra210-porg-camera-arducam-dual-imx519.dtsi"' $SRC_DIR/workdir/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts/tegra210-p3448-0002-p3449-0000-b00.dts
     sed -i '27 i #include "porg-platforms/tegra210-porg-camera-arducam-dual-imx519.dtsi"' $SRC_DIR/workdir/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts/tegra210-p3448-0000-p3449-0000-b00.dts
