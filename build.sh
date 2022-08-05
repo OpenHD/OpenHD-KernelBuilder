@@ -23,8 +23,8 @@ echo "Youre building for $PLATFORM $DISTRO"
 ##############
 
 # Fixed at v5.2.20 until 5.3.4 works for injection
-RTL_8812AU_REPO=https://github.com/OpenHD/rtl8812au.git
-RTL_8812AU_BRANCH=20201214.1-new
+RTL_8812AU_REPO=https://github.com/svpcom/rtl8812au.git
+RTL_8812AU_BRANCH=v5.2.20
 
 RTL_8812BU_REPO=https://github.com/OpenHD/rtl88x2bu.git
 RTL_8812BU_BRANCH=5.6.1_30362.20181109_COEX20180928-6a6a
