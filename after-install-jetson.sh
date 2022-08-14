@@ -7,11 +7,13 @@ mv /boot/kernel.img /boot/Image
 
 if test -f "/usr/local/share/openhd/Jetson-2GB"; then 
    echo "you have a jetson 2GB model"
+   sudo rm /boot/dtb/*
    cp -a /usr/local/share/openhd/kernel/tegra210-p3448-0003-p3542-0000.dtb /boot/dtb/
 fi
 
 if test -f "/usr/local/share/openhd/Jetson-4GB"; then 
    echo "you have a jetson 4GB model"
+   sudo rm /boot/dtb/*
    cp -a /usr/local/share/openhd/kernel/tegra210-p3448-0000-p3449-0000-b00.dtb /boot/dtb/
 fi
 
