@@ -5,7 +5,7 @@ DISTRO=$2
 ONLINE=$3
 
 if  [[ "${PLATFORM}" != "pi" ]] && [[ "${PLATFORM}" != "jetson" ]];  then
-    echo "Usage: ./build.sh pi buster"
+    echo "Usage: ./build.sh pi bullseye"
     echo ""
     echo "Target kernels:"
     echo ""
@@ -28,18 +28,25 @@ RTL_8812AU_BRANCH=v5.2.20
 
 RTL_8812BU_REPO=https://github.com/OpenHD/rtl88x2bu.git
 RTL_8812BU_BRANCH=5.6.1_30362.20181109_COEX20180928-6a6a
+# Testing Driver, not verified, yet
 
 RTL_8188EUS_REPO=https://github.com/SmartBoy84/rtl8188eus
 RTL_8188EUS_BRANCH=v5.3.9
+# Testing Driver not stable, yet
+
 
 V4L2LOOPBACK_REPO=https://github.com/OpenHD/v4l2loopback.git
 V4L2LOOPBACK_BRANCH=openhd
+# needed for thermal cameras
 
 EXFAT_REPO=https://github.com/OpenHD/exfat-linux.git
 EXFAT_BRANCH=openhd2
+#needed for writing to exfat-usb-sticks, not needed on most (all ?) platforms [but doesn't hurt]
 
-VEYEV4L2_REPO=https://github.com/OpenHD/veyev4l2.git
-VEYEV4L2_BRANCH=2.1-milestones
+# VEYEV4L2_REPO=https://github.com/OpenHD/veyev4l2.git
+# VEYEV4L2_BRANCH=2.1-milestones
+# No need for now, veye-raspberrypi (broadcom is already build)
+
 
 
 #####################
@@ -93,6 +100,7 @@ build_pi_kernel() {
             elif [[ "${ISA}" == "v7l" ]]; then
                 make clean
                 make bcm2711_defconfig
+        # currently only doing default config, modified config can follow later, but standart eases the possibility to upgrade to a newer kernel 
             fi
         KERNEL=${KERNEL} KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
 
@@ -116,9 +124,8 @@ build_pi_kernel() {
 
     # Build Realtek drivers
     build_rtl8812au_driver
-    build_rtl8812bu_driver
+    build_rtl8812bu_driver #is not working right now, but is currently being tested
     build_rtl8188eus_driver
-
     depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
 
 }
@@ -128,30 +135,34 @@ build_jetson_kernel() {
     
 	echo "Building jetson kernel"
 	
+    #configuring paths for the following process
 	export TEGRA_KERNEL_OUT=$LINUX_DIR/build
 	export KERNEL_MODULES_OUT=$LINUX_DIR/modules	
     export NVIDIA_PATH=$SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/ 
     export NANO_DTS_PATH=$SRC_DIR/workdir/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/ 	
 	export CROSS_COMPILE=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
 	
-    echo "Prepare Veye"
+    
+    echo "Preparing additional camera-drivers"
+
+    #downloading and including veye-driver-source
+    #not working,yet
     cd $SRC_DIR/workdir/Linux_for_Tegra/source/public/
     git clone https://github.com/veyeimaging/nvidia_jetson_veye_bsp.git 
     export RELEASE_PACK_DIR=$SRC_DIR/workdir/Linux_for_Tegra/source/public/nvidia_jetson_veye_bsp 
-
-    echo "Patching Veye Drivers into kernel source"
+    
+    echo "Patching Veye Drivers into kernel"
     cp $RELEASE_PACK_DIR/drivers_source/cam_drv_src/* $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/ 
     cp $RELEASE_PACK_DIR/drivers_source/kernel_veyecam_config_r32.6.1  $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/arch/arm64/configs/tegra_veyecam_defconfig 
     cp $RELEASE_PACK_DIR/drivers_source/cam_drv_src/Kconfig $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/
     cp $RELEASE_PACK_DIR/drivers_source/cam_drv_src/Makefile $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/ 
-
-	cd $JETSON_NANO_KERNEL_SOURCE
-    
     cp $SRC_DIR/additional/imx519/*.dtsi $SRC_DIR/workdir/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts/porg-platforms/
     cp $SRC_DIR/additional/imx519/*.dts $SRC_DIR/workdir/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts/
     cp $SRC_DIR/additional/imx519/imx519_mode_tbls.h $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/media/i2c/
     cp $SRC_DIR/additional/imx519/imx519.c $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/media/i2c/
 
+    echo "Patching Arducam Drivers into kernel"
+    #not working,yet
     sed -i '27 i #include "porg-platforms/tegra210-porg-camera-arducam-dual-imx519.dtsi"' $SRC_DIR/workdir/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts/tegra210-p3448-0002-p3449-0000-b00.dts
     sed -i '27 i #include "porg-platforms/tegra210-porg-camera-arducam-dual-imx519.dtsi"' $SRC_DIR/workdir/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts/tegra210-p3448-0000-p3449-0000-b00.dts
 	sed -i '27 i #include "porg-platforms/tegra210-porg-camera-arducam-imx519.dtsi"' $SRC_DIR/workdir/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts/tegra210-p3448-0000-p3449-0000-a02.dts
@@ -160,7 +171,8 @@ build_jetson_kernel() {
     sed -i '1210 i CONFIG_VIDEO_IMX519=y' $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/arch/arm64/configs/tegra_defconfig
    
     echo "added Veye Drivers"
-    
+   	cd $JETSON_NANO_KERNEL_SOURCE
+
     make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} tegra_veyecam_defconfig
 	#rm $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/.config
 	#cp $SRC_DIR/configs/.config-jetson-4.9.253-openhd $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/.config
