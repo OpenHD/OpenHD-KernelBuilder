@@ -148,7 +148,7 @@ build_jetson_kernel() {
     #downloading and including veye-driver-source
     #not working,yet
     cd $SRC_DIR/workdir/Linux_for_Tegra/source/public/
-    git clone https://github.com/veyeimaging/nvidia_jetson_veye_bsp.git 
+    git clone https://github.com/OpenHD/nvidia_jetson_veye_bsp
     export RELEASE_PACK_DIR=$SRC_DIR/workdir/Linux_for_Tegra/source/public/nvidia_jetson_veye_bsp 
     
     echo "Patching Veye Drivers into kernel"
