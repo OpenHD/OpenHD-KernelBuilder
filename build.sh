@@ -26,11 +26,11 @@ echo "Youre building for $PLATFORM $DISTRO"
 RTL_8812AU_REPO=https://github.com/svpcom/rtl8812au.git
 RTL_8812AU_BRANCH=v5.2.20
 
-RTL_8812BU_REPO=https://github.com/OpenHD/rtl88x2bu.git
-RTL_8812BU_BRANCH=5.6.1_30362.20181109_COEX20180928-6a6a
+RTL_8812BU_REPO=https://github.com/cilynx/rtl88x2bu
+RTL_8812BU_BRANCH=5.8.7.1_35809.20191129_COEX20191120-7777
 # Testing Driver, not verified, yet
 
-RTL_8188EUS_REPO=https://github.com/SmartBoy84/rtl8188eus
+RTL_8188EUS_REPO=https://github.com/aircrack-ng/rtl8188eus
 RTL_8188EUS_BRANCH=v5.3.9
 # Testing Driver not stable, yet
 
@@ -124,8 +124,8 @@ build_pi_kernel() {
 
     # Build Realtek drivers
     build_rtl8812au_driver
-    #build_rtl8812bu_driver #is not working right now, but is currently being tested
-    #build_rtl8188eus_driver
+    build_rtl8812bu_driver #is not working right now, but is currently being tested
+    build_rtl8188eus_driver
     depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
 
 }
