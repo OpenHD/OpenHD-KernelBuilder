@@ -181,17 +181,18 @@ build_jetson_kernel() {
 
 
 	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES --output-sync=target zImage
+    echo "zimage done"
 	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES --output-sync=target modules
-	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES --output-sync=target dtbs
-	echo "Entering packaging Stage"
+    echo "modules done"
 	
 	echo "Copy kernel"
-        cp $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/arch/arm64/boot/Image "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel.img" || exit 1
+    cp $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/arch/arm64/boot/Image "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel.img" || exit 1
 	
  	echo "Copy kernel modules"
 	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra INSTALL_MOD_PATH=${PACKAGE_DIR} modules_install
 
     echo "Build DTB's Veye"
+    cp $RELEASE_PACK_DIR/Nano/JetPack_<ver>_Linux_JETSON_NANO_DEVKIT/dts\ dtb/common/t210/* -r $NANO_DTS_PATH/
     cp $RELEASE_PACK_DIR/dtbs/Nano/JetPack_4.6_Linux_JETSON_NANO_TARGETS/dts\ dtb/VEYE-MIPI-327/tegra210-porg-plugin-manager.dtsi -r $NANO_DTS_PATH/porg/kernel-dts/porg-plugin-manager 
     export COMMON_DTS_PATH=$TEGRA_KERNEL_OUT/arch/arm64/boot/dts 
     make ARCH=arm64 O=$TEGRA_KERNEL_OUT dtbs 
@@ -201,7 +202,11 @@ build_jetson_kernel() {
 	echo "Copy DTBs"
     cp $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/arch/arm64/boot/dts/*.dtb "${PACKAGE_DIR}/usr/local/share/openhd/kernel/dtb/" || exit 1
 	cp $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/arch/arm64/boot/dts/nvidia/* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || exit 1
-
+    export COMMON_DTS_PATH=$TEGRA_KERNEL_OUT/arch/arm64/boot/dts
+    cd $JETSON_NANO_KERNEL_SOURCE
+    
+    make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES --output-sync=target dtbs
+	echo "Entering packaging Stage"
 	# prevents the inclusion of firmware that can conflict with normal firmware packages, dpkg will complain. there
         # should be a kernel config to stop installing this into the package dir in the first place
         #rm -r "${PACKAGE_DIR}/lib/firmware/*"
