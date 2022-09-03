@@ -67,7 +67,9 @@ function package() {
 function copy_overlay() {
     cp ${SRC_DIR}/overlay/etc/modprobe.d/* "${PACKAGE_DIR}/etc/modprobe.d/" || exit 1
     cp ${SRC_DIR}/overlay/lib/firmware/* "${PACKAGE_DIR}/lib/firmware/" || exit 1
-    cp ${SRC_DIR}/overlay/boot/dt-blob.bin* "${PACKAGE_DIR}/boot/" || exit 1
+    	if [[ "${PLATFORM}" == "pi" ]]; then
+            cp ${SRC_DIR}/overlay/boot/dt-blob.bin* "${PACKAGE_DIR}/boot/" || exit 1
+        fi
 }
 
 function post_processing() {
