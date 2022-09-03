@@ -141,18 +141,22 @@ build_jetson_kernel() {
     export NANO_DTS_PATH=$SRC_DIR/workdir/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/ 	
 	export CROSS_COMPILE=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
 	
-    echo "Prepare Veye"
+    echo "Prepare additional drivers"
+
+    #downloading and including veye-driver-source
+    #not working,yet
+
     cd $SRC_DIR/workdir/Linux_for_Tegra/source/public/
+    #needs to be adapted to our own fork, to enable more then one additional kernel patch
+    #git clone https://github.com/OpenHD/nvidia_jetson_veye_bsp
     git clone https://github.com/veyeimaging/nvidia_jetson_veye_bsp.git 
     export RELEASE_PACK_DIR=$SRC_DIR/workdir/Linux_for_Tegra/source/public/nvidia_jetson_veye_bsp 
 
     echo "Patching Veye Drivers into kernel source"
-    cp $RELEASE_PACK_DIR/drivers_source/cam_drv_src/* $NVIDIA_PATH/drivers/media/i2c/ 
+    cp $RELEASE_PACK_DIR/drivers_source/cam_drv_src/* $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/
     cp $RELEASE_PACK_DIR/drivers_source/kernel_veyecam_config_r32.6.1  $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/arch/arm64/configs/tegra_veyecam_defconfig 
-    cp $RELEASE_PACK_DIR/drivers_source/cam_drv_src/Kconfig $NVIDIA_PATH/drivers/media/i2c/
-    cp $RELEASE_PACK_DIR/drivers_source/cam_drv_src/Makefile $NVIDIA_PATH/drivers/media/i2c/ 
-
-	cd $JETSON_NANO_KERNEL_SOURCE
+    cp $RELEASE_PACK_DIR/drivers_source/cam_drv_src/Kconfig $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/
+    cp $RELEASE_PACK_DIR/drivers_source/cam_drv_src/Makefile $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/
     
     # cp $SRC_DIR/additional/imx519/*.dtsi $SRC_DIR/workdir/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts/porg-platforms
     # cp $SRC_DIR/additional/imx519/*.dts $SRC_DIR/workdir/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts
@@ -165,8 +169,9 @@ build_jetson_kernel() {
    	# sed -i '27 i #include "../../porg/kernel-dts/porg-platforms/tegra210-porg-camera-arducam-imx519.dtsi"' $SRC_DIR/workdir/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/batuu/kernel-dts/tegra210-p3448-0003-p3542-0000.dts
    	# sed -i '24 i obj-$(CONFIG_VIDEO_IMX519) += imx519.o' $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/media/i2c/Makefile
     # sed -i '1210 i CONFIG_VIDEO_IMX519=y' $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/arch/arm64/configs/tegra_defconfig
-   
-    echo "added Veye Drivers"
+
+   	cd $JETSON_NANO_KERNEL_SOURCE
+    echo "added additional Drivers"
     
     
 	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} tegra_veyecam_defconfig
