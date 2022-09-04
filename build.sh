@@ -155,7 +155,7 @@ build_jetson_kernel() {
     echo "Patching Veye Drivers into kernel source"
     cp $RELEASE_PACK_DIR/drivers_source/cam_drv_src/* $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/
     cp $RELEASE_PACK_DIR/drivers_source/kernel_veyecam_config_r32.6.1  $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/arch/arm64/configs/tegra_veyecam_defconfig 
-    cp $RELEASE_PACK_DIR/drivers_source/cam_drv_src/Kconfig_host $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/Kconfig
+    cp $RELEASE_PACK_DIR/drivers_source/cam_drv_src/Kconfig_host $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/
     cp $RELEASE_PACK_DIR/drivers_source/cam_drv_src/Makefile $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/
     
     # cp $SRC_DIR/additional/imx519/*.dtsi $SRC_DIR/workdir/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts/porg-platforms
