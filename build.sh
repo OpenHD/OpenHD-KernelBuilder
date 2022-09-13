@@ -216,8 +216,8 @@ build_jetson_kernel() {
 
 	fetch_rtl8812au_driver    
    	build_rtl8812au_driver
-	#fetch_rtl8812bu_driver
-	#build_rtl8812bu_driver
+	fetch_rtl8812bu_driver
+	build_rtl8812bu_driver
 	fetch_rtl8188eus_driver
     	build_rtl8188eus_driver
 	
