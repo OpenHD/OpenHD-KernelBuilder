@@ -26,8 +26,8 @@ echo "Youre building for $PLATFORM $DISTRO"
 RTL_8812AU_REPO=https://github.com/svpcom/rtl8812au.git
 RTL_8812AU_BRANCH=v5.2.20
 
-RTL_8812BU_REPO=https://github.com/cilynx/rtl88x2bu
-RTL_8812BU_BRANCH=5.8.7.1_35809.20191129_COEX20191120-7777
+RTL_8812BU_REPO=https://github.com/morrownr/88x2bu-20210702
+RTL_8812BU_BRANCH=88x2bu-20210702
 # Testing Driver, not verified, yet
 
 RTL_8188EUS_REPO=https://github.com/aircrack-ng/rtl8188eus
@@ -112,7 +112,7 @@ build_pi_kernel() {
         cp arch/arm/boot/dts/*.dtb "${PACKAGE_DIR}/usr/local/share/openhd/kernel/dtb/" || exit 1
         cp arch/arm/boot/dts/overlays/*.dtb* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || exit 1
         cp arch/arm/boot/dts/overlays/README "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || exit 1
-
+        
         # prevents the inclusion of firmware that can conflict with normal firmware packages, dpkg will complain. there
         # should be a kernel config to stop installing this into the package dir in the first place
         rm -r "${PACKAGE_DIR}/lib/firmware/*"
