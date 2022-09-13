@@ -66,7 +66,7 @@ function fetch_rtl8812bu_driver() {
         git clone ${RTL_8812BU_REPO}
     fi
 
-    pushd rtl88x2bu
+    pushd 88x2bu
         git fetch
         git reset --hard
         git checkout ${RTL_8812BU_BRANCH}
@@ -85,7 +85,7 @@ function fetch_rtl8812bu_driver() {
 }
 
 function build_rtl8812bu_driver() {
-    pushd rtl88x2bu
+    pushd 88x2bu
         make clean
 		if [[ "${PLATFORM}" == "jetson" ]]; then
 		export KERNEL_VERSION="4.9.253OpenHD-2.1-tegra"
