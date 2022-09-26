@@ -19,7 +19,7 @@ function init() {
 function package() {
     PACKAGE_NAME=openhd-linux-${PLATFORM}
 
-    VERSION="2.2.1-evo-$(date '+%m%d%H%M')-$(git rev-parse --short HEAD)"
+    VERSION="2.2.3-evo-$(date '+%m%d%H%M')-$(git rev-parse --short HEAD)"
 
     rm ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb >/dev/null 2>&1
     if [[ "${PLATFORM}" == "pi" ]]; then
@@ -54,12 +54,12 @@ function package() {
 
         if [[ $? -eq 0 ]]; then
 	    git describe --exact-match HEAD >/dev/null 2>&1
-            echo "Pushing package to OpenHD Milestone repository"
-            cloudsmith push deb openhd/openhd-2-2-2-evo/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
+            echo "Pushing package to OpenHD 2.2 repository"
+            cloudsmith push deb openhd/openhd-2-2-dev/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
         else
 	    git describe --exact-match HEAD >/dev/null 2>&1
-            echo "Pushing package to OpenHD Milestone repository"
-            cloudsmith push deb openhd/openhd-2-2-2-evo/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
+            echo "Pushing package to OpenHD 2.2 repository"
+            cloudsmith push deb openhd/openhd-2-2-dev/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
         fi
     fi
 }
