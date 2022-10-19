@@ -36,23 +36,6 @@ function package() {
             --before-install before-install.sh \
             -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
     fi
-    function package_headers() {
-    PACKAGE_NAME=openhd-linux-${PLATFORM}-headers
-
-    VERSION="2.2.3-evo-$(date '+%m%d%H%M')-$(git rev-parse --short HEAD)"
-    rm ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb >/dev/null 2>&1
-    if [[ "${PLATFORM}" == "pi" ]]; then
-        cd ${SRC_DIR}
-        fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} \
-            -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
-    fi
-    if [[ "${PLATFORM}" == "jetson" ]]; then
-
-        fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} \
-            --after-install after-install-jetson.sh \
-            --before-install before-install.sh \
-            -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
-    fi
 
     #
     # You can build packages and test them locally without tagging or uploading to the repo, which is only done for
@@ -80,6 +63,50 @@ function package() {
         fi
     fi
 }
+function package_headers() {
+    PACKAGE_NAME=openhd-linux-${PLATFORM}-headers
+
+    VERSION="2.2.3-evo-$(date '+%m%d%H%M')-$(git rev-parse --short HEAD)"
+    rm ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb >/dev/null 2>&1
+    if [[ "${PLATFORM}" == "pi" ]]; then
+        cd ${SRC_DIR}
+        fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} \
+            -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
+    fi
+    if [[ "${PLATFORM}" == "jetson" ]]; then
+
+        fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} \
+            --after-install after-install-jetson.sh \
+            --before-install before-install.sh \
+            -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
+    fi
+#
+    # You can build packages and test them locally without tagging or uploading to the repo, which is only done for
+    # releases. Note that we push the same kernel to multiple versions of the repo because there isn't much reason
+    # to separate them, and it would create a bit of overhead to manage it that way.
+    #
+
+    if [[ "${ONLINE}" == "ONLINE" ]]; then
+       
+	if [[ "${PLATFORM}" == "jetson" ]]; then
+	    git describe --exact-match HEAD >/dev/null 2>&1
+            echo "Pushing package to OpenHD repository"
+            cloudsmith push deb openhd/openhd-2-2-evo/ubuntu/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
+        fi
+
+
+        if [[ $? -eq 0 ]]; then
+	    git describe --exact-match HEAD >/dev/null 2>&1
+            echo "Pushing package to OpenHD 2.2 repository"
+            cloudsmith push deb openhd/openhd-2-2-evo/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
+        else
+	    git describe --exact-match HEAD >/dev/null 2>&1
+            echo "Pushing package to OpenHD 2.2 repository"
+            cloudsmith push deb openhd/openhd-2-2-evo/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
+        fi
+    fi
+}
+
 
 function copy_overlay() {
     cp ${SRC_DIR}/overlay/etc/modprobe.d/* "${PACKAGE_DIR}/etc/modprobe.d/" || exit 1

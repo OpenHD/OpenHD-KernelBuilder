@@ -310,7 +310,6 @@ if [[ "${PLATFORM}" == "jetson" ]]; then
 fi
 
 package_headers
-
 post_processing
 
 # Show cache stats
