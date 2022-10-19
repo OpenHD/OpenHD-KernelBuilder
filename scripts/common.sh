@@ -36,6 +36,23 @@ function package() {
             --before-install before-install.sh \
             -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
     fi
+    function package_headers() {
+    PACKAGE_NAME=openhd-linux-${PLATFORM}-headers
+
+    VERSION="2.2.3-evo-$(date '+%m%d%H%M')-$(git rev-parse --short HEAD)"
+    rm ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb >/dev/null 2>&1
+    if [[ "${PLATFORM}" == "pi" ]]; then
+        cd ${SRC_DIR}
+        fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} \
+            -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
+    fi
+    if [[ "${PLATFORM}" == "jetson" ]]; then
+
+        fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} \
+            --after-install after-install-jetson.sh \
+            --before-install before-install.sh \
+            -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
+    fi
 
     #
     # You can build packages and test them locally without tagging or uploading to the repo, which is only done for
