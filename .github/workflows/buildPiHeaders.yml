@@ -53,11 +53,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-ccache
             ${{ runner.os }}-ccache-
-            
-      - name: Build ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }}
-        run: |
-          export PATH=/usr/lib/ccache:$PATH
-          bash build.sh ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }} ONLINE
+ 
       - name: Build ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }}
         run: |
           export PATH=/usr/lib/ccache:$PATH
