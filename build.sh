@@ -24,7 +24,7 @@ echo "Youre building for $PLATFORM $DISTRO"
 
 # Fixed at v5.2.20 until 5.3.4 works for injection
 RTL_8812AU_REPO=https://github.com/aircrack-ng/rtl8812au
-RTL_8812AU_BRANCH=v5.6.4.2
+RTL_8812AU_BRANCH=v5.2.20
 
 RTL_8812BU_REPO=https://github.com/raphaelscholle/88x2bu
 RTL_8812BU_BRANCH=main
