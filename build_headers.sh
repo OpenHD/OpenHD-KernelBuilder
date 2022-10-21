@@ -256,9 +256,9 @@ if [[ "${PLATFORM}" == "pi" ]]; then
 	pushd ${LINUX_DIR}
 	mkdir -p /usr/src/5.15.61-common
 	mkdir -p /usr/src/5.15.61-rpi
-	mkdir -p ${PACKAGE_DIR}/lib/modules/5.15.61-v7/
-	ln -s /usr/src/5.15.61-common/ ${PACKAGE_DIR}/lib/modules/5.15.61-v7/source
-	ln -s /usr/src/5.15.61-rpi ${PACKAGE_DIR}/lib/modules/5.15.61-v7/build
+	mkdir -p ${PACKAGE_DIR}/lib/modules/5.15.61-v7+/
+	ln -s /usr/src/5.15.61-common/ ${PACKAGE_DIR}/lib/modules/5.15.61-v7+/source
+	ln -s /usr/src/5.15.61-rpi ${PACKAGE_DIR}/lib/modules/5.15.61-v7+/build
 	mkdir -p ${PACKAGE_DIR}/usr/src/5.15.61-rpi/include
 	mkdir -p ${PACKAGE_DIR}/usr/src/5.15.61-rpi/arch/arm
 	echo "$pwd"
@@ -283,9 +283,9 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     build_pi_kernel
 	echo "Copy kernel7l"
 	pushd ${LINUX_DIR}
-	mkdir -p ${PACKAGE_DIR}/lib/modules/5.15.61-v7l/
-	ln -s /usr/src/5.15.61-common/ ${PACKAGE_DIR}/lib/modules/5.15.61-v7l/source
-	ln -s /usr/src/5.15.61-rpi ${PACKAGE_DIR}/lib/modules/5.15.61-v7l/build
+	mkdir -p ${PACKAGE_DIR}/lib/modules/5.15.61-v7l+/
+	ln -s /usr/src/5.15.61-common/ ${PACKAGE_DIR}/lib/modules/5.15.61-v7l+/source
+	ln -s /usr/src/5.15.61-rpi ${PACKAGE_DIR}/lib/modules/5.15.61-v7l+/build
 	ls -a
 
 
@@ -294,9 +294,9 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     build_pi_kernel
 	echo "Copy kernel6"
 	pushd ${LINUX_DIR}
-	mkdir -p ${PACKAGE_DIR}/lib/modules/5.15.61-v6/
-	ln -s /usr/src/5.15.61-common/ ${PACKAGE_DIR}/lib/modules/5.15.61-v6/source
-	ln -s /usr/src/5.15.61-rpi ${PACKAGE_DIR}/lib/modules/5.15.61-v6/build
+	mkdir -p ${PACKAGE_DIR}/lib/modules/5.15.61-v6+/
+	ln -s /usr/src/5.15.61-common/ ${PACKAGE_DIR}/lib/modules/5.15.61-v6+/source
+	ln -s /usr/src/5.15.61-rpi ${PACKAGE_DIR}/lib/modules/5.15.61-v6+/build
 	ls -a
 
 
