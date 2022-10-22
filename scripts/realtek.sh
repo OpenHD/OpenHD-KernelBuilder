@@ -34,7 +34,7 @@ function fetch_rtl8812au_driver() {
 }
 
 function build_rtl8812au_driver() {
-    pushd rtl8812au
+    pushd rtl8812au-5.2.20
         make clean
 	
 	if [[ "${PLATFORM}" == "pi" ]]; then
