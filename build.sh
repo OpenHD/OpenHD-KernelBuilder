@@ -271,22 +271,22 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     # note that pi zero kernels are not being generated here because they are prepackaged with a specific 
     # kernel build. this is a temporary thing due to the unique issues with USB on the pi zero.
     
-    source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7
-    prepare_build
-    build_pi_kernel
-	echo "Copy kernel7"
-	pushd ${LINUX_DIR}
-	ls -a
-	 cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7.img" || exit 1
+    #source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7
+    #prepare_build
+    #build_pi_kernel
+	#echo "Copy kernel7"
+	#pushd ${LINUX_DIR}
+	#ls -a
+	# cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7.img" || exit 1
 
 
-    # source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7l
-    # prepare_build
-    # build_pi_kernel
-	# echo "Copy kernel7l"
-	# pushd ${LINUX_DIR}
-	# ls -a
-    #  cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7l.img" || exit 1
+     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7l
+     prepare_build
+     build_pi_kernel
+	 echo "Copy kernel7l"
+	 pushd ${LINUX_DIR}
+	 ls -a
+      cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7l.img" || exit 1
 
 
     # source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v6
