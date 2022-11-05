@@ -67,12 +67,6 @@ function fetch_SBC_source() {
 		if [[ ! "$(ls -A ${LINUX_DIR})" ]]; then
 			echo "Download the kernel source"
 			git clone ${KERNEL_REPO} ${LINUX_DIR}
-
-			pushd ${LINUX_DIR}
-			git fetch
-			git reset --hard
-			git checkout ${KERNEL_COMMIT}
-			popd
 		fi
 
 	fi
