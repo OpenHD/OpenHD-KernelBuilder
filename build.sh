@@ -242,8 +242,8 @@ prepare_build() {
     # on the pi our kernel is new enough that we don't need to add the exfat driver anymore
     if [[ "${PLATFORM}" == "pi" ]]; then
     check_time
-    fetch_SBC_source
     mkdir -p $SRC_DIR/workdir/mods/
+    fetch_SBC_source
     cd $SRC_DIR/workdir/mods/
     fetch_rtl8812au_driver
     fetch_rtl8812bu_driver
