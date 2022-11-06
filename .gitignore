@@ -7,7 +7,7 @@ rtl88x2bu
 v4l2loopback
 workdir
 .config
-buildlog.log
+*.log
 
 arm-linux-gnueabihf-c\+\+
 
@@ -16,3 +16,5 @@ arm-linux-gnueabihf-cpp
 arm-linux-gnueabihf-g\+\+
 
 arm-linux-gnueabihf-gcc
+
+*.deb
