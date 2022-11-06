@@ -92,15 +92,15 @@ build_pi_kernel() {
         # cp "${CONFIGS}/.config-${KERNEL_BRANCH}-${ISA}" ./.config || exit 1
         make clean
         # yes "" | make oldconfig || exit 1
-            if [[ "${ISA}" == "v6" ]]; then
+            if [[ "${ISA}" == "v7l" ]]; then
                 make clean
-                make bcmrpi_defconfig
+                make bcm2711_defconfig
             elif [[ "${ISA}" == "v7" ]]; then
                 make clean
                 make bcm2709_defconfig
-            elif [[ "${ISA}" == "v7l" ]]; then
+            elif [[ "${ISA}" == "v6" ]]; then
                 make clean
-                make bcm2711_defconfig
+                make bcmrpi_defconfig
         # currently only doing default config, modified config can follow later, but standart eases the possibility to upgrade to a newer kernel 
             fi
         KERNEL=${KERNEL} KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
