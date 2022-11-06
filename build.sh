@@ -243,7 +243,7 @@ prepare_build() {
     if [[ "${PLATFORM}" == "pi" ]]; then
     check_time
     fetch_SBC_source
-    mkdir $SRC_DIR/workdir/mods/
+    mkdir -p $SRC_DIR/workdir/mods/
     cd $SRC_DIR/workdir/mods/
     fetch_rtl8812au_driver
     fetch_rtl8812bu_driver
