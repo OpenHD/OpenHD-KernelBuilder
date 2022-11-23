@@ -125,7 +125,7 @@ build_pi_kernel() {
 
     # Build Realtek drivers
     build_rtl8812au_driver
-    #build_rtl8812bu_driver #is not working right now, but is currently being tested
+    build_rtl8812bu_driver 
     build_rtl8188eus_driver
     depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
 
@@ -222,6 +222,8 @@ build_jetson_kernel() {
 
 	fetch_rtl8812au_driver    
    	build_rtl8812au_driver
+	fetch_rtl8812bu_driver    
+ 	build_rtl8812bu_driver 
 
 	
 	
