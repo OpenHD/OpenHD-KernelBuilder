@@ -257,8 +257,12 @@ if [[ "${PLATFORM}" == "pi" ]]; then
 	mkdir -p /usr/src/5.15.61-common
 	mkdir -p /usr/src/5.15.61-rpi
 	mkdir -p ${PACKAGE_DIR}/lib/modules/5.15.61-v7+/
-	ln -s /usr/src/5.15.61-common/ ${PACKAGE_DIR}/lib/modules/5.15.61-v7+/source
-	ln -s /usr/src/5.15.61-rpi ${PACKAGE_DIR}/lib/modules/5.15.61-v7+/build
+	mkdir -p /lib/modules/5.15.61-v7+/source
+	mkdir -p /lib/modules/5.15.61-v7+/build
+	cp -r ${PACKAGE_DIR}/lib/modules/5.15.61-v7+/source /lib/modules/5.15.61-v7+/source
+	cp -r ${PACKAGE_DIR}/lib/modules/5.15.61-v7+/build /lib/modules/5.15.61-v7+/build
+	ln -s /usr/src/5.15.61-common/ /lib/modules/5.15.61-v7+/source
+	ln -s /usr/src/5.15.61-rpi /lib/modules/5.15.61-v7+/build
 	mkdir -p ${PACKAGE_DIR}/usr/src/5.15.61-rpi/include
 	mkdir -p ${PACKAGE_DIR}/usr/src/5.15.61-rpi/arch/arm
 	echo "$pwd"
