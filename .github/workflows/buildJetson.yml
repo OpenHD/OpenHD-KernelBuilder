@@ -30,8 +30,8 @@ jobs:
         run: |
           sudo apt update --allow-releaseinfo-change
           sudo apt install bc bison ccache fakeroot flex git kmod libelf-dev libssl-dev make python3-pip gcc-10-aarch64-linux-gnu ruby
-          gem install --no-document fpm
-          pip3 install --upgrade cloudsmith-cli
+          sudo gem install --no-document fpm
+          sudo pip3 install --upgrade cloudsmith-cli
                 
       - name: Setup env
         run: |
