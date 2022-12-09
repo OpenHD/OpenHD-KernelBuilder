@@ -65,8 +65,11 @@ function fetch_SBC_source() {
 	if [[ "${PLATFORM}" == "pi" ]]; then
 
 		if [[ ! "$(ls -A ${LINUX_DIR})" ]]; then
+			mkdir -p $SRC_DIR/workdir
 			echo "Download the kernel source"
 			git clone --depth 1 ${KERNEL_REPO} ${LINUX_DIR}
+			pushd ${LINUX_DIR}
+			popd
 		fi
 
 	fi

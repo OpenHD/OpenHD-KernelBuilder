@@ -11,8 +11,6 @@ cp -a /usr/local/share/openhd/kernel/dtb/* /boot/
 
 depmod -a
 
-mount -oremount,ro /boot || true
-
 grep "i2c-dev" /etc/modules
 if [[ "$?" -ne 0 ]]; then
     echo "i2c-dev" >> /etc/modules

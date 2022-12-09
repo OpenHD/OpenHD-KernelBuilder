@@ -34,7 +34,7 @@ function fetch_rtl8812au_driver() {
 }
 
 function build_rtl8812au_driver() {
-    pushd rtl8812au-5.2.20
+    pushd rtl8812au
         make clean
 	
 	if [[ "${PLATFORM}" == "pi" ]]; then
@@ -50,7 +50,7 @@ function build_rtl8812au_driver() {
 	        make KSRC=${LINUX_DIR}/build -j $J_CORES M=$(pwd) modules || exit 1
 		mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au
 		rm $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/net/wireless/realtek/rtl8812au/rtl8812au.ko
-         	install -p -m 644 88XXau_wfb.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au/88XXau_wfb.ko" || exit 1
+         	install -p -m 644 88XXau_wfb.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au/rtl8812au.ko" || exit 1
 	fi
 
 
@@ -66,7 +66,7 @@ function fetch_rtl8812bu_driver() {
         git clone ${RTL_8812BU_REPO}
     fi
 
-    pushd 88x2bu
+    pushd rtl88x2bu
         git fetch
         git reset --hard
         git checkout ${RTL_8812BU_BRANCH}
@@ -85,7 +85,7 @@ function fetch_rtl8812bu_driver() {
 }
 
 function build_rtl8812bu_driver() {
-    pushd 88x2bu
+    pushd rtl88x2bu
         make clean
 		if [[ "${PLATFORM}" == "jetson" ]]; then
 		export KERNEL_VERSION="4.9.253OpenHD-2.1-tegra"

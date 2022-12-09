@@ -23,10 +23,10 @@ echo "Youre building for $PLATFORM $DISTRO"
 ##############
 
 # Fixed at v5.2.20 until 5.3.4 works for injection
-RTL_8812AU_REPO=https://github.com/OpenHD/rtl8812au-5.2.20
+RTL_8812AU_REPO=https://github.com/OpenHD/rtl8812au
 RTL_8812AU_BRANCH=v5.2.20
 
-RTL_8812BU_REPO=https://github.com/raphaelscholle/88x2bu
+RTL_8812BU_REPO=https://github.com/OpenHD/rtl88x2bu
 RTL_8812BU_BRANCH=main
 # Testing Driver, not verified, yet
 
@@ -92,15 +92,15 @@ build_pi_kernel() {
         # cp "${CONFIGS}/.config-${KERNEL_BRANCH}-${ISA}" ./.config || exit 1
         make clean
         # yes "" | make oldconfig || exit 1
-            if [[ "${ISA}" == "v6" ]]; then
+            if [[ "${ISA}" == "v7l" ]]; then
                 make clean
-                make bcmrpi_defconfig
+                make bcm2711_defconfig
             elif [[ "${ISA}" == "v7" ]]; then
                 make clean
                 make bcm2709_defconfig
-            elif [[ "${ISA}" == "v7l" ]]; then
+            elif [[ "${ISA}" == "v6" ]]; then
                 make clean
-                make bcm2711_defconfig
+                make bcmrpi_defconfig
         # currently only doing default config, modified config can follow later, but standart eases the possibility to upgrade to a newer kernel 
             fi
         KERNEL=${KERNEL} KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
@@ -125,7 +125,7 @@ build_pi_kernel() {
 
     # Build Realtek drivers
     build_rtl8812au_driver
-    #build_rtl8812bu_driver #is not working right now, but is currently being tested
+    build_rtl8812bu_driver 
     build_rtl8188eus_driver
     depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
 
@@ -222,10 +222,10 @@ build_jetson_kernel() {
 
 	fetch_rtl8812au_driver    
    	build_rtl8812au_driver
-	fetch_rtl8812bu_driver
-	build_rtl8812bu_driver
-	fetch_rtl8188eus_driver
-    	build_rtl8188eus_driver
+	fetch_rtl8812bu_driver    
+ 	build_rtl8812bu_driver 
+
+	
 	
         depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
 
@@ -242,8 +242,8 @@ prepare_build() {
     # on the pi our kernel is new enough that we don't need to add the exfat driver anymore
     if [[ "${PLATFORM}" == "pi" ]]; then
     check_time
+    mkdir -p $SRC_DIR/workdir/mods/
     fetch_SBC_source
-    mkdir $SRC_DIR/workdir/mods/
     cd $SRC_DIR/workdir/mods/
     fetch_rtl8812au_driver
     fetch_rtl8812bu_driver

@@ -26,7 +26,7 @@ echo "Youre building for $PLATFORM $DISTRO"
 RTL_8812AU_REPO=https://github.com/svpcom/rtl8812au.git
 RTL_8812AU_BRANCH=v5.2.20
 
-RTL_8812BU_REPO=https://github.com/raphaelscholle/88x2bu
+RTL_8812BU_REPO=hhttps://github.com/OpenHD/rtl88x2bu
 RTL_8812BU_BRANCH=main
 # Testing Driver, not verified, yet
 
