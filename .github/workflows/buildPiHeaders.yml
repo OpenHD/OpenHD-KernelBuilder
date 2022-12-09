@@ -25,16 +25,11 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 10
-
-      - name: Set up Ruby 2.6
-        uses: actions/setup-ruby@v1
-        with:
-          ruby-version: 2.6
       
       - name: Install depencies
         run: |
           sudo apt update
-          sudo apt install bc bison ccache gcc-arm-linux-gnueabihf fakeroot flex git kmod libelf-dev libssl-dev make python3-pip
+          sudo apt install bc bison ccache gcc-arm-linux-gnueabihf fakeroot flex git kmod libelf-dev libssl-dev make python3-pip ruby
           gem install --no-document fpm
           pip3 install --upgrade cloudsmith-cli
                 
