@@ -91,20 +91,28 @@ build_pi_kernel() {
         # needs to be customised again in the future
         # cp "${CONFIGS}/.config-${KERNEL_BRANCH}-${ISA}" ./.config || exit 1
         make clean
-##veye v4l2
-git clone https://github.com/veyeimaging/raspberrypi_v4l2 ../mods/raspberrypi_v4l2
-export RELEASE_PACK_DIR=../mods/raspberrypi_v4l2
-echo $RELEASE_PACK_DIR
+
+        ##veye v4l2
+        git clone https://github.com/veyeimaging/raspberrypi_v4l2 ../mods/raspberrypi_v4l2
+        export RELEASE_PACK_DIR=${LINUX_DIR}/../mods/raspberrypi_v4l2
+        echo $RELEASE_PACK_DIR
+        #copy drivers, not copying the makefile (the makefile will make the kernel not build)
+        cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-5.15_all/*.c ${LINUX_DIR}/drivers/media/i2c/
+        cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-5.15_all/*.h ${LINUX_DIR}/drivers/media/i2c/
+        #copying the dts-files
+        cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/dts/rpi-5.15.y/* ${LINUX_DIR}/linux/arch/arm/boot/dts/overlays/
+
+
         # yes "" | make oldconfig || exit 1
             if [[ "${ISA}" == "v7l" ]]; then
                 make clean
                 make bcm2711_defconfig
             elif [[ "${ISA}" == "v7" ]]; then
-                make clean
-                make bcm2709_defconfig
+            #    make clean
+            #    make bcm2709_defconfig
             elif [[ "${ISA}" == "v6" ]]; then
-                make clean
-                make bcmrpi_defconfig
+            #    make clean
+            #    make bcmrpi_defconfig
         # currently only doing default config, modified config can follow later, but standart eases the possibility to upgrade to a newer kernel 
             fi
         KERNEL=${KERNEL} KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
