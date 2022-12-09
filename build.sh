@@ -108,12 +108,14 @@ build_pi_kernel() {
                 make clean
                 make bcm2711_defconfig
             elif [[ "${ISA}" == "v7" ]]; then
+            echo "debug"
             #    make clean
             #    make bcm2709_defconfig
             elif [[ "${ISA}" == "v6" ]]; then
+            echo "debug"
             #    make clean
             #    make bcmrpi_defconfig
-        # currently only doing default config, modified config can follow later, but standart eases the possibility to upgrade to a newer kernel 
+            # currently only doing default config, modified config can follow later, but standart eases the possibility to upgrade to a newer kernel 
             fi
         KERNEL=${KERNEL} KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
 
