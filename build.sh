@@ -100,7 +100,7 @@ build_pi_kernel() {
         cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-5.15_all/*.c ${LINUX_DIR}/drivers/media/i2c/
         cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-5.15_all/*.h ${LINUX_DIR}/drivers/media/i2c/
         #copying the dts-files
-        cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/dts/rpi-5.15.y/* ${LINUX_DIR}/linux/arch/arm/boot/dts/overlays/
+        cp -r $RELEASE_PACK_DIR/driver_source/dts/rpi-5.15.y/* ${LINUX_DIR}/linux/arch/arm/boot/dts/overlays/
 
 
         # yes "" | make oldconfig || exit 1
