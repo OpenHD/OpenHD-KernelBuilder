@@ -106,12 +106,12 @@ build_pi_kernel() {
 
         #copying the dts-files
         cp -r $RELEASE_PACK_DIR/driver_source/dts/rpi-5.15.y/* ${LINUX_DIR}/arch/arm/boot/dts/overlays/
-        sed '280 i csimx307-dual-cm4-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
-        sed '281 i csimx307-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
-        sed '282 i cssc132-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
-        sed '283 i veye_mvcam-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
-        sed '284 i veyecam2m-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
-
+        sed -i '280 i csimx307-dual-cm4-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
+        sed -i '281 i csimx307-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
+        sed -i '282 i cssc132-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
+        sed -i '283 i veye_mvcam-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
+        sed -i '284 i veyecam2m-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
+        echo "Set Overlays"
         # yes "" | make oldconfig || exit 1
             if [[ "${ISA}" == "v7l" ]]; then
                 make clean
