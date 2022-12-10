@@ -91,6 +91,10 @@ build_pi_kernel() {
         # needs to be customised again in the future
         # cp "${CONFIGS}/.config-${KERNEL_BRANCH}-${ISA}" ./.config || exit 1
         make clean
+##veye v4l2
+git clone https://github.com/veyeimaging/raspberrypi_v4l2 workdir/mods/
+export RELEASE_PACK_DIR=$SRC_DIR/workdir/linux-pi 
+
         # yes "" | make oldconfig || exit 1
             if [[ "${ISA}" == "v7l" ]]; then
                 make clean
@@ -127,6 +131,9 @@ build_pi_kernel() {
     build_rtl8812au_driver
     build_rtl8812bu_driver 
     build_rtl8188eus_driver
+
+
+
     depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
 
 }
