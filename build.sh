@@ -248,7 +248,6 @@ prepare_build() {
     if [[ "${PLATFORM}" == "pi" ]]; then
     check_time
     mkdir -p $SRC_DIR/workdir/mods/
-    fetch_SBC_source
     cd $SRC_DIR/workdir/mods/
     fetch_rtl8812au_driver
     fetch_rtl8812bu_driver
@@ -275,8 +274,8 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     # a simple hack, we want 2 kernels in one package so we source 2 different configs and build them all.
     # note that pi zero kernels are not being generated here because they are prepackaged with a specific 
     # kernel build. this is a temporary thing due to the unique issues with USB on the pi zero.
-    
-    ##veye v4l2
+    fetch_SBC_source
+        ##veye v4l2
         git clone https://github.com/veyeimaging/raspberrypi_v4l2 ../mods/raspberrypi_v4l2
         export RELEASE_PACK_DIR=${LINUX_DIR}/../mods/raspberrypi_v4l2
         echo $RELEASE_PACK_DIR
