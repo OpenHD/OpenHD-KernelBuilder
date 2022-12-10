@@ -289,6 +289,7 @@ if [[ "${PLATFORM}" == "pi" ]]; then
         sed -i '954 i CONFIG_VIDEO_VEYE327=y' workdir/linux-pi/arch/arm/configs/bcm2711_defconfig
         sed -i '932 i CONFIG_VIDEO_VEYE327=y' workdir/linux-pi/arch/arm/configs/bcm2709_defconfig
         sed -i '932 i CONFIG_VIDEO_VEYE327=y' workdir/linux-pi/arch/arm/configs/bcmrpi_defconfig
+        cp -r additional/Kconfig workdir/linux-pi/drivers/media/i2c/
         #copying the dts-files
         cp -r $RELEASE_PACK_DIR/driver_source/dts/rpi-5.15.y/* workdir/linux-pi/arch/arm/boot/dts/overlays/
         sed -i '280 i csimx307-dual-cm4-overlay.dts \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
