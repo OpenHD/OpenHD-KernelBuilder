@@ -55,41 +55,59 @@ config VIDEO_TDA7432
 	  To compile this driver as a module, choose M here: the
 	  module will be called tda7432.
 
-config VIDEO_VEYECAM
-        tristate "VEYECAM camera sensor support"
-	depends on I2C && VIDEO_V4L2 && VIDEO_V4L2_SUBDEV_API
-	help
-	  This driver supports VEYECAM camera sensor from veye.cc
-
-	  To compile this driver as a module, choose M here: the module
-	  will be called veyecam.
       
 config VIDEO_VEYEMVCAM
-        tristate "veye mv series camera sensor support"
-	depends on I2C && VIDEO_V4L2 && VIDEO_V4L2_SUBDEV_API
+	tristate "VEYE MV MIPI camera support"
+	depends on I2C && VIDEO_V4L2
+	select MEDIA_CONTROLLER
+	select VIDEO_V4L2_SUBDEV_API
+	select V4L2_FWNODE
 	help
-	  This driver supports veye mv series  camera sensor from veye.cc
+	  This is a Video4Linux2 sensor driver for the VEYE
+	  MV series cameras.
 
-	  To compile this driver as a module, choose M here: the module
-	  will be called veye_mvcam.
-
-config VIDEO_CSIMX307
-        tristate "CSIMX307 camera sensor support"
-	depends on I2C && VIDEO_V4L2 && VIDEO_V4L2_SUBDEV_API
-	help
-	  This driver supports CSIMX307 camera sensor from veye.cc
-
-	  To compile this driver as a module, choose M here: the module
-	  will be called csimx307.
+	  To compile this driver as a module, choose M here: the
+	  module will be called veyemvcam.
       
-config VIDEO_CSSC132
-        tristate "CSSC132 camera sensor support"
-	depends on I2C && VIDEO_V4L2 && VIDEO_V4L2_SUBDEV_API
+config VIDEO_VEYECAM2M
+	tristate "VEYE MIPI CAMERA 2M sensor support"
+	depends on I2C && VIDEO_V4L2
+	select MEDIA_CONTROLLER
+	select VIDEO_V4L2_SUBDEV_API
+	select V4L2_FWNODE
 	help
-	  This driver supports CSSC132 camera sensor from veye.cc
+	  This is a Video4Linux2 sensor driver for the VEYE
+	  IMX327 IMX462 IMX385.
 
-	  To compile this driver as a module, choose M here: the module
-	  will be called cssc132.
+	  To compile this driver as a module, choose M here: the
+	  module will be called veyecam2m.
+      
+config VIDEO_CSIMX307
+	tristate "VEYE CSIMX307 sensor support"
+	depends on I2C && VIDEO_V4L2
+	select MEDIA_CONTROLLER
+	select VIDEO_V4L2_SUBDEV_API
+	select V4L2_FWNODE
+	help
+	  This is a Video4Linux2 sensor driver for the VEYE
+	  CSIMX307 camera.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called csimx307.
+
+config VIDEO_CSSC132
+	tristate "VEYE CSSC132 sensor support"
+	depends on I2C && VIDEO_V4L2
+	select MEDIA_CONTROLLER
+	select VIDEO_V4L2_SUBDEV_API
+	select V4L2_FWNODE
+	help
+	  This is a Video4Linux2 sensor driver for the VEYE
+	  CSSC132 camera.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called cssc132.
+      
 
 config VIDEO_TDA9840
 	tristate "Philips TDA9840 audio processor"
