@@ -92,27 +92,6 @@ build_pi_kernel() {
         # cp "${CONFIGS}/.config-${KERNEL_BRANCH}-${ISA}" ./.config || exit 1
         make clean
 
-        ##veye v4l2
-        git clone https://github.com/veyeimaging/raspberrypi_v4l2 ../mods/raspberrypi_v4l2
-        export RELEASE_PACK_DIR=${LINUX_DIR}/../mods/raspberrypi_v4l2
-        echo $RELEASE_PACK_DIR
-        #copy drivers, not copying the makefile (the makefile will make the kernel not build)
-        cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-5.15_all/*.c ${LINUX_DIR}/drivers/media/i2c/
-        cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-5.15_all/*.h ${LINUX_DIR}/drivers/media/i2c/
-        echo 'obj-$(CONFIG_VIDEO_VEYE327) += veye_mvcam.o veyecam2m.o csimx307.o cssc132.o' >> ${LINUX_DIR}/drivers/media/i2c/MAKEFILE
-        echo "CONFIG_VIDEO_VEYE327=y" >> ${LINUX_DIR}/arch/arm/configs/bcm2711_defconfig
-        echo "CONFIG_VIDEO_VEYE327=y" >> ${LINUX_DIR}/arch/arm/configs/bcm2709_defconfig
-        echo "CONFIG_VIDEO_VEYE327=y" >> ${LINUX_DIR}/arch/arm/configs/bcmrpi_defconfig
-
-        #copying the dts-files
-        cp -r $RELEASE_PACK_DIR/driver_source/dts/rpi-5.15.y/* ${LINUX_DIR}/arch/arm/boot/dts/overlays/
-        sed -i '280 i csimx307-dual-cm4-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
-        sed -i '281 i csimx307-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
-        sed -i '282 i cssc132-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
-        sed -i '283 i veye_mvcam-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
-        sed -i '284 i veyecam2m-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
-        echo "Set Overlays"
-        
         # yes "" | make oldconfig || exit 1
             if [[ "${ISA}" == "v7l" ]]; then
                 make clean
@@ -297,6 +276,27 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     # note that pi zero kernels are not being generated here because they are prepackaged with a specific 
     # kernel build. this is a temporary thing due to the unique issues with USB on the pi zero.
     
+    ##veye v4l2
+        git clone https://github.com/veyeimaging/raspberrypi_v4l2 ../mods/raspberrypi_v4l2
+        export RELEASE_PACK_DIR=${LINUX_DIR}/../mods/raspberrypi_v4l2
+        echo $RELEASE_PACK_DIR
+        #copy drivers, not copying the makefile (the makefile will make the kernel not build)
+        cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-5.15_all/*.c ${LINUX_DIR}/drivers/media/i2c/
+        cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-5.15_all/*.h ${LINUX_DIR}/drivers/media/i2c/
+        echo 'obj-$(CONFIG_VIDEO_VEYE327) += veye_mvcam.o veyecam2m.o csimx307.o cssc132.o' >> ${LINUX_DIR}/drivers/media/i2c/MAKEFILE
+        echo "CONFIG_VIDEO_VEYE327=y" >> ${LINUX_DIR}/arch/arm/configs/bcm2711_defconfig
+        echo "CONFIG_VIDEO_VEYE327=y" >> ${LINUX_DIR}/arch/arm/configs/bcm2709_defconfig
+        echo "CONFIG_VIDEO_VEYE327=y" >> ${LINUX_DIR}/arch/arm/configs/bcmrpi_defconfig
+
+        #copying the dts-files
+        cp -r $RELEASE_PACK_DIR/driver_source/dts/rpi-5.15.y/* ${LINUX_DIR}/arch/arm/boot/dts/overlays/
+        sed -i '280 i csimx307-dual-cm4-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
+        sed -i '281 i csimx307-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
+        sed -i '282 i cssc132-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
+        sed -i '283 i veye_mvcam-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
+        sed -i '284 i veyecam2m-overlay.dts \\' ${LINUX_DIR}/arch/arm/boot/dts/overlays/Makefile
+        echo "Set Overlays"
+
     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7
     prepare_build
     build_pi_kernel
