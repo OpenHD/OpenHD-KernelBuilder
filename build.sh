@@ -286,10 +286,9 @@ if [[ "${PLATFORM}" == "pi" ]]; then
         cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-5.15_all/*.c workdir/linux-pi/drivers/media/i2c/
         cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-5.15_all/*.h workdir/linux-pi/drivers/media/i2c/
         echo 'obj-$(CONFIG_VIDEO_VEYE327) += veye_mvcam.o veyecam2m.o csimx307.o cssc132.o' >> workdir/linux-pi/drivers/media/i2c/Makefile
-        echo "CONFIG_VIDEO_VEYE327=y" >> workdir/linux-pi/arch/arm/configs/bcm2711_defconfig
-        echo "CONFIG_VIDEO_VEYE327=y" >> workdir/linux-pi/arch/arm/configs/bcm2709_defconfig
-        echo "CONFIG_VIDEO_VEYE327=y" >> workdir/linux-pi/arm/configs/bcmrpi_defconfig
-
+        sed -i '954 i CONFIG_VIDEO_VEYE327=y' workdir/linux-pi/arch/arm/configs/bcm2711_defconfig
+        sed -i '932 i CONFIG_VIDEO_VEYE327=y' workdir/linux-pi/arch/arm/configs/bcm2709_defconfig
+        sed -i '932 i CONFIG_VIDEO_VEYE327=y' workdir/linux-pi/arch/arm/configs/bcmrpi_defconfig
         #copying the dts-files
         cp -r $RELEASE_PACK_DIR/driver_source/dts/rpi-5.15.y/* workdir/linux-pi/arch/arm/boot/dts/overlays/
         sed -i '280 i csimx307-dual-cm4-overlay.dts \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
