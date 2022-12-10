@@ -92,8 +92,8 @@ build_pi_kernel() {
         # cp "${CONFIGS}/.config-${KERNEL_BRANCH}-${ISA}" ./.config || exit 1
         make clean
 ##veye v4l2
-git clone https://github.com/veyeimaging/raspberrypi_v4l2 ../workdir/mods/
-export RELEASE_PACK_DIR=../workdir/linux-pi 
+git clone https://github.com/veyeimaging/raspberrypi_v4l2 ../mods/
+export RELEASE_PACK_DIR=../mods/
 echo $RELEASE_PACK_DIR
         # yes "" | make oldconfig || exit 1
             if [[ "${ISA}" == "v7l" ]]; then
