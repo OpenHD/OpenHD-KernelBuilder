@@ -275,8 +275,8 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     # note that pi zero kernels are not being generated here because they are prepackaged with a specific 
     # kernel build. this is a temporary thing due to the unique issues with USB on the pi zero.
     fetch_SBC_source
-    ls -a0
-    echo $PWD
+    ls -a
+    echo $(pwd)
         ##veye v4l2
         git clone https://github.com/veyeimaging/raspberrypi_v4l2 mods/raspberrypi_v4l2
         export RELEASE_PACK_DIR=${LINUX_DIR}/mods/raspberrypi_v4l2
