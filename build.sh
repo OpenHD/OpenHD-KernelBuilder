@@ -276,9 +276,8 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     # kernel build. this is a temporary thing due to the unique issues with USB on the pi zero.
     fetch_SBC_source
         ##veye v4l2
-        git clone https://github.com/veyeimaging/raspberrypi_v4l2 ../mods/raspberrypi_v4l2
-        export RELEASE_PACK_DIR=${LINUX_DIR}/../mods/raspberrypi_v4l2
-        echo $RELEASE_PACK_DIR
+        git clone https://github.com/veyeimaging/raspberrypi_v4l2 mods/raspberrypi_v4l2
+        export RELEASE_PACK_DIR=${LINUX_DIR}/mods/raspberrypi_v4l2
         #copy drivers, not copying the makefile (the makefile will make the kernel not build)
         cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-5.15_all/*.c ${LINUX_DIR}/drivers/media/i2c/
         cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-5.15_all/*.h ${LINUX_DIR}/drivers/media/i2c/
