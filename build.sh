@@ -91,6 +91,7 @@ build_pi_kernel() {
         # needs to be customised again in the future
         # cp "${CONFIGS}/.config-${KERNEL_BRANCH}-${ISA}" ./.config || exit 1
         make clean
+
         # yes "" | make oldconfig || exit 1
             if [[ "${ISA}" == "v7l" ]]; then
                 make clean
@@ -99,9 +100,10 @@ build_pi_kernel() {
                 make clean
                 make bcm2709_defconfig
             elif [[ "${ISA}" == "v6" ]]; then
+            echo "debug"
                 make clean
                 make bcmrpi_defconfig
-        # currently only doing default config, modified config can follow later, but standart eases the possibility to upgrade to a newer kernel 
+            # currently only doing default config, modified config can follow later, but standart eases the possibility to upgrade to a newer kernel 
             fi
         KERNEL=${KERNEL} KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
 
@@ -127,6 +129,9 @@ build_pi_kernel() {
     build_rtl8812au_driver
     build_rtl8812bu_driver 
     build_rtl8188eus_driver
+
+
+
     depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
 
 }
@@ -243,7 +248,6 @@ prepare_build() {
     if [[ "${PLATFORM}" == "pi" ]]; then
     check_time
     mkdir -p $SRC_DIR/workdir/mods/
-    fetch_SBC_source
     cd $SRC_DIR/workdir/mods/
     fetch_rtl8812au_driver
     fetch_rtl8812bu_driver
@@ -270,7 +274,31 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     # a simple hack, we want 2 kernels in one package so we source 2 different configs and build them all.
     # note that pi zero kernels are not being generated here because they are prepackaged with a specific 
     # kernel build. this is a temporary thing due to the unique issues with USB on the pi zero.
-    
+    fetch_SBC_source
+    ls -a
+    echo $(pwd)
+        ##veye v4l2
+        git clone https://github.com/openhd/raspberrypi_v4l2 workdir/mods/raspberrypi_v4l2
+        export RELEASE_PACK_DIR=workdir/mods/raspberrypi_v4l2
+        ls -a
+        ls -a workdir/mods/raspberrypi_v4l2
+        #copy drivers, not copying the makefile (the makefile will make the kernel not build)
+        cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-5.15_all/*.c workdir/linux-pi/drivers/media/i2c/
+        cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-5.15_all/*.h workdir/linux-pi/drivers/media/i2c/
+        echo 'obj-m += veye_mvcam.o veye327.o veyecam2m.o csimx307.o cssc132.o' >> workdir/linux-pi/drivers/media/i2c/Makefile
+        cp -r additional/Kconfig workdir/linux-pi/drivers/media/i2c/
+        #copying the dts-files
+        cp -r $RELEASE_PACK_DIR/driver_source/dts/rpi-5.15.y/* workdir/linux-pi/arch/arm/boot/dts/overlays/
+        rm workdir/linux-pi/arch/arm/boot/dts/overlays/csimx307-dual-cm4-overlay*
+        #sed -i '280 i csimx307-dual-cm4-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+        sed -i '280 i csimx307-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+        sed -i '281 i cssc132-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+        sed -i '282 i veye327-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+        sed -i '283 i veyecam2m-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+        sed -i '284 i veye_mvcam-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+        sed -i '280,284/^/        /' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+        echo "Set Overlays"
+
     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7
     prepare_build
     build_pi_kernel
