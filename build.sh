@@ -289,12 +289,12 @@ if [[ "${PLATFORM}" == "pi" ]]; then
         cp -r additional/Kconfig workdir/linux-pi/drivers/media/i2c/
         #copying the dts-files
         cp -r $RELEASE_PACK_DIR/driver_source/dts/rpi-5.15.y/* workdir/linux-pi/arch/arm/boot/dts/overlays/
-        sed -i '280 i csimx307-dual-cm4-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+        #sed -i '280 i csimx307-dual-cm4-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
         sed -i '281 i csimx307-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
         sed -i '282 i cssc132-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
         sed -i '283 i veye_mvcam-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
         sed -i '284 i veyecam2m-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-        sed -i '280,284s/^/       /' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+        sed -i '280,284s/^/        /' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
         echo "Set Overlays"
 
     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7
