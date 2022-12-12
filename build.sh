@@ -295,7 +295,7 @@ if [[ "${PLATFORM}" == "pi" ]]; then
         sed -i '282 i cssc132-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
         sed -i '283 i veye_mvcam-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
         sed -i '284 i veyecam2m-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-        sed -i '280,284s/^/        /' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+        sed -i '281,284s/^/        /' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
         echo "Set Overlays"
 
     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7
