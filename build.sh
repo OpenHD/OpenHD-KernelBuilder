@@ -285,7 +285,7 @@ if [[ "${PLATFORM}" == "pi" ]]; then
         #copy drivers, not copying the makefile (the makefile will make the kernel not build)
         cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-5.15_all/*.c workdir/linux-pi/drivers/media/i2c/
         cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-5.15_all/*.h workdir/linux-pi/drivers/media/i2c/
-        echo 'obj-m += veye_mvcam.o veye327.o csimx307.o cssc132.o' >> workdir/linux-pi/drivers/media/i2c/Makefile
+        echo 'obj-m += veye_mvcam.o veye327.o veyecam2m.o csimx307.o cssc132.o' >> workdir/linux-pi/drivers/media/i2c/Makefile
         cp -r additional/Kconfig workdir/linux-pi/drivers/media/i2c/
         #copying the dts-files
         cp -r $RELEASE_PACK_DIR/driver_source/dts/rpi-5.15.y/* workdir/linux-pi/arch/arm/boot/dts/overlays/
@@ -294,7 +294,9 @@ if [[ "${PLATFORM}" == "pi" ]]; then
         sed -i '280 i csimx307-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
         sed -i '281 i cssc132-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
         sed -i '282 i veye327-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-        sed -i '280,282s/^/        /' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+        sed -i '283 i veyecam2m-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+        sed -i '284 i veye_mvcam-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+        sed -i '280,284/^/        /' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
         echo "Set Overlays"
 
     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7
