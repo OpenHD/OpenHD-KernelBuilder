@@ -52,7 +52,7 @@ jobs:
   
       - name: Building with logs 
         run: |
-          bash buildwithlog.sh rk3566 focal ONLINE
+          bash buildwithlog.sh RK3566 focal ONLINE
           
 
      
