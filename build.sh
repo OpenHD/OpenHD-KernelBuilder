@@ -303,7 +303,8 @@ build_x86_kernel() {
 	make defconfig
     make -j $J_CORES
     make -j $J_CORES INSTALL_MOD_PATH="${PACKAGE_DIR}" modules_install    
-    make -j $J_CORES DESTDIR="${PACKAGE_DIR}" install    
+    export INSTALL_PATH=${PACKAGE_DIR}
+    make -j $J_CORES install    
 
  	mkdir $SRC_DIR/workdir/mods/
 	cd $SRC_DIR/workdir/mods/
