@@ -81,6 +81,13 @@ function setup_platform_env() {
 			TOOLCHAIN_PREFIX=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
 			cd $SRC_DIR
 	fi
+	if [[ "${PLATFORM}" == "x86" ]]; then	
+		mkdir workdir
+		mkdir workdir/tools
+		WorkDir=$(pwd)/workdir
+		Tools=$(pwd)/workdir/tools
+		cd $SRC_DIR
+	fi
 }
 
 function fetch_SBC_source() {
@@ -101,6 +108,17 @@ function fetch_SBC_source() {
 			mkdir -p $SRC_DIR/workdir
 			echo "Download the kernel source"
 			git clone --depth 1 https://github.com/OpenHD/linux/ -b Rk3566 ${LINUX_DIR}
+			pushd ${LINUX_DIR}
+			popd
+		fi
+
+	fi
+	if [[ "${PLATFORM}" == "x86" ]]; then
+
+		if [[ ! "$(ls -A ${LINUX_DIR})" ]]; then
+			mkdir -p $SRC_DIR/workdir
+			echo "Download the kernel source"
+			git clone --depth 1 git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/jammy ${LINUX_DIR}
 			pushd ${LINUX_DIR}
 			popd
 		fi

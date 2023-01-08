@@ -4,7 +4,7 @@ PLATFORM=$1
 DISTRO=$2
 ONLINE=$3
 
-if  [[ "${PLATFORM}" != "pi" ]] && [[ "${PLATFORM}" != "jetson" ]] && [[ "${PLATFORM}" != "rk3566" ]];  then
+if  [[ "${PLATFORM}" != "pi" ]] && [[ "${PLATFORM}" != "jetson" ]] && [[ "${PLATFORM}" != "rk3566" ]] && [[ "${PLATFORM}" != "x86" ]];  then
     echo "Usage: ./build.sh PLATFORM DIST"
     echo "or"
     echo ""
@@ -294,6 +294,44 @@ build_rk3566_kernel() {
 
 	
 }
+build_x86_kernel() {
+
+    
+	echo "Building x86_64 kernel"
+    KERNEL_MODULES_OUT=$LINUX_DIR/modules	
+    cd $LINUX_DIR
+	make defconfig
+
+	make -j $J_CORES Image
+    echo "zimage done"
+	make  -j $J_CORES --output-sync=target modules
+    echo "modules done"
+	
+	echo "Copy kernel"
+    
+    cp $LINUX_DIR/build/arch/x86/boot/Image "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel.img" || exit 1
+	echo "Copy kernel modules"
+	make INSTALL_MOD_PATH=${PACKAGE_DIR} modules_install
+    cd $LINUX_DIR
+	echo "Entering packaging Stage"
+    rm -r "${PACKAGE_DIR}/lib/firmware/*"
+	 # Build Realtek drivers
+ 	mkdir $SRC_DIR/workdir/mods/
+	cd $SRC_DIR/workdir/mods/
+
+	fetch_rtl8812au_driver    
+   	build_rtl8812au_driver
+	fetch_rtl8812bu_driver    
+ 	build_rtl8812bu_driver 
+
+        depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
+
+	cd $SRC_DIR
+    
+    
+
+	
+}
 
 prepare_build() {
     
@@ -323,6 +361,13 @@ prepare_build() {
     fi 
 
     if [[ "${PLATFORM}" == "rk3566" ]]; then
+      check_time
+      fetch_SBC_source
+      echo "Downloading additional modules and fixes"
+      mkdir $SRC_DIR/workdir/mods/
+      cd $SRC_DIR/workdir/mods/
+    fi 
+    if [[ "${PLATFORM}" == "x86" ]]; then
       check_time
       fetch_SBC_source
       echo "Downloading additional modules and fixes"
@@ -399,6 +444,12 @@ fi
 if [[ "${PLATFORM}" == "rk3566" ]]; then
     prepare_build
     build_rk3566_kernel
+    ls -a
+    
+fi
+if [[ "${PLATFORM}" == "x86" ]]; then
+    prepare_build
+    build_x86_kernel
     ls -a
     
 fi
