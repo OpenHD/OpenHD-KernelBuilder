@@ -320,6 +320,14 @@ prepare_build() {
 	fetch_v4l2loopback_driver
         cp -a v4l2loopback/. $JETSON_NANO_KERNEL_SOURCE/kernel/kernel-4.9/drivers/media/v4l2loopback/
     fi 
+
+    if [[ "${PLATFORM}" == "rk3566" ]]; then
+      check_time
+      fetch_SBC_source
+      echo "Downloading additional modules and fixes"
+      mkdir $SRC_DIR/workdir/mods/
+      cd $SRC_DIR/workdir/mods/
+    fi 
 }
 
 if [[ "${PLATFORM}" == "pi" ]]; then
@@ -383,6 +391,13 @@ fi
 if [[ "${PLATFORM}" == "jetson" ]]; then
     prepare_build
     build_jetson_kernel
+    ls -a
+    
+fi
+
+if [[ "${PLATFORM}" == "rk3566" ]]; then
+    prepare_build
+    build_rk3566_kernel
     ls -a
     
 fi
