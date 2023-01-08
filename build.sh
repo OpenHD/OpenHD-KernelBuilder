@@ -301,21 +301,9 @@ build_x86_kernel() {
     KERNEL_MODULES_OUT=$LINUX_DIR/modules	
     cd $LINUX_DIR
 	make defconfig
+    make -j $J_CORES
+    make -j $J_CORES INSTALL_MOD_PATH="${PACKAGE_DIR}" modules_install    
 
-	make -j $J_CORES Image
-    echo "zimage done"
-	make  -j $J_CORES --output-sync=target modules
-    echo "modules done"
-	
-	echo "Copy kernel"
-    
-    cp $LINUX_DIR/build/arch/x86/boot/Image "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel.img" || exit 1
-	echo "Copy kernel modules"
-	make INSTALL_MOD_PATH=${PACKAGE_DIR} modules_install
-    cd $LINUX_DIR
-	echo "Entering packaging Stage"
-    rm -r "${PACKAGE_DIR}/lib/firmware/*"
-	 # Build Realtek drivers
  	mkdir $SRC_DIR/workdir/mods/
 	cd $SRC_DIR/workdir/mods/
 
