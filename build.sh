@@ -255,11 +255,11 @@ build_rk3566_kernel() {
 
     cd $LINUX_DIR
 
-	make -C  ARCH=arm64 rockchip_linux_defconfig
+	make rockchip_linux_defconfig
 
-	make -C  ARCH=arm64 -j $J_CORES Image
+	make -j $J_CORES Image
     echo "zimage done"
-	make -C  ARCH=arm64 -j $J_CORES --output-sync=target modules
+	make  -j $J_CORES --output-sync=target modules
     echo "modules done"
 	
 	echo "Copy kernel"
