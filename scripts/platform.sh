@@ -100,7 +100,7 @@ function fetch_SBC_source() {
 		if [[ ! "$(ls -A ${LINUX_DIR})" ]]; then
 			mkdir -p $SRC_DIR/workdir
 			echo "Download the kernel source"
-			git clone --depth 1 ${KERNEL_REPO} ${LINUX_DIR}
+			git clone --depth 1 https://github.com/OpenHD/linux/ -b Rk3566 ${LINUX_DIR}
 			pushd ${LINUX_DIR}
 			popd
 		fi
