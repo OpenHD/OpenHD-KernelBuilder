@@ -105,6 +105,7 @@ function fetch_SBC_source() {
 	if [[ "${PLATFORM}" == "rk3566" ]]; then
 
 		if [[ ! "$(ls -A ${LINUX_DIR})" ]]; then
+ 			PACKAGE_ARCH=arm64
 			mkdir -p $SRC_DIR/workdir
 			echo "Download the kernel source"
 			git clone --depth 1 https://github.com/OpenHD/linux/ -b Rk3566 ${LINUX_DIR}
@@ -116,6 +117,7 @@ function fetch_SBC_source() {
 	if [[ "${PLATFORM}" == "x86" ]]; then
 
 		if [[ ! "$(ls -A ${LINUX_DIR})" ]]; then
+			PACKAGE_ARCH=x86_64
 			mkdir -p $SRC_DIR/workdir
 			echo "Download the kernel source"
 			git clone --depth 1 git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/jammy ${LINUX_DIR}

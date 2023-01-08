@@ -36,6 +36,13 @@ function package() {
             --before-install before-install.sh \
             -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
     fi
+    if [[ "${PLATFORM}" == "x86" ]]; then
+        cd ${SRC_DIR}
+        fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} \
+            --after-install after-install.sh \
+            --before-install before-install.sh \
+            -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
+    fi
 
     #
     # You can build packages and test them locally without tagging or uploading to the repo, which is only done for
