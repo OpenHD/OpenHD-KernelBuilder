@@ -5,7 +5,8 @@ DISTRO=$2
 ONLINE=$3
 
 if  [[ "${PLATFORM}" != "pi" ]] && [[ "${PLATFORM}" != "jetson" ]];  then
-    echo "Usage: ./build.sh pi bullseye"
+    echo "Usage: ./build.sh PLATFORM DIST"
+    echo "or"
     echo ""
     echo "Target kernels:"
     echo ""
@@ -55,7 +56,7 @@ EXFAT_BRANCH=openhd2
 
 
 SRC_DIR=$(pwd)
-	if [[ "${PLATFORM}" == "pi" ]]; then
+	if [[ "${PLATFORM}" != "jetson" ]]; then
 	LINUX_DIR=$(pwd)/workdir/linux-${PLATFORM}
 	else
 	LINUX_DIR=$(pwd)/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9
@@ -240,7 +241,58 @@ build_jetson_kernel() {
 
 	
 }
+build_rk3566_kernel() {
 
+    
+	echo "Building rockship 3566 kernel"
+    KERNEL_MODULES_OUT=$LINUX_DIR/modules	
+	export CROSS_COMPILE=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
+	
+    echo "Prepare additional drivers"
+
+    #downloading and including veye-driver-source
+    #not working,yet
+
+    cd $LINUX_DIR
+
+	make -C  ARCH=arm64 rockchip_linux_defconfig
+
+	make -C  ARCH=arm64 -j $J_CORES Image
+    echo "zimage done"
+	make -C  ARCH=arm64 -j $J_CORES --output-sync=target modules
+    echo "modules done"
+	
+	echo "Copy kernel"
+    cp $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/arch/arm64/boot/Image "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel.img" || exit 1
+	
+ 	echo "Copy kernel modules"
+	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra INSTALL_MOD_PATH=${PACKAGE_DIR} modules_install
+
+    cd $LINUX_DIR
+	echo "Entering packaging Stage"
+    rm -r "${PACKAGE_DIR}/lib/firmware/*"
+
+	
+
+	 # Build Realtek drivers
+ 	mkdir $SRC_DIR/workdir/mods/
+	cd $SRC_DIR/workdir/mods/
+
+	fetch_rtl8812au_driver    
+   	build_rtl8812au_driver
+	fetch_rtl8812bu_driver    
+ 	build_rtl8812bu_driver 
+
+	
+	
+        depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
+
+	cd $SRC_DIR
+    
+    
+
+	
+}
 
 prepare_build() {
     
