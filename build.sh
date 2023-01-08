@@ -263,10 +263,11 @@ build_rk3566_kernel() {
     echo "modules done"
 	
 	echo "Copy kernel"
-    cp $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/arch/arm64/boot/Image "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel.img" || exit 1
+    
+    cp $LINUX_DIR/build/arch/arm64/boot/Image "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel.img" || exit 1
 	
  	echo "Copy kernel modules"
-	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra INSTALL_MOD_PATH=${PACKAGE_DIR} modules_install
+	make INSTALL_MOD_PATH=${PACKAGE_DIR} modules_install
 
     cd $LINUX_DIR
 	echo "Entering packaging Stage"
