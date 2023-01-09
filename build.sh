@@ -300,8 +300,8 @@ build_x86_kernel() {
 	echo "Building x86_64 kernel"
     KERNEL_MODULES_OUT=$LINUX_DIR/modules	
     cd $LINUX_DIR
-	make defconfig
-    make -j $J_CORES
+	make x86_64_defconfig
+    make -j $J_CORES zImage modules dtbs
     make -j $J_CORES INSTALL_MOD_PATH="${PACKAGE_DIR}" modules_install    
     export INSTALL_PATH=${PACKAGE_DIR}
     make -j $J_CORES install    
