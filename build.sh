@@ -257,7 +257,7 @@ build_rk3566_kernel() {
 
 	make rockchip_linux_defconfig
 
-	make -j $J_CORES Image
+	make -j $J_CORES zImage modules dtbs
     echo "zimage done"
 	make  -j $J_CORES --output-sync=target modules
     echo "modules done"
