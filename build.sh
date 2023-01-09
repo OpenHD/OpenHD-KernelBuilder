@@ -257,7 +257,7 @@ build_rk3566_kernel() {
 
 	make rockchip_linux_defconfig
 
-	make -j $J_CORES zImage modules dtbs
+	make -j $J_CORES Image modules dtbs
     echo "zimage done"
 	make  -j $J_CORES --output-sync=target modules
     echo "modules done"
@@ -301,7 +301,7 @@ build_x86_kernel() {
     KERNEL_MODULES_OUT=$LINUX_DIR/modules	
     cd $LINUX_DIR
 	LANG=C fakeroot debian/rules binary-headers binary-generic binary-perarch
-    
+
 
  	mkdir $SRC_DIR/workdir/mods/
 	cd $SRC_DIR/workdir/mods/
