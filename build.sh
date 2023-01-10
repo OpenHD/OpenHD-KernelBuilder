@@ -297,11 +297,8 @@ if [[ "${PLATFORM}" == "pi" ]]; then
         git clone https://github.com/Seeed-Studio/seeed-linux-dtoverlays workdir/mods/seeed-linux-dtoverlays
         export RETERMINAL_DIR=workdir/mods/seeed-linux-dtoverlays
         cp -r $RETERMINAL_DIR/overlays/rpi/reTerminal* workdir/linux-pi/arch/arm/boot/dts/overlays/
-        # reTerminal-bridge-overlay.dts reTerminal-overlay.dts
-        #sed -i '285 i reTerminal-bridge-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-        #sed -i '286 i reTerminal-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-        echo 'dtbo-$(CONFIG_ARCH_BCM2835) += reTerminal-bridge-overlay.dtbo ' >> workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-        echo 'dtbo-$(CONFIG_ARCH_BCM2835) += reTerminal-overlay.dtbo ' >> workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+        sed -i '285 i reTerminal-bridge-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+        sed -i '286 i reTerminal-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
 
         echo "Set Overlays"
 

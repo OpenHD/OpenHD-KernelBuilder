@@ -2,9 +2,13 @@
 
 function fetch_reterminal_driver() {
 
-    if [[ ! "$(ls -A seeed-linux-dtoverlays)" ]]; then    
+    if [[ "${PLATFORM}" == "pi" ]]; then    
         echo "Download the reTerminal driver"
         git clone https://github.com/Seeed-Studio/seeed-linux-dtoverlays
+        mkdir -p ${PACKAGE_DIR}/usr/local/share/reterminal || exit 1
+        cp -rf seeed-linux-dtoverlays/modules/seeed-voicecard/wm8960_asound.state ${PACKAGE_DIR}/usr/local/share/reterminal/wm8960_asound.state || exit 1
+        cp -rf seeed-linux-dtoverlays/modules/seeed-voicecard/asound_2mic.conf ${PACKAGE_DIR}/usr/local/share/reterminal/asound_2mic.conf || exit 1
+        cp -rf $(pwd)/../../reTerminal_overlays.sh ${PACKAGE_DIR}/usr/local/bin/reTerminal_overlays.sh || exit 1
     fi
 }
 
@@ -23,6 +27,4 @@ function build_reterminal_driver() {
     
        popd
     fi
-    
-#overlay reTerminal reTerminal-bridge
 }
