@@ -92,6 +92,12 @@ build_pi_kernel() {
         # cp "${CONFIGS}/.config-${KERNEL_BRANCH}-${ISA}" ./.config || exit 1
         make clean
 
+        #add v4l2-loopback
+        echo "CONFIG_VIDEO_V4L2LOOPBACK=y" >> ${LINUX_DIR}/arch/arm/configs/bcm2711_defconfig
+        echo "CONFIG_VIDEO_V4L2LOOPBACK=y" >> ${LINUX_DIR}/arch/arm/configs/bcm2709_defconfig
+        echo "CONFIG_VIDEO_V4L2LOOPBACK=y" >> ${LINUX_DIR}/arch/arm/configs/bcmrpi_defconfig
+
+
         # yes "" | make oldconfig || exit 1
             if [[ "${ISA}" == "v7l" ]]; then
                 make clean
