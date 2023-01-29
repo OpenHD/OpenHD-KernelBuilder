@@ -129,7 +129,7 @@ build_pi_kernel() {
     build_rtl8812au_driver
     build_rtl8812bu_driver 
     build_rtl8188eus_driver
-    build_reterminal_driver
+
 
 
     depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
@@ -204,7 +204,8 @@ build_jetson_kernel() {
 	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra INSTALL_MOD_PATH=${PACKAGE_DIR} modules_install
 
     echo "Build DTB's Veye"
-    cp $RELEASE_PACK_DIR/dtbs/Nano/JetPack_4.6_Linux_JETSON_NANO_TARGETS/dts\ dtb/common/t210/* -r $NANO_DTS_PATH/
+    ls $RELEASE_PACK_DIR/dtbs/Nano/JetPack_4.6_Linux_JETSON_NANO_TARGETS/dts\ dtb/common/t210/
+    cp --verbose $RELEASE_PACK_DIR/dtbs/Nano/JetPack_4.6_Linux_JETSON_NANO_TARGETS/dts\ dtb/common/t210/* -r $NANO_DTS_PATH/
     cp $RELEASE_PACK_DIR/dtbs/Nano/JetPack_4.6_Linux_JETSON_NANO_TARGETS/dts\ dtb/VEYE-MIPI-327/tegra210-porg-plugin-manager.dtsi -r $NANO_DTS_PATH/porg/kernel-dts/porg-plugin-manager 
     export COMMON_DTS_PATH=$TEGRA_KERNEL_OUT/arch/arm64/boot/dts 
     make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES --output-sync=target dtbs
@@ -228,11 +229,16 @@ build_jetson_kernel() {
 	fetch_rtl8812au_driver    
    	build_rtl8812au_driver
 	fetch_rtl8812bu_driver    
- 	build_rtl8812bu_driver
+ 	build_rtl8812bu_driver 
 
+	
+	
         depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
 
 	cd $SRC_DIR
+    
+    
+
 	
 }
 
@@ -248,7 +254,6 @@ prepare_build() {
     fetch_rtl8812bu_driver
     fetch_rtl8188eus_driver
     fetch_v4l2loopback_driver
-    fetch_reterminal_driver
     fi 
 
     if [[ "${PLATFORM}" == "jetson" ]]; then
@@ -293,13 +298,6 @@ if [[ "${PLATFORM}" == "pi" ]]; then
         sed -i '283 i veyecam2m-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
         sed -i '284 i veye_mvcam-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
         sed -i '280,284/^/        /' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-
-        git clone https://github.com/Seeed-Studio/seeed-linux-dtoverlays workdir/mods/seeed-linux-dtoverlays
-        export RETERMINAL_DIR=workdir/mods/seeed-linux-dtoverlays
-        cp -r $RETERMINAL_DIR/overlays/rpi/reTerminal* workdir/linux-pi/arch/arm/boot/dts/overlays/
-        sed -i '285 i reTerminal-bridge-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-        sed -i '286 i reTerminal-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-
         echo "Set Overlays"
 
     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7
