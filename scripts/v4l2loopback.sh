@@ -18,3 +18,10 @@ if [[ "${PLATFORM}" == "pi" ]]; then
 fi
 
 }
+function build_v4l2loopback_driver() {
+    pushd v4l2loopback
+    make
+    mkdir -p $PACKAGE_DIR/test
+    make install DESTDIR=$PACKAGE_DIR/test
+    popd
+}

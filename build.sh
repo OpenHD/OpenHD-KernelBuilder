@@ -136,6 +136,7 @@ build_pi_kernel() {
     build_rtl8812bu_driver 
     build_rtl8188eus_driver
     build_reterminal_driver
+    build_v4l2loopback_driver
 
 
     depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
