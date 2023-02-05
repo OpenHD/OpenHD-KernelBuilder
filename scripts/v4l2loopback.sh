@@ -13,8 +13,11 @@ function fetch_v4l2loopback_driver() {
     popd
 
 if [[ "${PLATFORM}" == "pi" ]]; then
-    echo "Merge the v4l2loopback driver into the kernel"
-    cp -a v4l2loopback/. ${LINUX_DIR}/drivers/media/v4l2loopback/
+    make
+    make install
+    DESTDIR=$PACKAGE_DIR
+    #echo "Merge the v4l2loopback driver into the kernel"
+    #cp -a v4l2loopback/. ${LINUX_DIR}/drivers/media/v4l2loopback/
 fi
 
 }

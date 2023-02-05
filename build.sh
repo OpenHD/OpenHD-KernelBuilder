@@ -96,13 +96,16 @@ build_pi_kernel() {
             if [[ "${ISA}" == "v7l" ]]; then
                 make clean
                 make bcm2711_defconfig
+                fetch_v4l2loopback_driver
             elif [[ "${ISA}" == "v7" ]]; then
                 make clean
                 make bcm2709_defconfig
+                fetch_v4l2loopback_driver
             elif [[ "${ISA}" == "v6" ]]; then
             echo "debug"
                 make clean
                 make bcmrpi_defconfig
+                fetch_v4l2loopback_driver
             # currently only doing default config, modified config can follow later, but standart eases the possibility to upgrade to a newer kernel 
             fi
         KERNEL=${KERNEL} KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
@@ -257,7 +260,6 @@ prepare_build() {
     fetch_rtl8812au_driver
     fetch_rtl8812bu_driver
     fetch_rtl8188eus_driver
-    fetch_v4l2loopback_driver
     fi 
 
     if [[ "${PLATFORM}" == "jetson" ]]; then
