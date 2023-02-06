@@ -225,6 +225,7 @@ prepare_build() {
     if [[ "${PLATFORM}" == "pi" ]]; then
     check_time
     fetch_SBC_source
+        fetch_v4l2loopback_driver
     mkdir $SRC_DIR/workdir/mods/
     cd $SRC_DIR/workdir/mods/
     fi 
