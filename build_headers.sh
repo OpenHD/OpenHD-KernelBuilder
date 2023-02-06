@@ -86,7 +86,8 @@ build_pi_kernel() {
     echo "Building pi kernel headers"
 
     pushd ${LINUX_DIR}
-
+    
+        fetch_v4l2loopback_driver
         echo "Set kernel config"
         #needs to be customised again in the future
         # cp "${CONFIGS}/.config-${KERNEL_BRANCH}-${ISA}" ./.config || exit 1
