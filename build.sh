@@ -270,6 +270,15 @@ prepare_build() {
 	fetch_v4l2loopback_driver
         cp -a v4l2loopback/. $JETSON_NANO_KERNEL_SOURCE/kernel/kernel-4.9/drivers/media/v4l2loopback/
     fi 
+
+    
+    if [[ "${PLATFORM}" == "rock5" ]]; then
+      check_time
+      fetch_SBC_source
+      echo "Downloading additional modules and fixes"
+      mkdir $SRC_DIR/workdir/mods/
+	  cd $SRC_DIR/workdir/mods/
+     fi
 }
 
 if [[ "${PLATFORM}" == "pi" ]]; then
@@ -344,6 +353,7 @@ if [[ "${PLATFORM}" == "jetson" ]]; then
     
 fi
 if [[ "${PLATFORM}" == "rock5" ]]; then
+    prepare_build
     ls -a
     
 fi
