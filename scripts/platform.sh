@@ -24,10 +24,21 @@ function setup_platform_env() {
 		KERNEL_REPO=https://github.com/OpenHD/linux.git
 	fi
 		if [[ "${PLATFORM}" == "rock5" ]]; then
-		export ARCH=arm64
-		PACKAGE_ARCH=arm64
-		export CROSS_COMPILE=arm-linux-aarch64-
-		KERNEL_REPO=https://github.com/OpenHD/linux.git
+			mkdir -p $SRC_DIR/workdir
+			mkdir -p $SRC_DIR/workdir/tools
+			WorkDir=$(pwd)/workdir
+			Tools=$(pwd)/workdir/tools
+			
+			echo "Download the kernel tools"
+			cd $Tools
+			rm -Rf *
+			wget -q --show-progress --progress=bar:force:noscroll http://releases.linaro.org/components/toolchain/binaries/7.3-2018.05/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz
+			tar xf gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz
+
+			export ARCH=arm64
+			PACKAGE_ARCH=arm64
+			export CROSS_COMPILE=arm-linux-aarch64-
+			KERNEL_REPO=https://github.com/OpenHD/linux.git
 	fi
 
 	if [[ "${PLATFORM}" == "jetson" ]]; then
@@ -95,7 +106,6 @@ function fetch_SBC_source() {
 		if [[ "${PLATFORM}" == "rock5" ]]; then
 
 		if [[ ! "$(ls -A ${LINUX_DIR})" ]]; then
-			mkdir -p $SRC_DIR/workdir
 			echo "Download the kernel source"
 			git clone --depth 1 ${KERNEL_REPO} ${LINUX_DIR}
 			pushd ${LINUX_DIR}

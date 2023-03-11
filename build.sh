@@ -249,9 +249,8 @@ build_rock_kernel() {
 
     cd $SRC_DIR/workdir/linux-rock5
     ls -a
-	make -C ARCH=arm64 CROSS_COMPILE=${TOOLCHAIN_PREFIX} rockchip_linux_defconfig
-	make -C ARCH=arm64 CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES Image
-    echo "zimage done"
+	make rockchip_linux_defconfig
+    make -j8
     
     # Build Realtek drivers
  	mkdir $SRC_DIR/workdir/mods/
