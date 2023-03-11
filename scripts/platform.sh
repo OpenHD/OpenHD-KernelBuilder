@@ -23,6 +23,12 @@ function setup_platform_env() {
 		export CROSS_COMPILE=arm-linux-gnueabihf-
 		KERNEL_REPO=https://github.com/OpenHD/linux.git
 	fi
+		if [[ "${PLATFORM}" == "rock5" ]]; then
+		export ARCH=arm64
+		PACKAGE_ARCH=arm64
+		export CROSS_COMPILE=arm-linux-aarch64-
+		KERNEL_REPO=https://github.com/OpenHD/linux.git
+	fi
 
 	if [[ "${PLATFORM}" == "jetson" ]]; then
 		
@@ -85,7 +91,7 @@ function fetch_SBC_source() {
 		touch $WorkDir/jetsonkernelpatch
 		fi
 	fi
-	
+
 		if [[ "${PLATFORM}" == "rock5" ]]; then
 
 		if [[ ! "$(ls -A ${LINUX_DIR})" ]]; then
