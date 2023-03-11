@@ -114,7 +114,7 @@ build_pi_kernel() {
         KERNEL=${KERNEL} KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
 
         echo "Copy kernel modules"
-        make -j $J_CORES INSTALL_MOD_PATH="${PACKAGE_DIR}" modules_install || exit 1
+        make -j $J_CORES || exit 1
 	
 	    echo "Copy DTBs"
         cp arch/arm/boot/dts/*.dtb "${PACKAGE_DIR}/usr/local/share/openhd/kernel/dtb/" || exit 1
