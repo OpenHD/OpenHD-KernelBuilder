@@ -55,10 +55,10 @@ EXFAT_BRANCH=openhd2
 
 
 SRC_DIR=$(pwd)
-	if [[ "${PLATFORM}" == "pi" ]]; then
-	LINUX_DIR=$(pwd)/workdir/linux-${PLATFORM}
-	else
+	if [[ "${PLATFORM}" == "jetson" ]]; then
 	LINUX_DIR=$(pwd)/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9
+    else
+   	LINUX_DIR=$(pwd)/workdir/linux-${PLATFORM}
 	fi
 CONFIGS=$(pwd)/configs
 J_CORES=$(nproc)
@@ -340,6 +340,10 @@ fi
 if [[ "${PLATFORM}" == "jetson" ]]; then
     prepare_build
     build_jetson_kernel
+    ls -a
+    
+fi
+if [[ "${PLATFORM}" == "rock5" ]]; then
     ls -a
     
 fi
