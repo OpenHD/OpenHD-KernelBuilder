@@ -101,9 +101,9 @@ function package_headers() {
             echo "Pushing package to OpenHD repository"
             cloudsmith push deb openhd/openhd-2-3-evo/ubuntu/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
         fi
-    if [[ "${PLATFORM}" == "rock5" ]]; then
+        if [[ "${PLATFORM}" == "rock5" ]]; then
 	    git describe --exact-match HEAD >/dev/null 2>&1
-            echo "Pushing package to OpenHD repository"
+            echo "Pushing package to OpenHD repository for rock5"
             cloudsmith push deb openhd/openhd-2-3-evo/debian/bullseye ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
         fi
 
