@@ -37,6 +37,14 @@ function package() {
             -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
     fi
 
+    if [[ "${PLATFORM}" == "rock5" ]]; then
+
+        fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} \
+            --after-install after-install-jetson.sh \
+            --before-install before-install.sh \
+            -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
+    fi
+
     #
     # You can build packages and test them locally without tagging or uploading to the repo, which is only done for
     # releases. Note that we push the same kernel to multiple versions of the repo because there isn't much reason

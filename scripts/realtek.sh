@@ -52,8 +52,8 @@ function build_rtl8812au_driver() {
 		rm $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/net/wireless/realtek/rtl8812au/rtl8812au.ko
          	install -p -m 644 88XXau_wfb.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au/rtl8812au.ko" || exit 1
 	fi
-    	if [[ "${PLATFORM}" == "jetson" ]]; then
-		export KERNEL_VERSION="5.10"
+    	if [[ "${PLATFORM}" == "rock5" ]]; then
+		export KERNEL_VERSION="5.10.66-27-rockchip-gea60d388902d"
 		export CROSS_COMPILE=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
 	    make KSRC=${LINUX_DIR}/build -j $J_CORES M=$(pwd) modules || exit 1
 		mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au
