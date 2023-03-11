@@ -1,0 +1,71 @@
+name: build ROCK
+
+# Controls when the action will run. 
+# Triggers the workflow on push or pull request events but only for the master branch
+# Allows you to run this workflow manually from the Actions tab
+on: [push, pull_request, workflow_dispatch]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build-Rock5:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        PLATFORM: [rock5]
+        DISTRO: [bullseye]
+    env:
+      CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 10
+
+      - name: Install depencies
+        run: |
+          sudo apt update --allow-releaseinfo-change
+          sudo apt install bc bison ccache fakeroot flex git kmod libelf-dev libssl-dev make python3-pip gcc-10-aarch64-linux-gnu ruby
+          sudo gem install --no-document fpm
+          sudo pip3 install --upgrade cloudsmith-cli
+                
+      - name: Setup env
+        run: |
+          ccache --set-config=compiler_check=content && ccache --set-config=hash_dir=false
+          echo "DT=$(date +'%Y-%m-%d_%H%M')" >> $GITHUB_ENV
+          echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
+      
+      - name: Setup cache
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.ccache
+          key: ${{ runner.os }}-ccache
+          restore-keys: |
+            ${{ runner.os }}-ccache
+            ${{ runner.os }}-ccache-
+            
+  
+      - name: Building with logs 
+        run: |
+          bash buildwithlog.sh rock5 Radxa5B ONLINE
+          
+
+     
+      - name: Compose release filename
+        # https://stackoverflow.com/questions/58033366/how-to-get-current-branch-within-github-actions
+        run: echo "artifact_name=openhd-linux-${{ matrix.PLATFORM }}-${{ matrix.DISTRO }}-2.1_$(date '+%m%d')" >> $GITHUB_ENV
+        
+      - name: Package firmware ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }}
+        uses: 'actions/upload-artifact@v2'
+        with:
+          name: "${{ env.artifact_name }}"
+          path: |
+            *.deb
+            *.log
+          if-no-files-found: error
+     

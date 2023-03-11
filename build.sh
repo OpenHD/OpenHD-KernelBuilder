@@ -4,7 +4,7 @@ PLATFORM=$1
 DISTRO=$2
 ONLINE=$3
 
-if  [[ "${PLATFORM}" != "pi" ]] && [[ "${PLATFORM}" != "jetson" ]];  then
+if  [[ "${PLATFORM}" != "pi" ]] && [[ "${PLATFORM}" != "jetson" ]] && [[ "${PLATFORM}" != "rock5" ]];  then
     echo "Usage: ./build.sh pi bullseye"
     echo ""
     echo "Target kernels:"
