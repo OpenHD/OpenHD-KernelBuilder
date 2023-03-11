@@ -107,7 +107,7 @@ function fetch_SBC_source() {
 
 		if [[ ! "$(ls -A ${LINUX_DIR})" ]]; then
 			echo "Download the kernel source"
-			git clone --depth 1 ${KERNEL_REPO} ${LINUX_DIR}
+			git clone --depth 1 --branch stable-5.10-rock5 ${KERNEL_REPO} ${LINUX_DIR}
 			pushd ${LINUX_DIR}
 			popd
 		fi
