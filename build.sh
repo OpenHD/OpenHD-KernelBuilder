@@ -258,8 +258,8 @@ build_rock_kernel() {
 
 	fetch_rtl8812au_driver    
    	build_rtl8812au_driver
-	fetch_rtl8812bu_driver    
- 	build_rtl8812bu_driver
+	#fetch_rtl8812bu_driver    
+ 	#build_rtl8812bu_driver
 
     depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
 
