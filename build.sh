@@ -251,6 +251,12 @@ build_rock_kernel() {
     ls -a
 	make rockchip_linux_defconfig
     make -j $J_CORES 
+
+    echo "Copy DTBs"
+    cp arch/arm64/boot/dts/*.dtb "${PACKAGE_DIR}/usr/local/share/openhd/kernel/dtb/" || exit 1
+    cp arch/arm64/boot/dts/overlays/*.dtb* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || exit 1
+    cp arch/arm64/boot/dts/overlays/README "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || exit 1
+        
     
     # Build Realtek drivers
  	mkdir -p $SRC_DIR/workdir/mods/
@@ -302,7 +308,11 @@ prepare_build() {
       echo "Downloading additional modules and fixes"
       mkdir $SRC_DIR/workdir/mods/
 	  cd $SRC_DIR/workdir/mods/
-     fi
+      echo "Copy kernel7"
+	  pushd ${LINUX_DIR}
+	  ls -a
+	  cp arch/arm64/boot/Image "${PACKAGE_DIR}/boot/" || exit 1
+    fi
 }
 
 if [[ "${PLATFORM}" == "pi" ]]; then
