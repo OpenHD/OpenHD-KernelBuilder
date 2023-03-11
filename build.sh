@@ -250,7 +250,7 @@ build_rock_kernel() {
     cd $SRC_DIR/workdir/linux-rock5
     ls -a
 	make rockchip_linux_defconfig
-    make -j8
+    make -j $J_CORES INSTALL_MOD_PATH="${PACKAGE_DIR}" modules_install
     
     # Build Realtek drivers
  	mkdir $SRC_DIR/workdir/mods/
