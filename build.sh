@@ -248,9 +248,9 @@ build_rock_kernel() {
 	export CROSS_COMPILE=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
 
     cd $SRC_DIR/workdir/linux-rock5
-    
-	make -C kernel/kernel-4.9/ ARCH=arm64 CROSS_COMPILE=${TOOLCHAIN_PREFIX} rockchip_linux_defconfig
-	make -C kernel/kernel-4.9/ ARCH=arm64 CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES Image
+    ls -a
+	make -C ARCH=arm64 CROSS_COMPILE=${TOOLCHAIN_PREFIX} rockchip_linux_defconfig
+	make -C ARCH=arm64 CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES Image
     echo "zimage done"
     
     # Build Realtek drivers
