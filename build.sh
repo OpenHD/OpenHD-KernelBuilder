@@ -241,7 +241,32 @@ build_jetson_kernel() {
 	cd $SRC_DIR
 	
 }
+build_rock_kernel() {
 
+    
+	echo "Building RadxaRock5 kernel"	
+	export CROSS_COMPILE=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
+
+    cd $SRC_DIR/workdir/linux-rock5
+    
+	make -C kernel/kernel-4.9/ ARCH=arm64 CROSS_COMPILE=${TOOLCHAIN_PREFIX} rockchip_linux_defconfig
+	make -C kernel/kernel-4.9/ ARCH=arm64 CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES Image
+    echo "zimage done"
+    
+    # Build Realtek drivers
+ 	mkdir $SRC_DIR/workdir/mods/
+	cd $SRC_DIR/workdir/mods/
+
+	fetch_rtl8812au_driver    
+   	build_rtl8812au_driver
+	fetch_rtl8812bu_driver    
+ 	build_rtl8812bu_driver
+
+    depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
+
+	cd $SRC_DIR
+	
+}
 
 prepare_build() {
     
@@ -354,6 +379,7 @@ if [[ "${PLATFORM}" == "jetson" ]]; then
 fi
 if [[ "${PLATFORM}" == "rock5" ]]; then
     prepare_build
+    build_rock_kernel
     ls -a
     
 fi
