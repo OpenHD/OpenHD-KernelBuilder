@@ -268,10 +268,10 @@ build_rock_kernel() {
 	#fetch_rtl8812bu_driver    
  	#build_rtl8812bu_driver
 
-      echo "Copy kernel7"
+      echo "Copy kernel"
 	  pushd ${LINUX_DIR}
 	  ls -a
-	  cp arch/arm64/boot/Image "${PACKAGE_DIR}/boot/" || exit 1
+	  #cp arch/arm64/boot/Image "${PACKAGE_DIR}/boot/" || exit 1
 
     depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
 
