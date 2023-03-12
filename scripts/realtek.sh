@@ -57,7 +57,7 @@ function build_rtl8812au_driver() {
 		export CROSS_COMPILE=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
 	    make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
 		mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au
-        install -p -m 644 88XXau_wfb.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au/rtl8812au.ko" || exit 1
+        install -p -m 644 88XXau_wfb.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au/88XXau_wfb.ko" || exit 1
 	fi
 
 
