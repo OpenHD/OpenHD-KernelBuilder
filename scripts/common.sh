@@ -40,7 +40,7 @@ function package() {
     if [[ "${PLATFORM}" == "rock5" ]]; then
 
         fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} \
-            --after-install after-install-jetson.sh \
+            --after-install after-install-rock5.sh \
             --before-install before-install.sh \
             -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
     fi
