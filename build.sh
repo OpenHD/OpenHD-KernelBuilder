@@ -252,6 +252,7 @@ build_rock_kernel() {
 	make rockchip_linux_defconfig
     make -j $J_CORES 
 
+    tree
     echo "Copy DTBs"
     cp arch/arm64/boot/dts/*.dtb "${PACKAGE_DIR}/usr/local/share/openhd/kernel/dtb/" || true
     cp arch/arm64/boot/dts/overlays/*.dtb* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || true
