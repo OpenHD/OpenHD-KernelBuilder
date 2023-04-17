@@ -135,7 +135,7 @@ build_pi_kernel() {
     build_rtl8812au_driver
     build_rtl8812bu_driver 
     build_rtl8188eus_driver
-    build_reterminal_driver
+    #build_reterminal_driver
 
 
     depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
@@ -254,7 +254,7 @@ prepare_build() {
     fetch_rtl8812bu_driver
     fetch_rtl8188eus_driver
     fetch_v4l2loopback_driver
-    fetch_reterminal_driver
+    #fetch_reterminal_driver
     fi 
 
     if [[ "${PLATFORM}" == "jetson" ]]; then
