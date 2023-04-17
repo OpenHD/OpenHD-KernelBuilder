@@ -300,13 +300,13 @@ if [[ "${PLATFORM}" == "pi" ]]; then
         sed -i '284 i veye_mvcam-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
         sed -i '280,284/^/        /' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
 
-        git clone https://github.com/Seeed-Studio/seeed-linux-dtoverlays workdir/mods/seeed-linux-dtoverlays
-        export RETERMINAL_DIR=workdir/mods/seeed-linux-dtoverlays
-        cp -r $RETERMINAL_DIR/overlays/rpi/reTerminal* workdir/linux-pi/arch/arm/boot/dts/overlays/
-        sed -i '285 i reTerminal-bridge-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-        sed -i '286 i reTerminal-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+        #git clone https://github.com/Seeed-Studio/seeed-linux-dtoverlays workdir/mods/seeed-linux-dtoverlays
+        #export RETERMINAL_DIR=workdir/mods/seeed-linux-dtoverlays
+        #cp -r $RETERMINAL_DIR/overlays/rpi/reTerminal* workdir/linux-pi/arch/arm/boot/dts/overlays/
+        #sed -i '285 i reTerminal-bridge-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+        #sed -i '286 i reTerminal-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
 
-        echo "Set Overlays"
+        #echo "Set Overlays"
 
     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7
     prepare_build
