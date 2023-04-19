@@ -17,7 +17,7 @@ function init() {
 }
 
 function package() {
-    PACKAGE_NAME=openhd-linux-${PLATFORM}
+    PACKAGE_NAME=openhd-linux-unstable-${PLATFORM}
 
     VERSION="2.3.1-evo-$(date '+%m%d%H%M')-$(git rev-parse --short HEAD)"
 
@@ -64,7 +64,7 @@ function package() {
     fi
 }
 function package_headers() {
-    PACKAGE_NAME=openhd-linux-${PLATFORM}-headers
+    PACKAGE_NAME=openhd-linux-${PLATFORM}-unstable-headers
 
     VERSION="2.2.3-evo-$(date '+%m%d%H%M')-$(git rev-parse --short HEAD)"
     rm ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb >/dev/null 2>&1
