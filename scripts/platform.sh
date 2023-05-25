@@ -66,11 +66,8 @@ function fetch_SBC_source() {
 
 		if [[ ! "$(ls -A ${LINUX_DIR})" ]]; then
 			mkdir -p $SRC_DIR/workdir
-			echo "Download the kernel source now"
-			echo ${KERNEL_BRANCH}
-			echo ${KERNEL_REPO}
-			echo "test done"
-			git clone --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_REPO} ${LINUX_DIR}
+			echo "Download the kernel source"
+			git clone --depth 1 --branch rpi-6.1.y ${KERNEL_REPO} ${LINUX_DIR}
 			pushd ${LINUX_DIR}
 			popd
 		fi
