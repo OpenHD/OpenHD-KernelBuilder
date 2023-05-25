@@ -66,7 +66,7 @@ function fetch_SBC_source() {
 
 		if [[ ! "$(ls -A ${LINUX_DIR})" ]]; then
 			mkdir -p $SRC_DIR/workdir
-			echo "Download the kernel source"
+			echo "Download the kernel source now"
 			echo ${KERNEL_BRANCH}
 			echo ${KERNEL_REPO}
 			echo "test done"
