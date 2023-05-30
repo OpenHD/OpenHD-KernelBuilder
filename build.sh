@@ -105,9 +105,6 @@ build_pi_kernel() {
             elif [[ "${ISA}" == "v7" ]]; then
                 make clean
                 make bcm2709_defconfig
-            elif [[ "${ISA}" == "v6" ]]; then
-            echo "debug"
-            echo "we dont support armv6"
             # currently only doing default config, modified config can follow later, but standart eases the possibility to upgrade to a newer kernel 
             fi
         KERNEL=${KERNEL} KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
@@ -323,15 +320,6 @@ if [[ "${PLATFORM}" == "pi" ]]; then
 	 pushd ${LINUX_DIR}
 	 ls -a
       cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7l.img" || exit 1
-
-
-     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v6
-     prepare_build
-     build_pi_kernel
-	 echo "Copy kernel6"
-	 pushd ${LINUX_DIR}
-	 ls -a
-      cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel.img" || exit 1
 
 
 fi
