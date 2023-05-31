@@ -289,18 +289,6 @@ if [[ "${PLATFORM}" == "pi" ]]; then
 	ln -s /usr/src/6.1.29-rpi ${PACKAGE_DIR}/lib/modules/6.1.29-v7l+/build
 	ls -a
 
-
-    source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v6
-    prepare_build
-    build_pi_kernel
-	echo "Copy kernel6"
-	pushd ${LINUX_DIR}
-	mkdir -p ${PACKAGE_DIR}/lib/modules/6.1.29-v6+/
-	ln -s /usr/src/6.1.29-common/ ${PACKAGE_DIR}/lib/modules/6.1.29-v6+/source
-	ln -s /usr/src/6.1.29-rpi ${PACKAGE_DIR}/lib/modules/6.1.29-v6+/build
-	ls -a
-
-
 fi
 
 if [[ "${PLATFORM}" == "jetson" ]]; then
