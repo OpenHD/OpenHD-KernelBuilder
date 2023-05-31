@@ -272,6 +272,7 @@ if [[ "${PLATFORM}" == "pi" ]]; then
 	sudo cp -r Makefile ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
 	sudo cp -r .kernelvariables ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
 	sudo cp -r .config ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
+    sudo cp -r * ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
 	sudo rm -Rf ${PACKAGE_DIR}/etc
 	sudo rm -Rf ${PACKAGE_DIR}/boot
 	sudo rm -Rf ${PACKAGE_DIR}/lib/firmware
