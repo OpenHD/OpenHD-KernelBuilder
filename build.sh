@@ -283,7 +283,7 @@ if [[ "${PLATFORM}" == "pi" ]]; then
          #copy drivers, not copying the makefile (the makefile will make the kernel not build)
          cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-6.1.y/*.c workdir/linux-pi/drivers/media/i2c/
          cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-6.1.y/*.h workdir/linux-pi/drivers/media/i2c/
-         echo 'obj-m += veye_mvcam.o veye327.o veyecam2m.o cssc132.o' >> workdir/linux-pi/drivers/media/i2c/Makefile
+         echo 'obj-m += veye_mvcam.o veyecam2m.o cssc132.o' >> workdir/linux-pi/drivers/media/i2c/Makefile
          cp -r additional/Kconfig workdir/linux-pi/drivers/media/i2c/
          #copying the dts-files
          cp -r $RELEASE_PACK_DIR/driver_source/dts/rpi-6.1.y/* workdir/linux-pi/arch/arm/boot/dts/overlays/
