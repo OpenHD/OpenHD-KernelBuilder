@@ -255,13 +255,13 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     build_pi_kernel
 	echo "Copy kernel7"
 	pushd ${LINUX_DIR}
-	mkdir -p /usr/src/6.1.29-common
-	mkdir -p /usr/src/6.1.29-rpi
-	mkdir -p ${PACKAGE_DIR}/lib/modules/6.1.29-v7+/
+	sudo mkdir -p /usr/src/6.1.29-common
+	sudo mkdir -p /usr/src/6.1.29-rpi
+	sudo mkdir -p ${PACKAGE_DIR}/lib/modules/6.1.29-v7+/
 	ln -s /usr/src/6.1.29-common/ ${PACKAGE_DIR}/lib/modules/6.1.29-v7+/source
 	ln -s /usr/src/6.1.29-rpi ${PACKAGE_DIR}/lib/modules/6.1.29-v7+/build
-	mkdir -p ${PACKAGE_DIR}/usr/src/6.1.29-rpi/include
-	mkdir -p ${PACKAGE_DIR}/usr/src/6.1.29-rpi/arch/arm
+	sudo mkdir -p ${PACKAGE_DIR}/usr/src/6.1.29-rpi/include
+	sudo mkdir -p ${PACKAGE_DIR}/usr/src/6.1.29-rpi/arch/arm
 	echo "$pwd"
 	cp -r include/generated ${PACKAGE_DIR}/usr/src/6.1.29-rpi/include
 	cp -r include/config ${PACKAGE_DIR}/usr/src/6.1.29-rpi/include
@@ -284,7 +284,7 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     build_pi_kernel
 	echo "Copy kernel7l"
 	pushd ${LINUX_DIR}
-	mkdir -p ${PACKAGE_DIR}/lib/modules/6.1.29-v7l+/
+	sudo mkdir -p ${PACKAGE_DIR}/lib/modules/6.1.29-v7l+/
 	ln -s /usr/src/6.1.29-common/ ${PACKAGE_DIR}/lib/modules/6.1.29-v7l+/source
 	ln -s /usr/src/6.1.29-rpi ${PACKAGE_DIR}/lib/modules/6.1.29-v7l+/build
 	ls -a
