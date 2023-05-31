@@ -255,23 +255,23 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     build_pi_kernel
 	echo "Copy kernel7"
 	pushd ${LINUX_DIR}
-	mkdir -p /usr/src/5.15.74-common
-	mkdir -p /usr/src/5.15.74-rpi
-	mkdir -p ${PACKAGE_DIR}/lib/modules/5.15.74-v7+/
-	ln -s /usr/src/5.15.74-common/ ${PACKAGE_DIR}/lib/modules/5.15.74-v7+/source
-	ln -s /usr/src/5.15.74-rpi ${PACKAGE_DIR}/lib/modules/5.15.74-v7+/build
-	mkdir -p ${PACKAGE_DIR}/usr/src/5.15.74-rpi/include
-	mkdir -p ${PACKAGE_DIR}/usr/src/5.15.74-rpi/arch/arm
+	mkdir -p /usr/src/6.1.29-common
+	mkdir -p /usr/src/6.1.29-rpi
+	mkdir -p ${PACKAGE_DIR}/lib/modules/6.1.29-v7+/
+	ln -s /usr/src/6.1.29-common/ ${PACKAGE_DIR}/lib/modules/6.1.29-v7+/source
+	ln -s /usr/src/6.1.29-rpi ${PACKAGE_DIR}/lib/modules/6.1.29-v7+/build
+	mkdir -p ${PACKAGE_DIR}/usr/src/6.1.29-rpi/include
+	mkdir -p ${PACKAGE_DIR}/usr/src/6.1.29-rpi/arch/arm
 	echo "$pwd"
-	cp -r include/generated ${PACKAGE_DIR}/usr/src/5.15.74-rpi/include
-	cp -r include/config ${PACKAGE_DIR}/usr/src/5.15.74-rpi/include
-	cp -r arch/arm ${PACKAGE_DIR}/usr/src/5.15.74-rpi/arch/
-	cp -r tools ${PACKAGE_DIR}/usr/src/5.15.74-rpi/
-	cp -r scripts ${PACKAGE_DIR}/usr/src/5.15.74-rpi/
-	cp -r Module.symvers ${PACKAGE_DIR}/usr/src/5.15.74-rpi/
-	cp -r Makefile ${PACKAGE_DIR}/usr/src/5.15.74-rpi/
-	cp -r .kernelvariables ${PACKAGE_DIR}/usr/src/5.15.74-rpi/
-	cp -r .config ${PACKAGE_DIR}/usr/src/5.15.74-rpi/
+	cp -r include/generated ${PACKAGE_DIR}/usr/src/6.1.29-rpi/include
+	cp -r include/config ${PACKAGE_DIR}/usr/src/6.1.29-rpi/include
+	cp -r arch/arm ${PACKAGE_DIR}/usr/src/6.1.29-rpi/arch/
+	cp -r tools ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
+	cp -r scripts ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
+	cp -r Module.symvers ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
+	cp -r Makefile ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
+	cp -r .kernelvariables ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
+	cp -r .config ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
 	rm -Rf ${PACKAGE_DIR}/etc
 	rm -Rf ${PACKAGE_DIR}/boot
 	rm -Rf ${PACKAGE_DIR}/lib/firmware
@@ -284,9 +284,9 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     build_pi_kernel
 	echo "Copy kernel7l"
 	pushd ${LINUX_DIR}
-	mkdir -p ${PACKAGE_DIR}/lib/modules/5.15.74-v7l+/
-	ln -s /usr/src/5.15.74-common/ ${PACKAGE_DIR}/lib/modules/5.15.74-v7l+/source
-	ln -s /usr/src/5.15.74-rpi ${PACKAGE_DIR}/lib/modules/5.15.74-v7l+/build
+	mkdir -p ${PACKAGE_DIR}/lib/modules/6.1.29-v7l+/
+	ln -s /usr/src/6.1.29-common/ ${PACKAGE_DIR}/lib/modules/6.1.29-v7l+/source
+	ln -s /usr/src/6.1.29-rpi ${PACKAGE_DIR}/lib/modules/6.1.29-v7l+/build
 	ls -a
 
 
@@ -295,9 +295,9 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     build_pi_kernel
 	echo "Copy kernel6"
 	pushd ${LINUX_DIR}
-	mkdir -p ${PACKAGE_DIR}/lib/modules/5.15.74-v6+/
-	ln -s /usr/src/5.15.74-common/ ${PACKAGE_DIR}/lib/modules/5.15.74-v6+/source
-	ln -s /usr/src/5.15.74-rpi ${PACKAGE_DIR}/lib/modules/5.15.74-v6+/build
+	mkdir -p ${PACKAGE_DIR}/lib/modules/6.1.29-v6+/
+	ln -s /usr/src/6.1.29-common/ ${PACKAGE_DIR}/lib/modules/6.1.29-v6+/source
+	ln -s /usr/src/6.1.29-rpi ${PACKAGE_DIR}/lib/modules/6.1.29-v6+/build
 	ls -a
 
 
