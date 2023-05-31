@@ -258,24 +258,24 @@ if [[ "${PLATFORM}" == "pi" ]]; then
 	sudo mkdir -p /usr/src/6.1.29-common
 	sudo mkdir -p /usr/src/6.1.29-rpi
 	sudo mkdir -p ${PACKAGE_DIR}/lib/modules/6.1.29-v7+/
-	ln -s /usr/src/6.1.29-common/ ${PACKAGE_DIR}/lib/modules/6.1.29-v7+/source
-	ln -s /usr/src/6.1.29-rpi ${PACKAGE_DIR}/lib/modules/6.1.29-v7+/build
+	sudo ln -s /usr/src/6.1.29-common/ ${PACKAGE_DIR}/lib/modules/6.1.29-v7+/source
+	sudo ln -s /usr/src/6.1.29-rpi ${PACKAGE_DIR}/lib/modules/6.1.29-v7+/build
 	sudo mkdir -p ${PACKAGE_DIR}/usr/src/6.1.29-rpi/include
 	sudo mkdir -p ${PACKAGE_DIR}/usr/src/6.1.29-rpi/arch/arm
 	echo "$pwd"
-	cp -r include/generated ${PACKAGE_DIR}/usr/src/6.1.29-rpi/include
-	cp -r include/config ${PACKAGE_DIR}/usr/src/6.1.29-rpi/include
-	cp -r arch/arm ${PACKAGE_DIR}/usr/src/6.1.29-rpi/arch/
-	cp -r tools ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
-	cp -r scripts ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
-	cp -r Module.symvers ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
-	cp -r Makefile ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
-	cp -r .kernelvariables ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
-	cp -r .config ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
-	rm -Rf ${PACKAGE_DIR}/etc
-	rm -Rf ${PACKAGE_DIR}/boot
-	rm -Rf ${PACKAGE_DIR}/lib/firmware
-	rm -Rf ${PACKAGE_DIR}/usr/local
+	sudo cp -r include/generated ${PACKAGE_DIR}/usr/src/6.1.29-rpi/include
+	sudo cp -r include/config ${PACKAGE_DIR}/usr/src/6.1.29-rpi/include
+	sudo cp -r arch/arm ${PACKAGE_DIR}/usr/src/6.1.29-rpi/arch/
+	sudo cp -r tools ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
+	sudo cp -r scripts ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
+	sudo cp -r Module.symvers ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
+	sudo cp -r Makefile ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
+	sudo cp -r .kernelvariables ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
+	sudo cp -r .config ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
+	sudo rm -Rf ${PACKAGE_DIR}/etc
+	sudo rm -Rf ${PACKAGE_DIR}/boot
+	sudo rm -Rf ${PACKAGE_DIR}/lib/firmware
+	sudo rm -Rf ${PACKAGE_DIR}/usr/local
 	ls -a
 
 
@@ -285,9 +285,9 @@ if [[ "${PLATFORM}" == "pi" ]]; then
 	echo "Copy kernel7l"
 	pushd ${LINUX_DIR}
 	sudo mkdir -p ${PACKAGE_DIR}/lib/modules/6.1.29-v7l+/
-	ln -s /usr/src/6.1.29-common/ ${PACKAGE_DIR}/lib/modules/6.1.29-v7l+/source
-	ln -s /usr/src/6.1.29-rpi ${PACKAGE_DIR}/lib/modules/6.1.29-v7l+/build
-	ls -a
+	sudo ln -s /usr/src/6.1.29-common/ ${PACKAGE_DIR}/lib/modules/6.1.29-v7l+/source
+	sudo ln -s /usr/src/6.1.29-rpi ${PACKAGE_DIR}/lib/modules/6.1.29-v7l+/build
+	sudo ls -a
 
 fi
 
