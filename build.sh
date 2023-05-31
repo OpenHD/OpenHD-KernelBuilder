@@ -288,7 +288,6 @@ if [[ "${PLATFORM}" == "pi" ]]; then
          #copying the dts-files
          cp -r $RELEASE_PACK_DIR/driver_source/dts/rpi-6.1.y/* workdir/linux-pi/arch/arm/boot/dts/overlays/
          rm workdir/linux-pi/arch/arm/boot/dts/overlays/csimx307-dual-cm4-overlay*
-         sed -i '280 i csimx307-dual-cm4-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
          sed -i '280 i csimx307-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
          sed -i '281 i cssc132-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
          sed -i '282 i veyecam2m-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
