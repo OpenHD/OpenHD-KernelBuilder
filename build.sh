@@ -391,7 +391,6 @@ fi
 if [[ "${PLATFORM}" == "rock5" ]]; then
     prepare_build
     build_rock_kernel
-    ls -a
     
 fi
 copy_overlay
