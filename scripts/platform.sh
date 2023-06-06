@@ -38,7 +38,7 @@ function setup_platform_env() {
 			export ARCH=arm64
 			PACKAGE_ARCH=arm64
 			export CROSS_COMPILE=arm-linux-aarch64-
-			KERNEL_REPO=https://github.com/OpenHD/linux.git
+			KERNEL_REPO=https://github.com/radxa/kernel/
 	fi
 
 	if [[ "${PLATFORM}" == "jetson" ]]; then
