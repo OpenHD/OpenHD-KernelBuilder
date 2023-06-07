@@ -245,6 +245,7 @@ build_rock_kernel() {
 
     
 	echo "Building RadxaRock5 kernel"	
+    export ARCH=arm64
 	export CROSS_COMPILE=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
 
     cd $SRC_DIR/workdir/linux-rock5
@@ -252,12 +253,11 @@ build_rock_kernel() {
 	make rockchip_linux_defconfig
     make -j $J_CORES 
 
-    tree
     echo "Copy DTBs"
-    cp arch/arm64/boot/dts/*.dtb "${PACKAGE_DIR}/usr/local/share/openhd/kernel/dtb/" || true
-    cp arch/arm64/boot/dts/overlays/*.dtb* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || true
-    cp arch/arm64/boot/dts/overlays/README "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || true
-        
+    cp arch/arm64/boot/dts/rockchip/*.dtb "${PACKAGE_DIR}/usr/local/share/openhd/kernel/dtb/" || true
+    cp arch/arm64/boot/dts/rockchip/overlays/*.dtb* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || true
+    cp arch/arm64/boot/dts/rockchip/overlays/README "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || true
+    cp arch/arm64/boot/Image ${PACKAGE_DIR}/usr/local/share/openhd/kernel/
     
     # Build Realtek drivers
  	mkdir -p $SRC_DIR/workdir/mods/
