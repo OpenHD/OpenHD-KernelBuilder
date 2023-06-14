@@ -30,7 +30,7 @@ RTL_8812BU_REPO=https://github.com/OpenHD/rtl88x2bu
 RTL_8812BU_BRANCH=main
 # Testing Driver, not verified, yet
 
-RTL_8188EUS_REPO=https://github.com/aircrack-ng/rtl8188eus
+RTL_8188EUS_REPO=https://github.com/gglluukk/rtl8188eus
 RTL_8188EUS_BRANCH=v5.3.9
 # Testing Driver not stable, yet
 
@@ -105,10 +105,6 @@ build_pi_kernel() {
             elif [[ "${ISA}" == "v7" ]]; then
                 make clean
                 make bcm2709_defconfig
-            elif [[ "${ISA}" == "v6" ]]; then
-            echo "debug"
-                make clean
-                make bcmrpi_defconfig
             # currently only doing default config, modified config can follow later, but standart eases the possibility to upgrade to a newer kernel 
             fi
         KERNEL=${KERNEL} KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
@@ -279,27 +275,24 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     fetch_SBC_source
     ls -a
     echo $(pwd)
-        ##veye v4l2
-        git clone https://github.com/openhd/raspberrypi_v4l2 workdir/mods/raspberrypi_v4l2
-        export RELEASE_PACK_DIR=workdir/mods/raspberrypi_v4l2
-        ls -a
-        ls -a workdir/mods/raspberrypi_v4l2
-        #copy drivers, not copying the makefile (the makefile will make the kernel not build)
-        cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-5.15_all/*.c workdir/linux-pi/drivers/media/i2c/
-        cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-5.15_all/*.h workdir/linux-pi/drivers/media/i2c/
-        echo 'obj-m += veye_mvcam.o veye327.o veyecam2m.o csimx307.o cssc132.o' >> workdir/linux-pi/drivers/media/i2c/Makefile
-        cp -r additional/Kconfig workdir/linux-pi/drivers/media/i2c/
-        #copying the dts-files
-        cp -r $RELEASE_PACK_DIR/driver_source/dts/rpi-5.15.y/* workdir/linux-pi/arch/arm/boot/dts/overlays/
-        rm workdir/linux-pi/arch/arm/boot/dts/overlays/csimx307-dual-cm4-overlay*
-        #sed -i '280 i csimx307-dual-cm4-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-        sed -i '280 i csimx307-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-        sed -i '281 i cssc132-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-        sed -i '282 i veye327-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-        sed -i '283 i veyecam2m-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-        sed -i '284 i veye_mvcam-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-        sed -i '280,284/^/        /' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-
+         ##veye v4l2
+         git clone https://github.com/veyeimaging/raspberrypi_v4l2 workdir/mods/raspberrypi_v4l2
+         export RELEASE_PACK_DIR=workdir/mods/raspberrypi_v4l2
+         ls -a
+         ls -a workdir/mods/raspberrypi_v4l2
+         #copy drivers, not copying the makefile (the makefile will make the kernel not build)
+         cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-6.1.y/*.c workdir/linux-pi/drivers/media/i2c/
+         cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-6.1.y/*.h workdir/linux-pi/drivers/media/i2c/
+         echo 'obj-m += veye_mvcam.o veyecam2m.o cssc132.o' >> workdir/linux-pi/drivers/media/i2c/Makefile
+         cp -r additional/Kconfig workdir/linux-pi/drivers/media/i2c/
+         #copying the dts-files
+         cp -r $RELEASE_PACK_DIR/driver_source/dts/rpi-6.1.y/* workdir/linux-pi/arch/arm/boot/dts/overlays/
+         rm workdir/linux-pi/arch/arm/boot/dts/overlays/csimx307-dual-cm4-overlay*
+         sed -i '280 i csimx307-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+         sed -i '281 i cssc132-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+         sed -i '282 i veyecam2m-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+         sed -i '283 i veye_mvcam-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+         sed -i '280,283/^/        /' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
         #git clone https://github.com/Seeed-Studio/seeed-linux-dtoverlays workdir/mods/seeed-linux-dtoverlays
         #export RETERMINAL_DIR=workdir/mods/seeed-linux-dtoverlays
         #cp -r $RETERMINAL_DIR/overlays/rpi/reTerminal* workdir/linux-pi/arch/arm/boot/dts/overlays/
@@ -324,15 +317,6 @@ if [[ "${PLATFORM}" == "pi" ]]; then
 	 pushd ${LINUX_DIR}
 	 ls -a
       cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7l.img" || exit 1
-
-
-     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v6
-     prepare_build
-     build_pi_kernel
-	 echo "Copy kernel6"
-	 pushd ${LINUX_DIR}
-	 ls -a
-      cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel.img" || exit 1
 
 
 fi

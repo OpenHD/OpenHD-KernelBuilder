@@ -19,11 +19,15 @@ function init() {
 function package() {
     PACKAGE_NAME=openhd-linux-${PLATFORM}
 
-    VERSION="2.3.1-evo-$(date '+%m%d%H%M')-$(git rev-parse --short HEAD)"
+    VERSION="2.3.5-evo-$(date '+%m%d%H%M')-$(git rev-parse --short HEAD)"
 
     rm ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb >/dev/null 2>&1
     if [[ "${PLATFORM}" == "pi" ]]; then
         cd ${SRC_DIR}
+        rm -Rf ${PACKAGE_DIR}/lib/modules/6.1.29-v7+/source
+        rm -Rf ${PACKAGE_DIR}/lib/modules/6.1.29-v7+/build
+        rm -Rf ${PACKAGE_DIR}/lib/modules/6.1.29-v7l+/source
+        rm -Rf ${PACKAGE_DIR}/lib/modules/6.1.29-v7l+/build
         fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} \
             --after-install after-install.sh \
             --before-install before-install.sh \
