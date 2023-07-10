@@ -40,7 +40,9 @@ jobs:
       - name: Build ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }}
         run: |
           echo "starting build"
-          git clone --recursive git://git.launchpad.net/~ubuntu-kernel-stable/+git/jammy
+          git clone --recursive --depth=1 git://git.launchpad.net/~ubuntu-kernel-stable/+git/jammy
+          ls -a
+          cd *
           chmod a+x debian/rules
           chmod a+x debian/scripts/*
           chmod a+x debian/scripts/misc/*
