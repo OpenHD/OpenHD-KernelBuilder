@@ -47,6 +47,7 @@ jobs:
           chmod a+x debian/scripts/*
           chmod a+x debian/scripts/misc/*
           LANG=C fakeroot debian/rules clean
+          make defconfig
           LANG=C fakeroot debian/rules binary
 
             
