@@ -29,8 +29,7 @@ jobs:
       - name: Install depencies
         run: |
           sudo apt update
-          sudo apt upgrade
-          sudo apt install build-dep linux linux-image-$(uname -r) libncurses-dev gawk flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf llvm git
+          sudo apt install libncurses-dev gawk flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf llvm git
                 
       - name: Setup env
         run: |
