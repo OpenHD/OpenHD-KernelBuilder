@@ -29,8 +29,7 @@ jobs:
       - name: Install depencies
         run: |
           sudo apt update
-          apt-get source linux-image-unsigned-$(uname -r)
-          sudo apt install libncurses-dev libcap-dev gawk flex bison debhelper openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf llvm git
+          sudo apt install libncurses-dev libcap-dev gawk flex bison debhelper openssl python3-docutils libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf llvm git
                 
       - name: Setup env
         run: |
