@@ -2,7 +2,7 @@
 
 mkdir -p /boot/overlays
 
-cp -a /usr/local/share/openhd/kernel/* /boot/
+cp -af /usr/local/share/openhd/kernel/* /boot/
 mv /boot/kernel.img /boot/Image
 
    sudo rm -f /boot/dtb/*

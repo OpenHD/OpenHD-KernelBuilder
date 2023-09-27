@@ -27,7 +27,7 @@ RTL_8812AU_REPO=https://github.com/svpcom/rtl8812au.git
 RTL_8812AU_BRANCH=v5.2.20
 
 RTL_8812BU_REPO=hhttps://github.com/OpenHD/rtl88x2bu
-RTL_8812BU_BRANCH=main
+RTL_8812BU_BRANCH=master
 # Testing Driver, not verified, yet
 
 RTL_8188EUS_REPO=https://github.com/aircrack-ng/rtl8188eus
@@ -66,7 +66,7 @@ PACKAGE_DIR=$(pwd)/package
 
 # load helper scripts
 for File in scripts/*.sh; do
-    source ${File}
+    source ${File} || exit 1
     echo "LOAD ${File}"
 done
 
@@ -238,10 +238,10 @@ prepare_build() {
 	cd $SRC_DIR/workdir/mods/
      echo "Download the exfat driver"
       git clone ${EXFAT_REPO}
-        cp -a exfat-linux/. $JETSON_NANO_KERNEL_SOURCE/kernel/kernel-4.9/fs/exfat/
+        cp -af exfat-linux/. $JETSON_NANO_KERNEL_SOURCE/kernel/kernel-4.9/fs/exfat/ || exit 1
      echo "Download the v4l2loopback_driver"
 	fetch_v4l2loopback_driver
-        cp -a v4l2loopback/. $JETSON_NANO_KERNEL_SOURCE/kernel/kernel-4.9/drivers/media/v4l2loopback/
+        cp -af v4l2loopback/. $JETSON_NANO_KERNEL_SOURCE/kernel/kernel-4.9/drivers/media/v4l2loopback/ || exit 1
     fi 
 }
 

@@ -1,5 +1,4 @@
 #!/bin/bash
-
 PLATFORM=$1
 DISTRO=$2
 ONLINE=$3
@@ -27,7 +26,7 @@ RTL_8812AU_REPO=https://github.com/OpenHD/rtl8812au
 RTL_8812AU_BRANCH=v5.2.20
 
 RTL_8812BU_REPO=https://github.com/OpenHD/rtl88x2bu
-RTL_8812BU_BRANCH=main
+RTL_8812BU_BRANCH=master
 # Testing Driver, not verified, yet
 
 RTL_8188EUS_REPO=https://github.com/gglluukk/rtl8188eus
@@ -90,7 +89,7 @@ build_pi_kernel() {
         echo "Set kernel config"
         # needs to be customised again in the future
         # cp "${CONFIGS}/.config-${KERNEL_BRANCH}-${ISA}" ./.config || exit 1
-        make clean
+        make clean || exit 1
 
         #add v4l2-loopback
         echo "CONFIG_VIDEO_V4L2LOOPBACK=y" >> ${LINUX_DIR}/arch/arm/configs/bcm2711_defconfig
@@ -100,11 +99,11 @@ build_pi_kernel() {
 
         # yes "" | make oldconfig || exit 1
             if [[ "${ISA}" == "v7l" ]]; then
-                make clean
-                make bcm2711_defconfig
+                make clean || exit 1
+                make bcm2711_defconfig || exit 1
             elif [[ "${ISA}" == "v7" ]]; then
-                make clean
-                make bcm2709_defconfig
+                make clean || exit 1
+                make bcm2709_defconfig || exit 1
             # currently only doing default config, modified config can follow later, but standart eases the possibility to upgrade to a newer kernel 
             fi
         KERNEL=${KERNEL} KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
@@ -113,9 +112,9 @@ build_pi_kernel() {
         make -j $J_CORES INSTALL_MOD_PATH="${PACKAGE_DIR}" modules_install || exit 1
 	
 	    echo "Copy DTBs"
-        cp arch/arm/boot/dts/*.dtb "${PACKAGE_DIR}/usr/local/share/openhd/kernel/dtb/" || exit 1
-        cp arch/arm/boot/dts/overlays/*.dtb* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || exit 1
-        cp arch/arm/boot/dts/overlays/README "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || exit 1
+        cp -f arch/arm/boot/dts/*.dtb "${PACKAGE_DIR}/usr/local/share/openhd/kernel/dtb/" || exit 1
+        cp -f arch/arm/boot/dts/overlays/*.dtb* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || exit 1
+        cp -f arch/arm/boot/dts/overlays/README "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || exit 1
         
         # prevents the inclusion of firmware that can conflict with normal firmware packages, dpkg will complain. there
         # should be a kernel config to stop installing this into the package dir in the first place
@@ -156,7 +155,7 @@ build_jetson_kernel() {
 
     cd $SRC_DIR/workdir/Linux_for_Tegra/source/public/
     #needs to be adapted to our own fork, to enable more then one additional kernel patch
-    git clone https://github.com/OpenHD/nvidia_jetson_veye_bsp
+    git clone https://github.com/OpenHD/nvidia_jetson_veye_bsp || exit 1
     export RELEASE_PACK_DIR=$SRC_DIR/workdir/Linux_for_Tegra/source/public/nvidia_jetson_veye_bsp 
 
     echo "Patching Veye Drivers into kernel source"
@@ -164,11 +163,11 @@ build_jetson_kernel() {
     rm $RELEASE_PACK_DIR/drivers_source/cam_drv_src/Makefile*
     rm $RELEASE_PACK_DIR/drivers_source/cam_drv_src/Kconfig*
     echo "copying drivers"
-    cp $RELEASE_PACK_DIR/drivers_source/cam_drv_src/* $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/
-    cp $RELEASE_PACK_DIR/drivers_source/kernel_veyecam_config_r32.6.1  $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/arch/arm64/configs/tegra_veyecam_defconfig 
+    cp $RELEASE_PACK_DIR/drivers_source/cam_drv_src/* $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/ || exit 1
+    cp $RELEASE_PACK_DIR/drivers_source/kernel_veyecam_config_r32.6.1  $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/arch/arm64/configs/tegra_veyecam_defconfig  || exit 1
     echo "Injecting our own driver Makefile and Kconfig"
-    cp $RELEASE_PACK_DIR/openhd/Kconfig $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/
-    cp $RELEASE_PACK_DIR/openhd/Makefile $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/
+    cp $RELEASE_PACK_DIR/openhd/Kconfig $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/ || exit 1
+    cp $RELEASE_PACK_DIR/openhd/Makefile $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/drivers/media/i2c/ || exit 1
 
     #echo "copying arducam drivers"
     #cp $SRC_DIR/additional/imx519/*.dtsi $SRC_DIR/workdir/Linux_for_Tegra/source/public/hardware/nvidia/platform/t210/porg/kernel-dts/porg-platforms
@@ -188,33 +187,33 @@ build_jetson_kernel() {
     echo "added additional Drivers"
     
     
-	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} tegra_veyecam_defconfig
+	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} tegra_veyecam_defconfig || exit 1
 	#rm $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/.config
 	#cp $SRC_DIR/configs/.config-jetson-4.9.253-openhd $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/.config
    	echo "using OpenHD-config"
 
 
-	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES Image
+	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES Image || exit 1
     echo "zimage done"
-	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES --output-sync=target modules
+	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES --output-sync=target modules || exit 1
     echo "modules done"
 	
 	echo "Copy kernel"
     cp $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/arch/arm64/boot/Image "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel.img" || exit 1
 	
  	echo "Copy kernel modules"
-	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra INSTALL_MOD_PATH=${PACKAGE_DIR} modules_install
+	make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra INSTALL_MOD_PATH=${PACKAGE_DIR} modules_install || exit 1
 
     echo "Build DTB's Veye"
-    cp $RELEASE_PACK_DIR/dtbs/Nano/JetPack_4.6_Linux_JETSON_NANO_TARGETS/dts\ dtb/common/t210/* -r $NANO_DTS_PATH/
-    cp $RELEASE_PACK_DIR/dtbs/Nano/JetPack_4.6_Linux_JETSON_NANO_TARGETS/dts\ dtb/VEYE-MIPI-327/tegra210-porg-plugin-manager.dtsi -r $NANO_DTS_PATH/porg/kernel-dts/porg-plugin-manager 
+    cp $RELEASE_PACK_DIR/dtbs/Nano/JetPack_4.6_Linux_JETSON_NANO_TARGETS/dts\ dtb/common/t210/* -r $NANO_DTS_PATH/ || exit 1
+    cp $RELEASE_PACK_DIR/dtbs/Nano/JetPack_4.6_Linux_JETSON_NANO_TARGETS/dts\ dtb/VEYE-MIPI-327/tegra210-porg-plugin-manager.dtsi -r $NANO_DTS_PATH/porg/kernel-dts/porg-plugin-manager  || exit 1
     export COMMON_DTS_PATH=$TEGRA_KERNEL_OUT/arch/arm64/boot/dts 
-    make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES --output-sync=target dtbs
-    cp $COMMON_DTS_PATH/tegra210-p3448-0000-p3449-0000-a02.dtb $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/arch/arm64/boot/dts/
-    cp $COMMON_DTS_PATH/tegra210-p3448-0000-p3449-0000-b00.dtb $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/arch/arm64/boot/dts/
-    cp $COMMON_DTS_PATH/tegra210-p3448-0003-p3542-0000.dtb  $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/arch/arm64/boot/dts/
+    make -C kernel/kernel-4.9/ ARCH=arm64 O=$TEGRA_KERNEL_OUT LOCALVERSION=-tegra CROSS_COMPILE=${TOOLCHAIN_PREFIX} -j $J_CORES --output-sync=target dtbs || exit 1
+    cp $COMMON_DTS_PATH/tegra210-p3448-0000-p3449-0000-a02.dtb $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/arch/arm64/boot/dts/ || exit 1
+    cp $COMMON_DTS_PATH/tegra210-p3448-0000-p3449-0000-b00.dtb $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/arch/arm64/boot/dts/ || exit 1
+    cp $COMMON_DTS_PATH/tegra210-p3448-0003-p3542-0000.dtb  $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/arch/arm64/boot/dts/ || exit 1
 	echo "Copy DTBs"
-    mkdir -p ${PACKAGE_DIR}/usr/local/share/openhd/kernel/veyecam/
+    mkdir -p ${PACKAGE_DIR}/usr/local/share/openhd/kernel/veyecam/ || exit 1
     cp $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/build/arch/arm64/boot/dts/*.dtb "${PACKAGE_DIR}/usr/local/share/openhd/kernel/veyecam/" || exit 1
 	cp $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/kernel-4.9/arch/arm64/boot/dts/nvidia/* "${PACKAGE_DIR}/usr/local/share/openhd/kernel/overlays/" || exit 1
     cd $JETSON_NANO_KERNEL_SOURCE
@@ -224,7 +223,7 @@ build_jetson_kernel() {
 	
 
 	 # Build Realtek drivers
- 	mkdir $SRC_DIR/workdir/mods/
+ 	mkdir -p $SRC_DIR/workdir/mods/ || exit 1
 	cd $SRC_DIR/workdir/mods/
 
 	fetch_rtl8812au_driver    
@@ -244,7 +243,7 @@ prepare_build() {
     # on the pi our kernel is new enough that we don't need to add the exfat driver anymore
     if [[ "${PLATFORM}" == "pi" ]]; then
     check_time
-    mkdir -p $SRC_DIR/workdir/mods/
+    mkdir -p $SRC_DIR/workdir/mods/ || exit 1
     cd $SRC_DIR/workdir/mods/
     fetch_rtl8812au_driver
     fetch_rtl8812bu_driver
@@ -257,14 +256,14 @@ prepare_build() {
       check_time
       fetch_SBC_source
       echo "Downloading additional modules and fixes"
-      	mkdir $SRC_DIR/workdir/mods/
+      	mkdir -p $SRC_DIR/workdir/mods/ || exit 1
 	cd $SRC_DIR/workdir/mods/
      echo "Download the exfat driver"
-      git clone ${EXFAT_REPO}
-        cp -a exfat-linux/. $JETSON_NANO_KERNEL_SOURCE/kernel/kernel-4.9/fs/exfat/
+      git clone ${EXFAT_REPO} || exit 1
+        cp -af exfat-linux/. $JETSON_NANO_KERNEL_SOURCE/kernel/kernel-4.9/fs/exfat/ || exit 1
      echo "Download the v4l2loopback_driver"
 	fetch_v4l2loopback_driver
-        cp -a v4l2loopback/. $JETSON_NANO_KERNEL_SOURCE/kernel/kernel-4.9/drivers/media/v4l2loopback/
+        cp -af v4l2loopback/. $JETSON_NANO_KERNEL_SOURCE/kernel/kernel-4.9/drivers/media/v4l2loopback/ || exit 1
     fi 
 }
 
@@ -274,25 +273,26 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     # kernel build. this is a temporary thing due to the unique issues with USB on the pi zero.
     fetch_SBC_source
     ls -a
+set -x 
     echo $(pwd)
          ##veye v4l2
-         git clone https://github.com/veyeimaging/raspberrypi_v4l2 workdir/mods/raspberrypi_v4l2
+         git clone https://github.com/veyeimaging/raspberrypi_v4l2 workdir/mods/raspberrypi_v4l2 || exit 1
          export RELEASE_PACK_DIR=workdir/mods/raspberrypi_v4l2
          ls -a
          ls -a workdir/mods/raspberrypi_v4l2
          #copy drivers, not copying the makefile (the makefile will make the kernel not build)
-         cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-6.1.y/*.c workdir/linux-pi/drivers/media/i2c/
-         cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-6.1.y/*.h workdir/linux-pi/drivers/media/i2c/
+         cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-6.1.y/*.c workdir/linux-pi/drivers/media/i2c/ || exit 1
+         cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-6.1.y/*.h workdir/linux-pi/drivers/media/i2c/ || exit 1
          echo 'obj-m += veye_mvcam.o veyecam2m.o cssc132.o' >> workdir/linux-pi/drivers/media/i2c/Makefile
-         cp -r additional/Kconfig workdir/linux-pi/drivers/media/i2c/
+         cp -r additional/Kconfig workdir/linux-pi/drivers/media/i2c/ || exit 1
          #copying the dts-files
-         cp -r $RELEASE_PACK_DIR/driver_source/dts/rpi-6.1.y/* workdir/linux-pi/arch/arm/boot/dts/overlays/
-         rm workdir/linux-pi/arch/arm/boot/dts/overlays/csimx307-dual-cm4-overlay*
-         sed -i '280 i csimx307-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-         sed -i '281 i cssc132-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-         sed -i '282 i veyecam2m-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-         sed -i '283 i veye_mvcam-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-         sed -i '280,283/^/        /' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+         cp -r $RELEASE_PACK_DIR/driver_source/dts/rpi-6.1.y/* workdir/linux-pi/arch/arm/boot/dts/overlays/ || exit 1
+         rm -f workdir/linux-pi/arch/arm/boot/dts/overlays/csimx307-dual-cm4-overlay*
+         sed -i '280 i csimx307-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
+         sed -i '281 i cssc132-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
+         sed -i '282 i veyecam2m-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
+         sed -i '283 i veye_mvcam-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
+         sed -i '280,283s/^/        /' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
         #git clone https://github.com/Seeed-Studio/seeed-linux-dtoverlays workdir/mods/seeed-linux-dtoverlays
         #export RETERMINAL_DIR=workdir/mods/seeed-linux-dtoverlays
         #cp -r $RETERMINAL_DIR/overlays/rpi/reTerminal* workdir/linux-pi/arch/arm/boot/dts/overlays/

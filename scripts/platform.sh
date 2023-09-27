@@ -8,10 +8,10 @@ function setup_platform_env() {
 		if [[ ! "$(ls -A ${CCACHE_PATH})" ]]; then
 			mkdir -p ${CCACHE_PATH}
 			pushd ${CCACHE_PATH}
-			ln -s $(which ccache) arm-linux-gnueabihf-gcc
-			ln -s $(which ccache) arm-linux-gnueabihf-g++
-			ln -s $(which ccache) arm-linux-gnueabihf-cpp
-			ln -s $(which ccache) arm-linux-gnueabihf-c++
+			ln -fs $(which ccache) arm-linux-gnueabihf-gcc
+			ln -fs $(which ccache) arm-linux-gnueabihf-g++
+			ln -fs $(which ccache) arm-linux-gnueabihf-cpp
+			ln -fs $(which ccache) arm-linux-gnueabihf-c++
 			popd
 		fi
 		if [[ ${PATH} != *${CCACHE_PATH}* ]]; then
@@ -38,19 +38,19 @@ function setup_platform_env() {
 			echo "Download the kernel tools"
 			cd $Tools
 			rm -Rf *
-			wget -q --show-progress --progress=bar:force:noscroll http://releases.linaro.org/components/toolchain/binaries/7.3-2018.05/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz
-			tar xf gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz
+			wget -q --show-progress --progress=bar:force:noscroll http://releases.linaro.org/components/toolchain/binaries/7.3-2018.05/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz || exit 1
+			tar xf gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz || exit 1
 			export CROSS_COMPILE=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
 			export ARCH=arm64
 			PACKAGE_ARCH=arm64
 			export CROSS_COMPILE=arm-linux-aarch64-
 			cd $WorkDir
     		echo "Download the original kernel source"
-			wget -q --show-progress --progress=bar:force:noscroll https://developer.nvidia.com/embedded/l4t/r32_release_v6.1/sources/t210/public_sources.tbz2
-			tar -xf public_sources.tbz2
+			wget -q --show-progress --progress=bar:force:noscroll https://developer.nvidia.com/embedded/l4t/r32_release_v6.1/sources/t210/public_sources.tbz2 || exit 1
+			tar -xf public_sources.tbz2 || exit 1
 			cd Linux_for_Tegra/source/public
 			JETSON_NANO_KERNEL_SOURCE=$(pwd)
-			tar -xf kernel_src.tbz2
+			tar -xf kernel_src.tbz2 || exit 1
 			cd $JETSON_NANO_KERNEL_SOURCE
 			TOOLCHAIN_PREFIX=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
 			touch $WorkDir/jetsonkernel
@@ -67,7 +67,7 @@ function fetch_SBC_source() {
 		if [[ ! "$(ls -A ${LINUX_DIR})" ]]; then
 			mkdir -p $SRC_DIR/workdir
 			echo "Download the kernel source"
-			git clone --depth 1 --branch rpi-6.1-openhd ${KERNEL_REPO} ${LINUX_DIR}
+			git clone --depth 1 --branch rpi-6.1-openhd ${KERNEL_REPO} ${LINUX_DIR} || exit 1
 			pushd ${LINUX_DIR}
 			popd
 		fi
@@ -81,7 +81,7 @@ function fetch_SBC_source() {
 		else
 		rm -Rf $WorkDir/Linux_for_Tegra/source/public/kernel/kernel-4.9
 		echo "clone kernel source jetson"
-		git clone --branch jetson-nano-4.9.253-openhd https://github.com/OpenHD/linux.git $WorkDir/Linux_for_Tegra/source/public/kernel/kernel-4.9
+		git clone --branch jetson-nano-4.9.253-openhd https://github.com/OpenHD/linux.git $WorkDir/Linux_for_Tegra/source/public/kernel/kernel-4.9 || exit 1
 		touch $WorkDir/jetsonkernelpatch
 		fi
 	fi

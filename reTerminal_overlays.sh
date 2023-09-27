@@ -134,7 +134,7 @@ function install_modules {
   for mod; do
     target=$SRC_PATH/$mod-$ver
     mkdir -p $target
-    cp -a $MOD_PATH/$mod/* $target/
+    cp -af $MOD_PATH/$mod/* $target/
 
     dkms build -k ${kernel} -m $mod -v $ver && {
       dkms install --force -k ${kernel} -m $mod -v $ver

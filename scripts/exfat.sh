@@ -7,12 +7,12 @@ function fetch_exfat_driver() {
     fi
 
     pushd exfat-linux
-        git fetch
-        git reset --hard
-        git checkout ${EXFAT_BRANCH}
+        git fetch || exit 1
+        git reset --hard || exit 1
+        git checkout ${EXFAT_BRANCH} || exit 1
     popd
 
     echo "Merge the exfat driver into the kernel"
-    cp -a exfat-linux/. ${LINUX_DIR}/fs/exfat/
+    cp -af exfat-linux/. ${LINUX_DIR}/fs/exfat/ || exit 1
 
 }

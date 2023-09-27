@@ -50,20 +50,23 @@ function package() {
     if [[ "${ONLINE}" == "ONLINE" ]]; then
        
 	if [[ "${PLATFORM}" == "jetson" ]]; then
-	    git describe --exact-match HEAD >/dev/null 2>&1
+	    # TODO : add a --exact-match for release mode to ensure we have a tag on the commit
+	    # git describe --exact-match HEAD >/dev/null 2>&1 || exit 1
             echo "Pushing package to OpenHD repository"
-            cloudsmith push deb openhd/openhd-2-3-evo/ubuntu/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
+            cloudsmith push deb openhd/openhd-2-3-evo/ubuntu/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
         fi
 
 
         if [[ $? -eq 0 ]]; then
-	    git describe --exact-match HEAD >/dev/null 2>&1
+	    # TODO : add a --exact-match for release mode to ensure we have a tag on the commit
+	    # git describe --exact-match HEAD >/dev/null 2>&1 || exit 1
             echo "Pushing package to OpenHD 2.3 repository"
-            cloudsmith push deb openhd/openhd-2-3-evo/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
+            cloudsmith push deb openhd/openhd-2-3-evo/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
         else
-	    git describe --exact-match HEAD >/dev/null 2>&1
+	    # TODO : add a --exact-match for release mode to ensure we have a tag on the commit
+	    # git describe --exact-match HEAD >/dev/null 2>&1 || exit 1
             echo "Pushing package to OpenHD 2.3 repository"
-            cloudsmith push deb openhd/openhd-2-3-evo/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
+            cloudsmith push deb openhd/openhd-2-3-evo/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
         fi
     fi
 }
@@ -93,28 +96,31 @@ function package_headers() {
     if [[ "${ONLINE}" == "ONLINE" ]]; then
        
 	if [[ "${PLATFORM}" == "jetson" ]]; then
-	    git describe --exact-match HEAD >/dev/null 2>&1
+	    # TODO : add a --exact-match for release mode to ensure we have a tag on the commit
+	    # git describe --exact-match HEAD >/dev/null 2>&1 || exit 1
             echo "Pushing package to OpenHD repository"
-            cloudsmith push deb openhd/openhd-2-3-evo/ubuntu/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
+            cloudsmith push deb openhd/openhd-2-3-evo/ubuntu/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
         fi
 
 
         if [[ $? -eq 0 ]]; then
-	    git describe --exact-match HEAD >/dev/null 2>&1
+	    # TODO : add a --exact-match for release mode to ensure we have a tag on the commit
+	    # git describe --exact-match HEAD >/dev/null 2>&1 || exit 1
             echo "Pushing package to OpenHD 2.3 repository"
-            cloudsmith push deb openhd/openhd-2-3-evo/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
+            cloudsmith push deb openhd/openhd-2-3-evo/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
         else
-	    git describe --exact-match HEAD >/dev/null 2>&1
+	    # TODO : add a --exact-match for release mode to ensure we have a tag on the commit
+	    # git describe --exact-match HEAD >/dev/null 2>&1 || exit 1
             echo "Pushing package to OpenHD 2.3 repository"
-            cloudsmith push deb openhd/openhd-2-3-evo/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb
+            cloudsmith push deb openhd/openhd-2-3-evo/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
         fi
     fi
 }
 
 
 function copy_overlay() {
-    cp -r ${SRC_DIR}/overlay/etc/modprobe.d/* "${PACKAGE_DIR}/etc/modprobe.d/" || exit 1
-    cp -r ${SRC_DIR}/overlay/lib/firmware/* "${PACKAGE_DIR}/lib/firmware/" || exit 1
+    cp -rf ${SRC_DIR}/overlay/etc/modprobe.d/* "${PACKAGE_DIR}/etc/modprobe.d/" || exit 1
+    cp -rf ${SRC_DIR}/overlay/lib/firmware/* "${PACKAGE_DIR}/lib/firmware/" || exit 1
 }
 
 function post_processing() {
@@ -123,6 +129,6 @@ function post_processing() {
     echo "Clean kernel build for cache optimization"
 
     pushd ${LINUX_DIR}
-    make clean
+    make clean || exit 1
     popd
 }
