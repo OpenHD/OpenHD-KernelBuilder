@@ -67,11 +67,10 @@ function fetch_SBC_source() {
 		if [[ ! "$(ls -A ${LINUX_DIR})" ]]; then
 			mkdir -p $SRC_DIR/workdir
 			echo "Download the kernel source"
-			echo ${KERNEL_COMMIT}
 			echo "------------------------------"
 			git clone --depth 1 --branch ${KERNEL_COMMIT} ${KERNEL_REPO} ${LINUX_DIR} || exit 1
 			pushd ${LINUX_DIR}
-			git checkout ${KERNEL_COMMIT} || exit 1
+			git checkout 906a5c6dd4483a8c8abec9ebade2cbe638f8880a || exit 1
 			popd
 		fi
 
