@@ -70,7 +70,7 @@ function fetch_SBC_source() {
 			echo "------------------------------"
 			git clone --depth 1 ${KERNEL_REPO} ${LINUX_DIR} || exit 1
 			pushd ${LINUX_DIR}
-			git checkout 906a5c6dd4483a8c8abec9ebade2cbe638f8880a || exit 1
+			git checkout 906a5c6 || exit 1
 			popd
 		fi
 
