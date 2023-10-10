@@ -67,8 +67,11 @@ function fetch_SBC_source() {
 		if [[ ! "$(ls -A ${LINUX_DIR})" ]]; then
 			mkdir -p $SRC_DIR/workdir
 			echo "Download the kernel source"
-			git clone --depth 1 --branch rpi-6.1-openhd ${KERNEL_REPO} ${LINUX_DIR} || exit 1
+			echo ${KERNEL_COMMIT}
+			echo "------------------------------"
+			git clone --depth 1 --branch ${KERNEL_COMMIT} ${KERNEL_REPO} ${LINUX_DIR} || exit 1
 			pushd ${LINUX_DIR}
+			git checkout ${KERNEL_COMMIT} || exit 1
 			popd
 		fi
 
