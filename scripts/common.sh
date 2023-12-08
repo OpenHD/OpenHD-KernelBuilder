@@ -53,7 +53,7 @@ function package() {
 	    # TODO : add a --exact-match for release mode to ensure we have a tag on the commit
 	    # git describe --exact-match HEAD >/dev/null 2>&1 || exit 1
             echo "Pushing package to OpenHD repository"
-            cloudsmith push deb openhd/openhd-2-3-evo/ubuntu/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
+            cloudsmith push deb openhd/release/ubuntu/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
         fi
 
 
@@ -61,12 +61,12 @@ function package() {
 	    # TODO : add a --exact-match for release mode to ensure we have a tag on the commit
 	    # git describe --exact-match HEAD >/dev/null 2>&1 || exit 1
             echo "Pushing package to OpenHD 2.3 repository"
-            cloudsmith push deb openhd/openhd-2-3-evo/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
+            cloudsmith push deb openhd/release/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
         else
 	    # TODO : add a --exact-match for release mode to ensure we have a tag on the commit
 	    # git describe --exact-match HEAD >/dev/null 2>&1 || exit 1
             echo "Pushing package to OpenHD 2.3 repository"
-            cloudsmith push deb openhd/openhd-2-3-evo/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
+            cloudsmith push deb openhd/release/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
         fi
     fi
 }
@@ -99,7 +99,7 @@ function package_headers() {
 	    # TODO : add a --exact-match for release mode to ensure we have a tag on the commit
 	    # git describe --exact-match HEAD >/dev/null 2>&1 || exit 1
             echo "Pushing package to OpenHD repository"
-            cloudsmith push deb openhd/openhd-2-3-evo/ubuntu/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
+            cloudsmith push deb openhd/release/ubuntu/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
         fi
 
 
@@ -107,12 +107,12 @@ function package_headers() {
 	    # TODO : add a --exact-match for release mode to ensure we have a tag on the commit
 	    # git describe --exact-match HEAD >/dev/null 2>&1 || exit 1
             echo "Pushing package to OpenHD 2.3 repository"
-            cloudsmith push deb openhd/openhd-2-3-evo/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
+            cloudsmith push deb openhd/release/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
         else
 	    # TODO : add a --exact-match for release mode to ensure we have a tag on the commit
 	    # git describe --exact-match HEAD >/dev/null 2>&1 || exit 1
             echo "Pushing package to OpenHD 2.3 repository"
-            cloudsmith push deb openhd/openhd-2-3-evo/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
+            cloudsmith push deb openhd/release/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
         fi
     fi
 }
