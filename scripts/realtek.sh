@@ -102,6 +102,38 @@ function build_rtl8812bu_driver() {
     popd
 }
 
+# ========================================================== #
+
+function fetch_rtl88532bu_driver() {
+
+    if [[ ! "$(ls -A rtl8853bu)" ]]; then    
+        echo "Download the rtl8853bu driver"
+        git clone ${RTL_8853BU_REPO} || exit 1
+    fi
+
+    pushd rtl8853bu
+        git fetch || exit 1
+        git reset --hard || exit 1
+        git checkout ${RTL_8853BU_BRANCH} || exit 1
+        git pull || exit 1
+
+        if [[ "${PLATFORM}" == "pi" ]]; then
+            sed -i 's/CONFIG_PLATFORM_I386_PC = y/CONFIG_PLATFORM_I386_PC = n/' Makefile || exit 1
+            sed -i 's/CONFIG_PLATFORM_ARM_RPI = n/CONFIG_PLATFORM_ARM_RPI = y/' Makefile || exit 1
+        fi
+    popd
+}
+
+function build_rtl8853bu_driver() {
+    pushd rtl8853bu
+        make clean || exit 1
+       	make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
+
+        mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8853bu || exit 1
+        install -p -m 644 8853bu.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8853bu/" || exit 1
+    popd
+}
+
 
 # ========================================================== #
 
