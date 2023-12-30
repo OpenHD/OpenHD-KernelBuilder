@@ -104,17 +104,17 @@ function build_rtl8812bu_driver() {
 
 # ========================================================== #
 
-function fetch_rtl88532bu_driver() {
+function fetch_rtl8852bu_driver() {
 
-    if [[ ! "$(ls -A rtl8853bu)" ]]; then    
-        echo "Download the rtl8853bu driver"
-        git clone ${RTL_8853BU_REPO} || exit 1
+    if [[ ! "$(ls -A rtl8852bu)" ]]; then    
+        echo "Download the rtl8852bu driver"
+        git clone ${RTL_8852BU_REPO} || exit 1
     fi
 
-    pushd rtl8853bu
+    pushd rtl8852bu
         git fetch || exit 1
         git reset --hard || exit 1
-        git checkout ${RTL_8853BU_BRANCH} || exit 1
+        git checkout ${RTL_8852BU_BRANCH} || exit 1
         git pull || exit 1
 
         if [[ "${PLATFORM}" == "pi" ]]; then
@@ -124,13 +124,13 @@ function fetch_rtl88532bu_driver() {
     popd
 }
 
-function build_rtl8853bu_driver() {
-    pushd rtl8853bu
+function build_rtl8852bu_driver() {
+    pushd rtl8852bu
         make clean || exit 1
        	make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
 
-        mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8853bu || exit 1
-        install -p -m 644 8853bu.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8853bu/" || exit 1
+        mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8852bu || exit 1
+        install -p -m 644 8852bu.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8852bu/" || exit 1
     popd
 }
 
