@@ -28,8 +28,8 @@ RTL_8812AU_BRANCH=v5.2.20
 RTL_8812BU_REPO=https://github.com/OpenHD/rtl88x2bu
 RTL_8812BU_BRANCH=master
 
-RTL_8852BU_REPO=https://github.com/raphaelscholle/rtl8852bu
-RTL_8852BU_BRANCH=main
+RTL_8852BU_REPO=https://github.com/OpenHD/rtl88x2bu
+RTL_8852BU_BRANCH=testing
 # Testing Driver, not verified, yet
 
 RTL_8188EUS_REPO=https://github.com/gglluukk/rtl8188eus
