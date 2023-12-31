@@ -98,7 +98,7 @@ function fetch_rtl8852bu_driver() {
 
     if [[ ! "$(ls -A rtl8852bu)" ]]; then    
         echo "Download the rtl8852bu driver"
-        git clone ${RTL_8852BU_REPO} || exit 1
+        git clone ${RTL_8852BU_REPO} rtl8852bu || exit 1
     fi
 
     pushd rtl8852bu
