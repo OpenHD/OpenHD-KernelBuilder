@@ -99,9 +99,8 @@ build_pi_kernel() {
 
         # yes "" | make oldconfig || exit 1
             if [[ "${ISA}" == "v7l" ]]; then
-                echo "disabled for now"
                 make clean || exit 1
-                # make bcm2711_defconfig || exit 1
+                make bcm2711_defconfig || exit 1
             elif [[ "${ISA}" == "v7" ]]; then
                 make clean || exit 1
                 make bcm2709_defconfig || exit 1
