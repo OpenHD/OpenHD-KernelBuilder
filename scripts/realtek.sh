@@ -108,8 +108,9 @@ function fetch_rtl8852bu_driver() {
         git pull || exit 1
 
         if [[ "${PLATFORM}" == "pi" ]]; then
-            sed -i 's/CONFIG_PLATFORM_I386_PC = y/CONFIG_PLATFORM_I386_PC = n/' Makefile || exit 1
-            sed -i 's/CONFIG_PLATFORM_ARM_RPI = n/CONFIG_PLATFORM_ARM_RPI = y/' Makefile || exit 1
+            # sed -i 's/CONFIG_PLATFORM_I386_PC = y/CONFIG_PLATFORM_I386_PC = n/' Makefile || exit 1
+            # sed -i 's/CONFIG_PLATFORM_ARM_RPI = n/CONFIG_PLATFORM_ARM_RPI = y/' Makefile || exit 1
+            sed -e 's/armv\.l/arm/'
         fi
     popd
 }
