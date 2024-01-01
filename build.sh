@@ -131,7 +131,9 @@ build_pi_kernel() {
 
     # Build Realtek drivers
     build_rtl8812au_driver
+    fetch_rtl8812bu_driver
     build_rtl8812bu_driver
+    fetch_rtl8852bu_driver
     build_rtl8852bu_driver 
     build_rtl8188eus_driver
     #build_reterminal_driver
@@ -251,8 +253,6 @@ prepare_build() {
     mkdir -p $SRC_DIR/workdir/mods/ || exit 1
     cd $SRC_DIR/workdir/mods/
     fetch_rtl8812au_driver
-    fetch_rtl8812bu_driver
-    fetch_rtl8852bu_driver
     fetch_rtl8188eus_driver
     fetch_v4l2loopback_driver
     #fetch_reterminal_driver
