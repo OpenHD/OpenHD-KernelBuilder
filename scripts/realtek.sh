@@ -43,17 +43,6 @@ function build_rtl8812au_driver() {
          install -p -m 644 88XXau_ohd.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au/88XXau_wfb.ko" || exit 1
     
         fi
-	
-	if [[ "${PLATFORM}" == "jetson" ]]; then
-		export KERNEL_VERSION="4.9.253OpenHD-2.1-tegra"
-		export CROSS_COMPILE=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
-	        make KSRC=${LINUX_DIR}/build -j $J_CORES M=$(pwd) modules || exit 1
-		mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au || exit 1
-		rm $SRC_DIR/workdir/Linux_for_Tegra/source/public/kernel/nvidia/drivers/net/wireless/realtek/rtl8812au/rtl8812au.ko
-         	install -p -m 644 88XXau_ohd.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au/rtl8812au.ko" || exit 1
-	fi
-
-
        popd
 }
 
@@ -99,6 +88,39 @@ function build_rtl8812bu_driver() {
         install -p -m 644 88x2bu_ohd.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl88x2bu/" || exit 1
         rm -Rf ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8xxxu
         echo "removed original realtek driver out of the rpi source"
+    popd
+}
+
+# ========================================================== #
+
+function fetch_rtl8852bu_driver() {
+
+    if [[ ! "$(ls -A rtl8852bu)" ]]; then    
+        echo "Download the rtl8852bu driver"
+        git clone ${RTL_8852BU_REPO} rtl8852bu || exit 1
+    fi
+
+    pushd rtl8852bu
+        git fetch || exit 1
+        git reset --hard || exit 1
+        git checkout ${RTL_8852BU_BRANCH} || exit 1
+        git pull || exit 1
+
+        if [[ "${PLATFORM}" == "pi" ]]; then
+            # sed -i 's/CONFIG_PLATFORM_I386_PC = y/CONFIG_PLATFORM_I386_PC = n/' Makefile || exit 1
+            # sed -i 's/CONFIG_PLATFORM_ARM_RPI = n/CONFIG_PLATFORM_ARM_RPI = y/' Makefile || exit 1
+            sed -e 's/armv\.l/arm/'
+        fi
+    popd
+}
+
+function build_rtl8852bu_driver() {
+    pushd rtl8852bu
+        make clean || exit 1
+       	make KSRC=${LINUX_DIR} -j $J_CORES M=$(pwd) modules || exit 1
+
+        mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8852bu || exit 1
+        install -p -m 644 8852bu_ohd.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8852bu/" || exit 1
     popd
 }
 
