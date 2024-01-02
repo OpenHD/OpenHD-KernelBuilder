@@ -43,7 +43,6 @@ function build_rtl8812au_driver() {
          install -p -m 644 88XXau_ohd.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8812au/88XXau_wfb.ko" || exit 1
     
         fi
-	
        popd
 }
 
