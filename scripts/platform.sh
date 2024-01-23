@@ -68,7 +68,8 @@ function fetch_SBC_source() {
 			mkdir -p $SRC_DIR/workdir
 			echo "Download the kernel source"
 			echo "------------------------------"
-			git clone ${KERNEL_REPO} ${LINUX_DIR} || exit 1
+			# Use --depth 1 to save some space on unneccessary huge git log
+			git clone ${KERNEL_REPO} ${LINUX_DIR} --depth 1 || exit 1
 			pushd ${LINUX_DIR}
 			#git checkout 20cb6d7b533b5e6d7df8a2cb7a83bd4555834bde || exit 1
 			popd
