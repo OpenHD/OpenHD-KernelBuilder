@@ -255,23 +255,23 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     build_pi_kernel
 	echo "Copy kernel7"
 	pushd ${LINUX_DIR}
-	sudo mkdir -p /usr/src/6.1.29-common
-	sudo mkdir -p /usr/src/6.1.29-rpi
-	sudo mkdir -p ${PACKAGE_DIR}/lib/modules/6.1.29-v7+/
-	sudo ln -s /usr/src/6.1.29-common/ ${PACKAGE_DIR}/lib/modules/6.1.29-v7+/source
-	sudo ln -s /usr/src/6.1.29-rpi ${PACKAGE_DIR}/lib/modules/6.1.29-v7+/build
-	sudo mkdir -p ${PACKAGE_DIR}/usr/src/6.1.29-rpi/include
-	sudo mkdir -p ${PACKAGE_DIR}/usr/src/6.1.29-rpi/arch/arm
+	sudo mkdir -p /usr/src/6.1.55-common
+	sudo mkdir -p /usr/src/6.1.55-rpi
+	sudo mkdir -p ${PACKAGE_DIR}/lib/modules/6.1.55-v7+/
+	sudo ln -s /usr/src/6.1.55-common/ ${PACKAGE_DIR}/lib/modules/6.1.55-v7+/source
+	sudo ln -s /usr/src/6.1.55-rpi ${PACKAGE_DIR}/lib/modules/6.1.55-v7+/build
+	sudo mkdir -p ${PACKAGE_DIR}/usr/src/6.1.55-rpi/include
+	sudo mkdir -p ${PACKAGE_DIR}/usr/src/6.1.55-rpi/arch/arm
 	echo "$pwd"
-	sudo cp -r include/generated ${PACKAGE_DIR}/usr/src/6.1.29-rpi/include
-	sudo cp -r include/config ${PACKAGE_DIR}/usr/src/6.1.29-rpi/include
-	sudo cp -r arch/arm ${PACKAGE_DIR}/usr/src/6.1.29-rpi/arch/
-	sudo cp -r tools ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
-	sudo cp -r scripts ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
-	sudo cp -r Module.symvers ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
-	sudo cp -r Makefile ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
-	sudo cp -r .kernelvariables ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
-	sudo cp -r .config ${PACKAGE_DIR}/usr/src/6.1.29-rpi/
+	sudo cp -r include/generated ${PACKAGE_DIR}/usr/src/6.1.55-rpi/include
+	sudo cp -r include/config ${PACKAGE_DIR}/usr/src/6.1.55-rpi/include
+	sudo cp -r arch/arm ${PACKAGE_DIR}/usr/src/6.1.55-rpi/arch/
+	sudo cp -r tools ${PACKAGE_DIR}/usr/src/6.1.55-rpi/
+	sudo cp -r scripts ${PACKAGE_DIR}/usr/src/6.1.55-rpi/
+	sudo cp -r Module.symvers ${PACKAGE_DIR}/usr/src/6.1.55-rpi/
+	sudo cp -r Makefile ${PACKAGE_DIR}/usr/src/6.1.55-rpi/
+	sudo cp -r .kernelvariables ${PACKAGE_DIR}/usr/src/6.1.55-rpi/
+	sudo cp -r .config ${PACKAGE_DIR}/usr/src/6.1.55-rpi/
 	sudo rm -Rf ${PACKAGE_DIR}/etc
 	sudo rm -Rf ${PACKAGE_DIR}/boot
 	sudo rm -Rf ${PACKAGE_DIR}/lib/firmware
@@ -284,9 +284,9 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     build_pi_kernel
 	echo "Copy kernel7l"
 	pushd ${LINUX_DIR}
-	sudo mkdir -p ${PACKAGE_DIR}/lib/modules/6.1.29-v7l+/
-	sudo ln -s /usr/src/6.1.29-common/ ${PACKAGE_DIR}/lib/modules/6.1.29-v7l+/source
-	sudo ln -s /usr/src/6.1.29-rpi ${PACKAGE_DIR}/lib/modules/6.1.29-v7l+/build
+	sudo mkdir -p ${PACKAGE_DIR}/lib/modules/6.1.55-v7l+/
+	sudo ln -s /usr/src/6.1.55-common/ ${PACKAGE_DIR}/lib/modules/6.1.55-v7l+/source
+	sudo ln -s /usr/src/6.1.55-rpi ${PACKAGE_DIR}/lib/modules/6.1.55-v7l+/build
 	sudo ls -a
 
 fi
