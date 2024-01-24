@@ -5,6 +5,7 @@ linux*
 rtl8812au
 rtl88x2bu
 v4l2loopback
+workdir
 workdir/*
 .config
 *.log
