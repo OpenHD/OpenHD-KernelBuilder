@@ -104,9 +104,9 @@ build_pi_kernel() {
             if [[ "${ISA}" == "v7l" ]]; then
                 make clean || exit 1
                 make bcm2711_defconfig || exit 1
-            # elif [[ "${ISA}" == "v7" ]]; then
-            #     make clean || exit 1
-            #     make bcm2709_defconfig || exit 1
+            elif [[ "${ISA}" == "v7" ]]; then
+                make clean || exit 1
+                make bcm2709_defconfig || exit 1
             fi
         KERNEL=${KERNEL} KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
 
@@ -306,13 +306,13 @@ set -x
 
         #echo "Set Overlays"
 
-    source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7
-    prepare_build
-    build_pi_kernel
-	echo "Copy kernel7"
-	pushd ${LINUX_DIR}
-	ls -a
-	 cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7.img" || exit 1
+    # source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7
+    # prepare_build
+    # build_pi_kernel
+	# echo "Copy kernel7"
+	# pushd ${LINUX_DIR}
+	# ls -a
+	#  cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7.img" || exit 1
 
 
      source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7l
