@@ -104,10 +104,9 @@ build_pi_kernel() {
             if [[ "${ISA}" == "v7l" ]]; then
                 make clean || exit 1
                 make bcm2711_defconfig || exit 1
-            elif [[ "${ISA}" == "v7" ]]; then
-                make clean || exit 1
-                make bcm2709_defconfig || exit 1
-            # currently only doing default config, modified config can follow later, but standart eases the possibility to upgrade to a newer kernel 
+            # elif [[ "${ISA}" == "v7" ]]; then
+            #     make clean || exit 1
+            #     make bcm2709_defconfig || exit 1
             fi
         KERNEL=${KERNEL} KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
 
