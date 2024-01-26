@@ -22,6 +22,7 @@ function setup_platform_env() {
 		PACKAGE_ARCH=armhf
 		export CROSS_COMPILE=arm-linux-gnueabihf-
 		KERNEL_REPO=https://github.com/OpenHD/linux-rpi.git
+		KERNEL_BRANCH=openhd-rpi-6.1-stable
 	fi
 
 	if [[ "${PLATFORM}" == "jetson" ]]; then
@@ -69,9 +70,7 @@ function fetch_SBC_source() {
 			echo "Download the kernel source"
 			echo "------------------------------"
 			# Use --depth 1 to save some space on unneccessary huge git log
-			git clone ${KERNEL_REPO} ${LINUX_DIR} --depth 1 || exit 1
-			pushd ${LINUX_DIR}
-			git checkout tags/stable_20240124 || exit 1
+			git clone ${KERNEL_REPO} ${LINUX_DIR} -b ${KERNEL_REPO} --depth 1 || exit 1
 			popd
 		fi
 
