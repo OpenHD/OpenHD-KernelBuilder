@@ -1,7 +1,8 @@
 #!/bin/bash
 PLATFORM=$1
 DISTRO=$2
-ONLINE=$3
+PI4=$3
+ONLINE=$4
 
 if  [[ "${PLATFORM}" != "pi" ]] && [[ "${PLATFORM}" != "jetson" ]];  then
     echo "Usage: ./build.sh pi bullseye"
@@ -306,15 +307,16 @@ set -x
 
         #echo "Set Overlays"
 
-    # source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7
-    # prepare_build
-    # build_pi_kernel
-	# echo "Copy kernel7"
-	# pushd ${LINUX_DIR}
-	# ls -a
-	#  cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7.img" || exit 1
+    if [[ "${PI4}" == "true" ]]; then
+    source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7
+    prepare_build
+    build_pi_kernel
+	echo "Copy kernel7"
+	pushd ${LINUX_DIR}
+	ls -a
+	 cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7.img" || exit 1
 
-
+    else
      source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7l
      prepare_build
      build_pi_kernel
@@ -323,7 +325,7 @@ set -x
 	 ls -a
       cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7l.img" || exit 1
 
-
+    fi
 fi
 
 if [[ "${PLATFORM}" == "jetson" ]]; then
