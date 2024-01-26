@@ -21,7 +21,7 @@ function setup_platform_env() {
 		export ARCH=arm
 		PACKAGE_ARCH=armhf
 		export CROSS_COMPILE=arm-linux-gnueabihf-
-		KERNEL_REPO=https://github.com/OpenHD/linux-rpi.git
+		KERNEL_REPO=https://github.com/OpenHD/linux-rpi
 		KERNEL_BRANCH=openhd-rpi-6.1-stable
 	fi
 
