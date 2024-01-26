@@ -71,7 +71,7 @@ function fetch_SBC_source() {
 			# Use --depth 1 to save some space on unneccessary huge git log
 			git clone ${KERNEL_REPO} ${LINUX_DIR} --depth 1 || exit 1
 			pushd ${LINUX_DIR}
-			git checkout stable_20240124 || exit 1
+			git checkout tags/stable_20240124 || exit 1
 			popd
 		fi
 
