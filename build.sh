@@ -279,7 +279,7 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     # kernel build. this is a temporary thing due to the unique issues with USB on the pi zero.
     fetch_SBC_source
     ls -a
-set -x 
+    set -x 
     echo $(pwd)
          ##veye v4l2
          git clone https://github.com/veyeimaging/raspberrypi_v4l2 workdir/mods/raspberrypi_v4l2 || exit 1

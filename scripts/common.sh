@@ -17,7 +17,13 @@ function init() {
 }
 
 function package() {
+    echo "Start Packaging"
+    echo ${PLATFORM}
+    if [[ "${PI4}" == "true" ]]; then
+    PACKAGE_NAME=openhd-linux-V7l-${PLATFORM}
+    else
     PACKAGE_NAME=openhd-linux-${PLATFORM}
+    fi
 
     VERSION="2.5-evo-$(date '+%m%d%H%M')-$(git rev-parse --short HEAD)"
 
@@ -28,13 +34,7 @@ function package() {
         rm -Rf ${PACKAGE_DIR}/lib/modules/6.1.74-v7+/build
         rm -Rf ${PACKAGE_DIR}/lib/modules/6.1.74-v7l+/source
         rm -Rf ${PACKAGE_DIR}/lib/modules/6.1.74-v7l+/build
-        if [[ "${PI4}" == "true" ]]; then
-        fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME}-v7l -v ${VERSION} -C ${PACKAGE_DIR} \
-            --after-install after-install.sh \
-            --before-install before-install.sh \
-            -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
-        else
-        fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME}-v7 -v ${VERSION} -C ${PACKAGE_DIR} \
+        fpm -a ${PACKAGE_ARCH} -s dir -t deb -n ${PACKAGE_NAME} -v ${VERSION} -C ${PACKAGE_DIR} \
             --after-install after-install.sh \
             --before-install before-install.sh \
             -p ${PACKAGE_NAME}_VERSION_ARCH.deb || exit 1
