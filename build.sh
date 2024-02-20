@@ -136,7 +136,7 @@ build_pi_kernel() {
     fetch_rtl8852bu_driver
     build_rtl8852bu_driver 
     build_rtl8188eus_driver
-    #build_reterminal_driver
+    build_reterminal_driver
 
 
     depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
@@ -255,7 +255,7 @@ prepare_build() {
     fetch_rtl8812au_driver
     fetch_rtl8188eus_driver
     fetch_v4l2loopback_driver
-    #fetch_reterminal_driver
+    fetch_reterminal_driver
     fi 
 
     if [[ "${PLATFORM}" == "jetson" ]]; then
@@ -299,11 +299,11 @@ set -x
          sed -i '282 i veyecam2m-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
          sed -i '283 i veye_mvcam-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
          sed -i '280,283s/^/        /' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
-        #git clone https://github.com/Seeed-Studio/seeed-linux-dtoverlays workdir/mods/seeed-linux-dtoverlays
-        #export RETERMINAL_DIR=workdir/mods/seeed-linux-dtoverlays
-        #cp -r $RETERMINAL_DIR/overlays/rpi/reTerminal* workdir/linux-pi/arch/arm/boot/dts/overlays/
-        #sed -i '285 i reTerminal-bridge-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
-        #sed -i '286 i reTerminal-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+        git clone https://github.com/Seeed-Studio/seeed-linux-dtoverlays workdir/mods/seeed-linux-dtoverlays
+        export RETERMINAL_DIR=workdir/mods/seeed-linux-dtoverlays
+        cp -r $RETERMINAL_DIR/overlays/rpi/reTerminal* workdir/linux-pi/arch/arm/boot/dts/overlays/
+        sed -i '285 i reTerminal-bridge-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
+        sed -i '286 i reTerminal-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
 
         #echo "Set Overlays"
 
