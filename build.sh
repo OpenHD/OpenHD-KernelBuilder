@@ -254,6 +254,7 @@ prepare_build() {
     fi 
 
     if [[ "${PLATFORM}" == "jetson" ]]; then
+      echo "depricated"
       check_time
       fetch_SBC_source
       echo "Downloading additional modules and fixes"
