@@ -129,7 +129,7 @@ build_pi_kernel() {
     # Build Realtek drivers
     build_rtl8812au_driver
     build_rtl8812bu_driver 
-    build_rtl8188eus_driver
+    #build_rtl8188eus_driver
     #build_reterminal_driver
 
 
@@ -248,7 +248,7 @@ prepare_build() {
     cd $SRC_DIR/workdir/mods/
     fetch_rtl8812au_driver
     fetch_rtl8812bu_driver
-    fetch_rtl8188eus_driver
+    #fetch_rtl8188eus_driver
     fetch_v4l2loopback_driver
     #fetch_reterminal_driver
     fi 
@@ -284,7 +284,7 @@ set -x
          #copy drivers, not copying the makefile (the makefile will make the kernel not build)
          cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-6.1.y/*.c workdir/linux-pi/drivers/media/i2c/ || exit 1
          cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-6.1.y/*.h workdir/linux-pi/drivers/media/i2c/ || exit 1
-         echo 'obj-m += veye_mvcam.o veyecam2m.o cssc132.o' >> workdir/linux-pi/drivers/media/i2c/Makefile
+         echo 'obj-m += veye_mvcam.o csimx307.o veyecam2m.o cssc132.o' >> workdir/linux-pi/drivers/media/i2c/Makefile
          cp -r additional/Kconfig workdir/linux-pi/drivers/media/i2c/ || exit 1
          #copying the dts-files
          cp -r $RELEASE_PACK_DIR/driver_source/dts/rpi-6.1.y/* workdir/linux-pi/arch/arm/boot/dts/overlays/ || exit 1
