@@ -1,4 +1,4 @@
-name: build
+name: build Pi4
 
 # Controls when the action will run. 
 # Triggers the workflow on push or pull request events but only for the master branch
@@ -49,7 +49,7 @@ jobs:
             ${{ runner.os }}-ccache
             ${{ runner.os }}-ccache-
             
-      - name: Build ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }}
+      - name: Build ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }} true
         run: |
           export PATH=/usr/lib/ccache:$PATH
           bash buildwithlog.sh ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }} ONLINE
@@ -70,9 +70,8 @@ jobs:
           distro: "raspbian"
           release: "bullseye"
           republish: "true" # needed ONLY if version is not changing
-          file: "*.deb"
+          file: "*.deb" 
 
-      if: ${{ github.ref != 'refs/heads/2.5-evo' }}  
       - name: Package firmware ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }}
         uses: 'actions/upload-artifact@v2'
         with:
@@ -81,6 +80,4 @@ jobs:
             *.deb
             *.log
           if-no-files-found: error
-
-      
      

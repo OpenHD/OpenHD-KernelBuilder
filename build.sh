@@ -1,7 +1,8 @@
 #!/bin/bash
 PLATFORM=$1
 DISTRO=$2
-ONLINE=$3
+PI4=$3
+ONLINE=$4
 
 if  [[ "${PLATFORM}" != "pi" ]] && [[ "${PLATFORM}" != "jetson" ]];  then
     echo "Usage: ./build.sh pi bullseye"
@@ -107,7 +108,6 @@ build_pi_kernel() {
             elif [[ "${ISA}" == "v7" ]]; then
                 make clean || exit 1
                 make bcm2709_defconfig || exit 1
-            # currently only doing default config, modified config can follow later, but standart eases the possibility to upgrade to a newer kernel 
             fi
         KERNEL=${KERNEL} KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
 
@@ -279,7 +279,7 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     # kernel build. this is a temporary thing due to the unique issues with USB on the pi zero.
     fetch_SBC_source
     ls -a
-set -x 
+    set -x 
     echo $(pwd)
          ##veye v4l2
          git clone https://github.com/veyeimaging/raspberrypi_v4l2 workdir/mods/raspberrypi_v4l2 || exit 1
@@ -307,6 +307,7 @@ set -x
 
         #echo "Set Overlays"
 
+    if [[ "${PI4}" == "true" ]]; then
     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7
     prepare_build
     build_pi_kernel
@@ -315,7 +316,7 @@ set -x
 	ls -a
 	 cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7.img" || exit 1
 
-
+    else
      source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7l
      prepare_build
      build_pi_kernel
@@ -324,7 +325,7 @@ set -x
 	 ls -a
       cp arch/arm/boot/zImage "${PACKAGE_DIR}/usr/local/share/openhd/kernel/kernel7l.img" || exit 1
 
-
+    fi
 fi
 
 if [[ "${PLATFORM}" == "jetson" ]]; then
