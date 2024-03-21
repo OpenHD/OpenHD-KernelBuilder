@@ -70,7 +70,10 @@ function fetch_SBC_source() {
 			echo "Download the kernel source"
 			echo "------------------------------"
 			# Use --depth 1 to save some space on unneccessary huge git log
-			git clone ${KERNEL_REPO} ${LINUX_DIR} -b ${KERNEL_BRANCH} --depth 1 || exit 1
+			git clone ${KERNEL_REPO} ${LINUX_DIR} -b ${KERNEL_BRANCH} --depth=1 || exit 1
+			echo "_________________GIT_____________________________"
+			git status
+			echo "__________________GIT_END____________________"
 			popd
 		fi
 
