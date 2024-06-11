@@ -57,8 +57,6 @@ function build_rtl8812au_driver() {
        popd
 }
 
-# ========================================================== #
-
 function fetch_rtl8812bu_driver() {
 
     if [[ ! "$(ls -A rtl88x2bu)" ]]; then    
