@@ -127,7 +127,6 @@ function fetch_rtl8812cu_driver() {
 
 function build_rtl8812cu_driver() {
     pushd rtl88x2cu
-        make clean || exit 1
 		if [[ "${PLATFORM}" == "jetson" ]]; then
 		export KERNEL_VERSION="4.9.253OpenHD-2.1-tegra"
 		export CROSS_COMPILE=$Tools/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
@@ -138,8 +137,6 @@ function build_rtl8812cu_driver() {
 
         mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl88x2cu || exit 1
         install -p -m 644 88x2cu_ohd.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl88x2cu/" || exit 1
-        rm -Rf ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl8xxxu
-        echo "removed original realtek driver out of the rpi source"
     popd
 }
 # ========================================================== #
