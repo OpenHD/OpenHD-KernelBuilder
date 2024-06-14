@@ -136,7 +136,7 @@ function build_rtl8812cu_driver() {
 	        fi
 
         mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl88x2cu || exit 1
-        install -p -m 644 88x2cu_ohd.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl88x2cu/" || exit 1
+        install -p -m 644 8812cu.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl88x2cu/" || exit 1
     popd
 }
 # ========================================================== #
