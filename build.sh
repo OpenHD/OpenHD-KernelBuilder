@@ -28,8 +28,8 @@ RTL_8812AU_BRANCH=v5.2.20
 RTL_8812BU_REPO=https://github.com/OpenHD/rtl88x2bu
 RTL_8812BU_BRANCH=master
 
-RTL_8812CU_REPO=https://github.com/OpenHD/rtl88x2cu
-RTL_8812CU_BRANCH=master
+# RTL_8812CU_REPO=https://github.com/OpenHD/rtl88x2cu
+# RTL_8812CU_BRANCH=master
 
 RTL_8812EU_REPO=https://github.com/OpenHD/rtl88x2eu
 RTL_8812EU_BRANCH=v5.15.0.1
@@ -134,7 +134,7 @@ build_pi_kernel() {
     # Build Realtek drivers
     build_rtl8812au_driver
     build_rtl8812bu_driver 
-    build_rtl8812cu_driver
+    # build_rtl8812cu_driver
     build_rtl8812eu_driver
     #build_rtl8188eus_driver
     #build_reterminal_driver
@@ -238,8 +238,8 @@ build_jetson_kernel() {
    	build_rtl8812au_driver
 	fetch_rtl8812bu_driver    
  	build_rtl8812bu_driver
-    fetch_rtl8812cu_driver    
-    build_rtl8812cu_driver
+    # fetch_rtl8812cu_driver    
+    # build_rtl8812cu_driver
     fetch_rtl8812eu_driver    
     build_rtl8812eu_driver
 
@@ -259,7 +259,7 @@ prepare_build() {
     cd $SRC_DIR/workdir/mods/
     fetch_rtl8812au_driver
     fetch_rtl8812bu_driver
-    fetch_rtl8812cu_driver
+    # fetch_rtl8812cu_driver
     fetch_rtl8812eu_driver
     #fetch_rtl8188eus_driver
     fetch_v4l2loopback_driver
