@@ -144,7 +144,7 @@ function fetch_rtl8812eu_driver() {
 
     if [[ ! "$(ls -A rtl88x2eu)" ]]; then    
         echo "Download the rtl8812eu driver"
-        git clone ${RTL_8812CU_REPO} || exit 1
+        git clone ${RTL_8812EU_REPO} || exit 1
     fi
 
     pushd rtl88x2eu
