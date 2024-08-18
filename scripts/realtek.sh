@@ -176,7 +176,7 @@ function build_rtl8812eu_driver() {
 	        fi
 
         mkdir -p ${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl88x2eu || exit 1
-        install -p -m 644 8812cu.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl88x2eu/" || exit 1
+        install -p -m 644 8812eu.ko "${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/realtek/rtl88x2eu/" || exit 1
     popd
 }
 # ========================================================== #
