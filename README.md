@@ -1,2 +1,2 @@
-# OpenHDKernelBuilder 
+# OpenHD Kernel Builder 
 
