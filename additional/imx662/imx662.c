@@ -933,6 +933,10 @@ static int imx662_stop_streaming(struct imx662 *imx662)
 	return imx662_write_reg(imx662, IMX662_XMSTA, 0x01);
 }
 
+static void imx662_update_ctrls_for_mode(struct imx662 *imx662,
+                                         const struct imx662_mode *mode,
+                                         bool init);
+
 static int imx662_set_ctrl(struct v4l2_ctrl *ctrl)
 {
 	struct imx662 *imx662 = container_of(ctrl->handler,
@@ -1067,8 +1071,8 @@ static u64 imx662_calc_pixel_rate(struct imx662 *imx662)
 }
 
 static void imx662_update_ctrls_for_mode(struct imx662 *imx662,
-					       const struct imx662_mode *mode,
-					       bool sync_mode_ctrl)
+                                         const struct imx662_mode *mode,
+                                         bool sync_mode_ctrl)
 {
 	if (imx662->hblank) {
 		__v4l2_ctrl_modify_range(imx662->hblank,
@@ -1613,12 +1617,13 @@ static int imx662_probe(struct i2c_client *client,
 	v4l2_ctrl_new_std(&imx662->ctrls, &imx662_ctrl_ops,
 	                  V4L2_CID_ANALOGUE_GAIN, 0, 100, 1, 0);
 
-	imx662->mode_ctrl = v4l2_ctrl_new_std_menu_items(&imx662->ctrls,
-	                                                 &imx662_ctrl_ops,
-	                                                 V4L2_CID_IMX662_MODE,
-	                                                 ARRAY_SIZE(imx662_mode_names) - 1,
-	                                                 0,
-	                                                 imx662_mode_names);
+        imx662->mode_ctrl = v4l2_ctrl_new_std_menu_items(&imx662->ctrls,
+                                                         &imx662_ctrl_ops,
+                                                         V4L2_CID_IMX662_MODE,
+                                                         ARRAY_SIZE(imx662_mode_names) - 1,
+                                                         0,
+                                                         0,
+                                                         imx662_mode_names);
 
 	mode = imx662->current_mode;
 	imx662->hblank = v4l2_ctrl_new_std(&imx662->ctrls, &imx662_ctrl_ops,
