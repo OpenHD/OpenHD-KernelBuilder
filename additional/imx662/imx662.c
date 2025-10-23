@@ -72,6 +72,22 @@
 /* Exposure must be this many lines less than VMAX */
 #define IMX662_EXPOSURE_OFFSET  4
 
+#define V4L2_CID_IMX662_MODE    (V4L2_CID_USER_BASE + 0x1001)
+
+enum imx662_sensor_mode {
+	IMX662_MODE_1080P_30,
+	IMX662_MODE_BINNING_60,
+	IMX662_MODE_BINNING_90,
+	IMX662_MODE_CLEARHDR_45,
+};
+
+static const char * const imx662_mode_names[] = {
+	"All-pixel 1080p30",
+	"2/2-line binning 60fps LCG",
+	"2/2-line binning 90fps LCG",
+	"2/2-line binning 45fps ClearHDR",
+};
+
 #define IMX662_NATIVE_WIDTH		1956U
 #define IMX662_NATIVE_HEIGHT		1120U
 #define IMX662_PIXEL_ARRAY_LEFT		8U
@@ -97,6 +113,7 @@ struct imx662_regval {
 };
 
 struct imx662_mode {
+	enum imx662_sensor_mode id;
 	u32 width;
 	u32 height;
 	u32 hmax;
@@ -105,6 +122,8 @@ struct imx662_mode {
 
 	const struct imx662_regval *mode_data;
 	u32 mode_data_size;
+	u8 lane_rate;
+	bool supports_gain_switch;
 };
 
 struct imx662 {
@@ -132,6 +151,7 @@ struct imx662 {
 	struct v4l2_ctrl *hflip;
 	struct v4l2_ctrl *vflip;
 	struct v4l2_ctrl *exposure;
+	struct v4l2_ctrl *mode_ctrl;
 
 	struct mutex lock;
 };
@@ -293,6 +313,317 @@ static const struct imx662_regval imx662_global_settings[] = {
 	{0x4549, 0x03}, // RESERVED
 };
 
+static const struct imx662_regval imx662_binning_60fps_settings[] = {
+	{0x3015, 0x07},
+	{0x301b, 0x01},
+	{0x3022, 0x00},
+	{0x302c, 0xde},
+	{0x302d, 0x03},
+	{0x3040, 0x01},
+	{0x3050, 0x04},
+	{0x30a6, 0x00},
+	{0x3444, 0xac},
+	{0x3460, 0x21},
+	{0x3492, 0x08},
+	{0x3a50, 0x62},
+	{0x3a51, 0x01},
+	{0x3a52, 0x19},
+	{0x3b00, 0x39},
+	{0x3b23, 0x2d},
+	{0x3b45, 0x04},
+	{0x3c0a, 0x1f},
+	{0x3c0b, 0x1e},
+	{0x3c38, 0x21},
+	{0x3c44, 0x00},
+	{0x3cb6, 0xd8},
+	{0x3cc4, 0xda},
+	{0x3e24, 0x79},
+	{0x3e2c, 0x15},
+	{0x3edc, 0x2d},
+	{0x4498, 0x05},
+	{0x449c, 0x19},
+	{0x449d, 0x00},
+	{0x449e, 0x32},
+	{0x449f, 0x01},
+	{0x44a0, 0x92},
+	{0x44a2, 0x91},
+	{0x44a4, 0x8c},
+	{0x44a6, 0x87},
+	{0x44a8, 0x82},
+	{0x44aa, 0x78},
+	{0x44ac, 0x6e},
+	{0x44ae, 0x69},
+	{0x44b0, 0x92},
+	{0x44b2, 0x91},
+	{0x44b4, 0x8c},
+	{0x44b6, 0x87},
+	{0x44b8, 0x82},
+	{0x44ba, 0x78},
+	{0x44bc, 0x6e},
+	{0x44be, 0x69},
+	{0x44c0, 0x7f},
+	{0x44c1, 0x01},
+	{0x44c2, 0x7f},
+	{0x44c3, 0x01},
+	{0x44c4, 0x7a},
+	{0x44c5, 0x01},
+	{0x44c6, 0x7a},
+	{0x44c7, 0x01},
+	{0x44c8, 0x70},
+	{0x44c9, 0x01},
+	{0x44ca, 0x6b},
+	{0x44cb, 0x01},
+	{0x44cc, 0x6b},
+	{0x44cd, 0x01},
+	{0x44ce, 0x5c},
+	{0x44cf, 0x01},
+	{0x44d0, 0x7f},
+	{0x44d1, 0x01},
+	{0x44d2, 0x7f},
+	{0x44d3, 0x01},
+	{0x44d4, 0x7a},
+	{0x44d5, 0x01},
+	{0x44d6, 0x7a},
+	{0x44d7, 0x01},
+	{0x44d8, 0x70},
+	{0x44d9, 0x01},
+	{0x44da, 0x6b},
+	{0x44db, 0x01},
+	{0x44dc, 0x6b},
+	{0x44dd, 0x01},
+	{0x44de, 0x5c},
+	{0x44df, 0x01},
+	{0x4534, 0x1c},
+	{0x4535, 0x03},
+	{0x4538, 0x1c},
+	{0x4539, 0x1c},
+	{0x453a, 0x1c},
+	{0x453b, 0x1c},
+	{0x453c, 0x1c},
+	{0x453d, 0x1c},
+	{0x453e, 0x1c},
+	{0x453f, 0x1c},
+	{0x4540, 0x1c},
+	{0x4541, 0x03},
+	{0x4542, 0x03},
+	{0x4543, 0x03},
+	{0x4544, 0x03},
+	{0x4545, 0x03},
+	{0x4546, 0x03},
+	{0x4547, 0x03},
+	{0x4548, 0x03},
+	{0x4549, 0x03},
+};
+
+static const struct imx662_regval imx662_binning_90fps_settings[] = {
+	{0x3015, 0x05},
+	{0x301b, 0x01},
+	{0x3022, 0x00},
+	{0x302c, 0x94},
+	{0x302d, 0x02},
+	{0x3040, 0x01},
+	{0x3050, 0x04},
+	{0x30a6, 0x00},
+	{0x3444, 0xac},
+	{0x3460, 0x21},
+	{0x3492, 0x08},
+	{0x3a50, 0x62},
+	{0x3a51, 0x01},
+	{0x3a52, 0x19},
+	{0x3b00, 0x39},
+	{0x3b23, 0x2d},
+	{0x3b45, 0x04},
+	{0x3c0a, 0x1f},
+	{0x3c0b, 0x1e},
+	{0x3c38, 0x21},
+	{0x3c44, 0x00},
+	{0x3cb6, 0xd8},
+	{0x3cc4, 0xda},
+	{0x3e24, 0x79},
+	{0x3e2c, 0x15},
+	{0x3edc, 0x2d},
+	{0x4498, 0x05},
+	{0x449c, 0x19},
+	{0x449d, 0x00},
+	{0x449e, 0x32},
+	{0x449f, 0x01},
+	{0x44a0, 0x92},
+	{0x44a2, 0x91},
+	{0x44a4, 0x8c},
+	{0x44a6, 0x87},
+	{0x44a8, 0x82},
+	{0x44aa, 0x78},
+	{0x44ac, 0x6e},
+	{0x44ae, 0x69},
+	{0x44b0, 0x92},
+	{0x44b2, 0x91},
+	{0x44b4, 0x8c},
+	{0x44b6, 0x87},
+	{0x44b8, 0x82},
+	{0x44ba, 0x78},
+	{0x44bc, 0x6e},
+	{0x44be, 0x69},
+	{0x44c0, 0x7f},
+	{0x44c1, 0x01},
+	{0x44c2, 0x7f},
+	{0x44c3, 0x01},
+	{0x44c4, 0x7a},
+	{0x44c5, 0x01},
+	{0x44c6, 0x7a},
+	{0x44c7, 0x01},
+	{0x44c8, 0x70},
+	{0x44c9, 0x01},
+	{0x44ca, 0x6b},
+	{0x44cb, 0x01},
+	{0x44cc, 0x6b},
+	{0x44cd, 0x01},
+	{0x44ce, 0x5c},
+	{0x44cf, 0x01},
+	{0x44d0, 0x7f},
+	{0x44d1, 0x01},
+	{0x44d2, 0x7f},
+	{0x44d3, 0x01},
+	{0x44d4, 0x7a},
+	{0x44d5, 0x01},
+	{0x44d6, 0x7a},
+	{0x44d7, 0x01},
+	{0x44d8, 0x70},
+	{0x44d9, 0x01},
+	{0x44da, 0x6b},
+	{0x44db, 0x01},
+	{0x44dc, 0x6b},
+	{0x44dd, 0x01},
+	{0x44de, 0x5c},
+	{0x44df, 0x01},
+	{0x4534, 0x1c},
+	{0x4535, 0x03},
+	{0x4538, 0x1c},
+	{0x4539, 0x1c},
+	{0x453a, 0x1c},
+	{0x453b, 0x1c},
+	{0x453c, 0x1c},
+	{0x453d, 0x1c},
+	{0x453e, 0x1c},
+	{0x453f, 0x1c},
+	{0x4540, 0x1c},
+	{0x4541, 0x03},
+	{0x4542, 0x03},
+	{0x4543, 0x03},
+	{0x4544, 0x03},
+	{0x4545, 0x03},
+	{0x4546, 0x03},
+	{0x4547, 0x03},
+	{0x4548, 0x03},
+	{0x4549, 0x03},
+};
+
+static const struct imx662_regval imx662_clearhdr_binning_45fps_settings[] = {
+	{0x3015, 0x05},
+	{0x301a, 0x08},
+	{0x301b, 0x01},
+	{0x3022, 0x00},
+	{0x3028, 0xc4},
+	{0x3029, 0x09},
+	{0x302c, 0x94},
+	{0x302d, 0x02},
+	{0x3030, 0x02},
+	{0x3040, 0x01},
+	{0x3050, 0x08},
+	{0x30a6, 0x00},
+	{0x3444, 0xac},
+	{0x3460, 0x22},
+	{0x3492, 0x08},
+	{0x3a50, 0x56},
+	{0x3a51, 0x02},
+	{0x3a52, 0x19},
+	{0x3b00, 0x39},
+	{0x3b23, 0x2d},
+	{0x3b45, 0x04},
+	{0x3c0a, 0x1f},
+	{0x3c0b, 0x1e},
+	{0x3c38, 0x21},
+	{0x3c40, 0x05},
+	{0x3c44, 0x00},
+	{0x3cb6, 0xd8},
+	{0x3cc4, 0xda},
+	{0x3e24, 0x79},
+	{0x3e2c, 0x15},
+	{0x3edc, 0x2d},
+	{0x4498, 0x05},
+	{0x449c, 0x19},
+	{0x449d, 0x00},
+	{0x449e, 0x32},
+	{0x449f, 0x01},
+	{0x44a0, 0x92},
+	{0x44a2, 0x91},
+	{0x44a4, 0x8c},
+	{0x44a6, 0x87},
+	{0x44a8, 0x82},
+	{0x44aa, 0x78},
+	{0x44ac, 0x6e},
+	{0x44ae, 0x69},
+	{0x44b0, 0x92},
+	{0x44b2, 0x91},
+	{0x44b4, 0x8c},
+	{0x44b6, 0x87},
+	{0x44b8, 0x82},
+	{0x44ba, 0x78},
+	{0x44bc, 0x6e},
+	{0x44be, 0x69},
+	{0x44c0, 0x7f},
+	{0x44c1, 0x01},
+	{0x44c2, 0x7f},
+	{0x44c3, 0x01},
+	{0x44c4, 0x7a},
+	{0x44c5, 0x01},
+	{0x44c6, 0x7a},
+	{0x44c7, 0x01},
+	{0x44c8, 0x70},
+	{0x44c9, 0x01},
+	{0x44ca, 0x6b},
+	{0x44cb, 0x01},
+	{0x44cc, 0x6b},
+	{0x44cd, 0x01},
+	{0x44ce, 0x5c},
+	{0x44cf, 0x01},
+	{0x44d0, 0x7f},
+	{0x44d1, 0x01},
+	{0x44d2, 0x7f},
+	{0x44d3, 0x01},
+	{0x44d4, 0x7a},
+	{0x44d5, 0x01},
+	{0x44d6, 0x7a},
+	{0x44d7, 0x01},
+	{0x44d8, 0x70},
+	{0x44d9, 0x01},
+	{0x44da, 0x6b},
+	{0x44db, 0x01},
+	{0x44dc, 0x6b},
+	{0x44dd, 0x01},
+	{0x44de, 0x5c},
+	{0x44df, 0x01},
+	{0x4534, 0x1c},
+	{0x4535, 0x03},
+	{0x4538, 0x1c},
+	{0x4539, 0x1c},
+	{0x453a, 0x1c},
+	{0x453b, 0x1c},
+	{0x453c, 0x1c},
+	{0x453d, 0x1c},
+	{0x453e, 0x1c},
+	{0x453f, 0x1c},
+	{0x4540, 0x1c},
+	{0x4541, 0x03},
+	{0x4542, 0x03},
+	{0x4543, 0x03},
+	{0x4544, 0x03},
+	{0x4545, 0x03},
+	{0x4546, 0x03},
+	{0x4547, 0x03},
+	{0x4548, 0x03},
+	{0x4549, 0x03},
+};
+
 static const struct imx662_regval imx662_1080p_common_settings[] = {
 	/* mode settings */
 	{0x3018, 0x00}, // WINMODE
@@ -304,8 +635,9 @@ static const struct imx662_regval imx662_1080p_common_settings[] = {
 
 /* supported link frequencies */
 static const s64 imx662_link_freq_2lanes[] = {
-	//800000000,
 	594000000,
+	891000000,
+	1188000000,
 };
 
 static const s64 imx662_link_freq_4lanes[] = {
@@ -335,28 +667,92 @@ static inline int imx662_link_freqs_num(const struct imx662 *imx662)
 /* Mode configs */
 static const struct imx662_mode imx662_modes[] = {
 	{
-		/*
-		 * Note that this mode reads out the areas documented as
-		 * "effective matrgin for color processing" and "effective pixel
-		 * ignored area" in the datasheet.
-		 */
-		.width = 1936,
-		.height = 1100,
-		.hmax = (1980 * 2), // 0x0284 @720Mbps case
-		//.hmax = (0x3de * 2), // 0x0284 @1188Mbps case
-		.vmax = 0x04e2, //0x0ea6, // 30fps, default 0x04e2
-		.crop = {
-			.left = IMX662_PIXEL_ARRAY_LEFT,
-			.top = IMX662_PIXEL_ARRAY_TOP,
-			.width = IMX662_NATIVE_WIDTH,
-			.height = IMX662_NATIVE_HEIGHT,
-		},
-		.mode_data = imx662_1080p_common_settings,
-		.mode_data_size = ARRAY_SIZE(imx662_1080p_common_settings),
+	        .id = IMX662_MODE_1080P_30,
+	        /*
+	         * Note that this mode reads out the areas documented as
+	         * "effective matrgin for color processing" and "effective pixel
+	         * ignored area" in the datasheet.
+	         */
+	        .width = 1936,
+	        .height = 1100,
+	        .hmax = (1980 * 2),
+	        .vmax = 0x04e2,
+	        .crop = {
+	                .left = IMX662_PIXEL_ARRAY_LEFT,
+	                .top = IMX662_PIXEL_ARRAY_TOP,
+	                .width = IMX662_NATIVE_WIDTH,
+	                .height = IMX662_NATIVE_HEIGHT,
+	        },
+	        .mode_data = imx662_1080p_common_settings,
+	        .mode_data_size = ARRAY_SIZE(imx662_1080p_common_settings),
+	        .lane_rate = IMX662_LANE_RATE_1188,
+	        .supports_gain_switch = true,
+	},
+	{
+	        .id = IMX662_MODE_BINNING_60,
+	        .width = 1936,
+	        .height = 1100,
+	        .hmax = (990 * 2),
+	        .vmax = 0x04e2,
+	        .crop = {
+	                .left = IMX662_PIXEL_ARRAY_LEFT,
+	                .top = IMX662_PIXEL_ARRAY_TOP,
+	                .width = IMX662_NATIVE_WIDTH,
+	                .height = IMX662_NATIVE_HEIGHT,
+	        },
+	        .mode_data = imx662_binning_60fps_settings,
+	        .mode_data_size = ARRAY_SIZE(imx662_binning_60fps_settings),
+	        .lane_rate = IMX662_LANE_RATE_594,
+	        .supports_gain_switch = true,
+	},
+	{
+	        .id = IMX662_MODE_BINNING_90,
+	        .width = 1936,
+	        .height = 1100,
+	        .hmax = (660 * 2),
+	        .vmax = 0x04e2,
+	        .crop = {
+	                .left = IMX662_PIXEL_ARRAY_LEFT,
+	                .top = IMX662_PIXEL_ARRAY_TOP,
+	                .width = IMX662_NATIVE_WIDTH,
+	                .height = IMX662_NATIVE_HEIGHT,
+	        },
+	        .mode_data = imx662_binning_90fps_settings,
+	        .mode_data_size = ARRAY_SIZE(imx662_binning_90fps_settings),
+	        .lane_rate = IMX662_LANE_RATE_891,
+	        .supports_gain_switch = true,
+	},
+	{
+	        .id = IMX662_MODE_CLEARHDR_45,
+	        .width = 1936,
+	        .height = 1100,
+	        .hmax = (660 * 2),
+	        .vmax = 0x09c4,
+	        .crop = {
+	                .left = IMX662_PIXEL_ARRAY_LEFT,
+	                .top = IMX662_PIXEL_ARRAY_TOP,
+	                .width = IMX662_NATIVE_WIDTH,
+	                .height = IMX662_NATIVE_HEIGHT,
+	        },
+	        .mode_data = imx662_clearhdr_binning_45fps_settings,
+	        .mode_data_size = ARRAY_SIZE(imx662_clearhdr_binning_45fps_settings),
+	        .lane_rate = IMX662_LANE_RATE_891,
+	        .supports_gain_switch = false,
 	},
 };
 
 #define IMX662_NUM_MODES ARRAY_SIZE(imx662_modes)
+
+static const struct imx662_mode *imx662_find_mode(enum imx662_sensor_mode id)
+{
+	unsigned int i;
+
+	for (i = 0; i < IMX662_NUM_MODES; i++)
+		if (imx662_modes[i].id == id)
+			return &imx662_modes[i];
+
+	return NULL;
+}
 
 static inline struct imx662 *to_imx662(struct v4l2_subdev *_sd)
 {
@@ -451,12 +847,13 @@ static int imx662_set_gain(struct imx662 *imx662, u32 value)
 		return ret;
 	}
 
-	ret = imx662_write_reg(imx662, IMX662_FR_FDG_SEL0, value < 0x34 ?
-	//ret = imx662_write_reg(imx662, IMX662_FR_FDG_SEL0, value < 0x22 ?
-			       IMX662_FDG_SEL0_HCG : IMX662_FDG_SEL0_HCG);
-			       //IMX662_FDG_SEL0_HCG : IMX662_FDG_SEL0_LCG);
-	if (ret)
-		dev_err(imx662->dev, "Unable to write LCG/HCG mode\n");
+	if (imx662->current_mode->supports_gain_switch) {
+	        ret = imx662_write_reg(imx662, IMX662_FR_FDG_SEL0,
+	                               IMX662_FDG_SEL0_HCG);
+	        if (ret)
+	                dev_err(imx662->dev,
+	                        "Unable to write LCG/HCG mode\n");
+	}
 
 	return ret;
 }
@@ -539,12 +936,40 @@ static int imx662_stop_streaming(struct imx662 *imx662)
 static int imx662_set_ctrl(struct v4l2_ctrl *ctrl)
 {
 	struct imx662 *imx662 = container_of(ctrl->handler,
-					     struct imx662, ctrls);
+	                                     struct imx662, ctrls);
 	int ret = 0;
+
+	if (ctrl->id == V4L2_CID_IMX662_MODE) {
+	        const struct imx662_mode *mode;
+
+	        mutex_lock(&imx662->lock);
+	        mode = imx662_find_mode(ctrl->val);
+	        if (!mode) {
+	                ret = -EINVAL;
+	                goto unlock_mode;
+	        }
+
+	        if (imx662->current_mode != mode) {
+	                if (pm_runtime_get_if_in_use(imx662->dev)) {
+	                        pm_runtime_put(imx662->dev);
+	                        ret = -EBUSY;
+	                        goto unlock_mode;
+	                }
+
+	                imx662->current_mode = mode;
+	                imx662->current_format.width = mode->width;
+	                imx662->current_format.height = mode->height;
+	                imx662_update_ctrls_for_mode(imx662, mode, false);
+	        }
+
+unlock_mode:
+	        mutex_unlock(&imx662->lock);
+	        return ret;
+	}
 
 	/* V4L2 controls values will be applied only when power is already up */
 	if (!pm_runtime_get_if_in_use(imx662->dev))
-		return 0;
+	        return 0;
 
 	switch (ctrl->id) {
 	case V4L2_CID_ANALOGUE_GAIN:
@@ -641,6 +1066,40 @@ static u64 imx662_calc_pixel_rate(struct imx662 *imx662)
 	return 148500000;
 }
 
+static void imx662_update_ctrls_for_mode(struct imx662 *imx662,
+					       const struct imx662_mode *mode,
+					       bool sync_mode_ctrl)
+{
+	if (imx662->hblank) {
+		__v4l2_ctrl_modify_range(imx662->hblank,
+					 mode->hmax - mode->width,
+					 IMX662_HMAX_MAX - mode->width,
+					 1, mode->hmax - mode->width);
+		__v4l2_ctrl_s_ctrl(imx662->hblank,
+				 mode->hmax - mode->width);
+	}
+
+	if (imx662->vblank) {
+		__v4l2_ctrl_modify_range(imx662->vblank,
+					 mode->vmax - mode->height,
+					 IMX662_VMAX_MAX - mode->height,
+					 1, mode->vmax - mode->height);
+		__v4l2_ctrl_s_ctrl(imx662->vblank,
+				 mode->vmax - mode->height);
+	}
+
+	if (imx662->exposure)
+		__v4l2_ctrl_modify_range(imx662->exposure,
+					 IMX662_EXPOSURE_MIN,
+					 mode->vmax - 2,
+					 IMX662_EXPOSURE_STEP,
+					 mode->vmax - 2);
+
+	if (sync_mode_ctrl && imx662->mode_ctrl &&
+	    imx662->mode_ctrl->val != mode->id)
+		__v4l2_ctrl_s_ctrl(imx662->mode_ctrl, mode->id);
+}
+
 static int imx662_set_fmt(struct v4l2_subdev *sd,
 			  struct v4l2_subdev_state *sd_state,
 			  struct v4l2_subdev_format *fmt)
@@ -653,8 +1112,16 @@ static int imx662_set_fmt(struct v4l2_subdev *sd,
 	mutex_lock(&imx662->lock);
 
 	mode = v4l2_find_nearest_size(imx662_modes, IMX662_NUM_MODES,
-				      width, height,
-				      fmt->format.width, fmt->format.height);
+	                              width, height,
+	                              fmt->format.width, fmt->format.height);
+
+	if (imx662->mode_ctrl) {
+	        const struct imx662_mode *requested;
+
+	        requested = imx662_find_mode(imx662->mode_ctrl->val);
+	        if (requested)
+	                mode = requested;
+	}
 
 	fmt->format.width = mode->width;
 	fmt->format.height = mode->height;
@@ -678,39 +1145,17 @@ static int imx662_set_fmt(struct v4l2_subdev *sd,
 		V4L2_MAP_XFER_FUNC_DEFAULT(fmt->format.colorspace);
 
 	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY) {
-		format = v4l2_subdev_get_try_format(sd, sd_state, fmt->pad);
+	        format = v4l2_subdev_get_try_format(sd, sd_state, fmt->pad);
 	} else {
-		format = &imx662->current_format;
-		imx662->current_mode = mode;
-		imx662->bpp = imx662->formats[i].bpp;
+	        format = &imx662->current_format;
+	        imx662->current_mode = mode;
+	        imx662->bpp = imx662->formats[i].bpp;
 
-		if (imx662->pixel_rate)
-			__v4l2_ctrl_s_ctrl_int64(imx662->pixel_rate,
-						 imx662_calc_pixel_rate(imx662));
+	        if (imx662->pixel_rate)
+	                __v4l2_ctrl_s_ctrl_int64(imx662->pixel_rate,
+	                                         imx662_calc_pixel_rate(imx662));
 
-		if (imx662->hblank) {
-			__v4l2_ctrl_modify_range(imx662->hblank,
-						 mode->hmax - mode->width,
-						 IMX662_HMAX_MAX - mode->width,
-						 1, mode->hmax - mode->width);
-			__v4l2_ctrl_s_ctrl(imx662->hblank,
-					   mode->hmax - mode->width);
-		}
-		if (imx662->vblank) {
-			__v4l2_ctrl_modify_range(imx662->vblank,
-						 mode->vmax - mode->height,
-						 IMX662_VMAX_MAX - mode->height,
-						 1,
-						 mode->vmax - mode->height);
-			__v4l2_ctrl_s_ctrl(imx662->vblank,
-					   mode->vmax - mode->height);
-		}
-		if (imx662->exposure)
-			__v4l2_ctrl_modify_range(imx662->exposure,
-						 IMX662_EXPOSURE_MIN,
-						 mode->vmax - 2,
-						 IMX662_EXPOSURE_STEP,
-						 mode->vmax - 2);
+	        imx662_update_ctrls_for_mode(imx662, mode, true);
 	}
 
 	*format = fmt->format;
@@ -824,11 +1269,11 @@ static int imx662_start_streaming(struct imx662 *imx662)
 	/* Set init register settings */
 	ret = imx662_set_register_array(imx662, imx662_global_settings,
 					ARRAY_SIZE(imx662_global_settings));
-        if (ret < 0) {
-                dev_err(imx662->dev, "Could not set init registers\n");
-                return ret;
-        }
-        dev_dbg(imx662->dev, "write INCK_SEL with %02x\n", imx662->inck_sel);
+	if (ret < 0) {
+	        dev_err(imx662->dev, "Could not set init registers\n");
+	        return ret;
+	}
+	dev_dbg(imx662->dev, "write INCK_SEL with %02x\n", imx662->inck_sel);
 	ret = imx662_write_reg(imx662, IMX662_INCK_SEL, imx662->inck_sel);
 	if (ret < 0)
 		return ret;
@@ -851,17 +1296,17 @@ static int imx662_start_streaming(struct imx662 *imx662)
 
 	/* Apply lane config registers of current mode */
 	ret = imx662_write_reg(imx662, IMX662_CSI_LANE_MODE,
-			       imx662->nlanes == 2 ? 0x01 : 0x03);
+	                       imx662->nlanes == 2 ? 0x01 : 0x03);
 	if (ret < 0)
-		return ret;
+	        return ret;
 
 	ret = imx662_write_reg(imx662, IMX662_LANE_RATE,
-			       //imx662->nlanes == 2 ? IMX662_LANE_RATE_720 : // for FPD Limk III
-			       imx662->nlanes == 2 ? IMX662_LANE_RATE_1188 :
-			       //imx662->nlanes == 2 ? IMX662_LANE_RATE_1188 :
-						     IMX662_LANE_RATE_594);
+	                       imx662->current_mode->lane_rate ?
+	                       imx662->current_mode->lane_rate :
+	                       (imx662->nlanes == 2 ? IMX662_LANE_RATE_1188 :
+	                                               IMX662_LANE_RATE_594));
 	if (ret < 0)
-		return ret;
+	        return ret;
 
 	/* Apply customized values from user */
 	ret = v4l2_ctrl_handler_setup(imx662->sd.ctrl_handler);
@@ -1166,11 +1611,18 @@ static int imx662_probe(struct i2c_client *client,
 	v4l2_ctrl_handler_init(&imx662->ctrls, 11);
 
 	v4l2_ctrl_new_std(&imx662->ctrls, &imx662_ctrl_ops,
-			  V4L2_CID_ANALOGUE_GAIN, 0, 100, 1, 0);
+	                  V4L2_CID_ANALOGUE_GAIN, 0, 100, 1, 0);
+
+	imx662->mode_ctrl = v4l2_ctrl_new_std_menu_items(&imx662->ctrls,
+	                                                 &imx662_ctrl_ops,
+	                                                 V4L2_CID_IMX662_MODE,
+	                                                 ARRAY_SIZE(imx662_mode_names) - 1,
+	                                                 0,
+	                                                 imx662_mode_names);
 
 	mode = imx662->current_mode;
 	imx662->hblank = v4l2_ctrl_new_std(&imx662->ctrls, &imx662_ctrl_ops,
-					   V4L2_CID_HBLANK,
+	                                   V4L2_CID_HBLANK,
 					   mode->hmax - mode->width,
 					   IMX662_HMAX_MAX - mode->width, 1,
 					   mode->hmax - mode->width);
