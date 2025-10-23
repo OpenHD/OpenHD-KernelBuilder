@@ -1018,7 +1018,8 @@ static const struct of_device_id imx662_of_match[] = {
 	{ /* sentinel */ }
 };
 
-static int imx662_probe(struct i2c_client *client)
+static int imx662_probe(struct i2c_client *client,
+		const struct i2c_device_id *id)
 {
 	struct v4l2_fwnode_device_properties props;
 	struct device *dev = &client->dev;
@@ -1034,6 +1035,9 @@ static int imx662_probe(struct i2c_client *client)
 	u32 xclk_freq;
 	s64 fq;
 	int ret;
+
+	/* Suppress unused parameter warning on kernels that still pass @id */
+	(void)id;
 
 	imx662 = devm_kzalloc(dev, sizeof(*imx662), GFP_KERNEL);
 	if (!imx662)
