@@ -3,26 +3,30 @@
 /dts-v1/;
 /plugin/;
 
+#define IMX662_XCLK_FREQ       74250000
+#define IMX662_LINK_FREQ_2LANE 594000000
+#define IMX662_LINK_FREQ_4LANE 297000000
+
 /{
 	compatible = "brcm,bcm2835";
 
 	fragment@0 {
 		target = <&cam_endpoint>;
-		__overlay__ {
-			data-lanes = <1 2>;
-			link-frequencies =
-				/bits/ 64 <594000000>;
-		};
-	};
+                __overlay__ {
+                        data-lanes = <1 2>;
+                        link-frequencies =
+                                /bits/ 64 <IMX662_LINK_FREQ_2LANE>;
+                };
+        };
 
-	fragment@1 {
-		target = <&cam_endpoint>;
-		__dormant__ {
-			data-lanes = <1 2 3 4>;
-			link-frequencies =
-				/bits/ 64 <297000000>;
-		};
-	};
+        fragment@1 {
+                target = <&cam_endpoint>;
+                __dormant__ {
+                        data-lanes = <1 2 3 4>;
+                        link-frequencies =
+                                /bits/ 64 <IMX662_LINK_FREQ_4LANE>;
+                };
+        };
 
 	fragment@2 {
 		target = <&csi_ep>;
@@ -49,9 +53,9 @@
 		        compatible = "sony,imx662";
 		        reg = <0x1a>;
 		
-		        clocks = <&cam1_clk>;
-		        clock-names = "xclk";
-		        clock-frequency = <74250000>;
+                        clocks = <&cam1_clk>;
+                        clock-names = "xclk";
+                        clock-frequency = <IMX662_XCLK_FREQ>;
 		
 		        rotation = <0>;
 		        orientation = <2>;
@@ -94,11 +98,11 @@
 
 	clk_frag: fragment@13 {
 		target = <&cam1_clk>;
-		cam_clk: __overlay__ {
-			status = "okay";
-			clock-frequency = <74250000>;
-		};
-	};
+                cam_clk: __overlay__ {
+                        status = "okay";
+                        clock-frequency = <IMX662_XCLK_FREQ>;
+                };
+        };
 
 	fragment@14 {
 		target = <&i2c0mux>;

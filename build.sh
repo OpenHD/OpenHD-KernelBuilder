@@ -309,13 +309,13 @@ set -x
         cp -r additional/Kconfig workdir/linux-pi/drivers/media/i2c/ || exit 1
         #copying the dts-files
         cp -r $RELEASE_PACK_DIR/driver_source/dts/rpi-6.1.y/* workdir/linux-pi/arch/arm/boot/dts/overlays/ || exit 1
-        cp additional/imx662/imx662-overlay.dts workdir/linux-pi/arch/arm/boot/dts/overlays/ || exit 1
+        cp additional/imx662/imx662.dts workdir/linux-pi/arch/arm/boot/dts/overlays/ || exit 1
         rm -f workdir/linux-pi/arch/arm/boot/dts/overlays/csimx307-dual-cm4-overlay*
         sed -i '280 i csimx307-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
         sed -i '281 i cssc132-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
         sed -i '282 i veyecam2m-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
         sed -i '283 i veye_mvcam-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
-        sed -i '284 i imx662-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
+        sed -i '284 i imx662.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
         sed -i '280,284s/^/        /' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
         #git clone https://github.com/Seeed-Studio/seeed-linux-dtoverlays workdir/mods/seeed-linux-dtoverlays
         #export RETERMINAL_DIR=workdir/mods/seeed-linux-dtoverlays
