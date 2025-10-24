@@ -8,11 +8,11 @@
 
 	fragment@0 {
 		target = <&cam_endpoint>;
-		__overlay__ {
-			data-lanes = <1 2>;
-			link-frequencies =
-				/bits/ 64 <594000000>;
-		};
+                __overlay__ {
+                        data-lanes = <1 2>;
+                        link-frequencies =
+                                /bits/ 64 <594000000 891000000 1188000000>;
+                };
 	};
 
 	fragment@1 {
