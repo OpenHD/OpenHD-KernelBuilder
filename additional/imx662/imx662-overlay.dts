@@ -8,21 +8,21 @@
 
 	fragment@0 {
 		target = <&cam_endpoint>;
-                __overlay__ {
-                        data-lanes = <1 2>;
-                        link-frequencies =
-                                /bits/ 64 <594000000>;
-                };
-        };
+		__overlay__ {
+			data-lanes = <1 2>;
+			link-frequencies =
+				/bits/ 64 <594000000>;
+		};
+	};
 
 	fragment@1 {
 		target = <&cam_endpoint>;
-                __dormant__ {
-                        data-lanes = <1 2 3 4>;
-                        link-frequencies =
-                                /bits/ 64 <297000000 445500000 594000000>;
-                };
-        };
+		__dormant__ {
+			data-lanes = <1 2 3 4>;
+			link-frequencies =
+				/bits/ 64 <297000000>;
+		};
+	};
 
 	fragment@2 {
 		target = <&csi_ep>;
