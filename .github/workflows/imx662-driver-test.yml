@@ -1,0 +1,40 @@
+name: imx662 driver build test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-imx662:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            bc \
+            bison \
+            device-tree-compiler \
+            flex \
+            gcc-arm-linux-gnueabihf \
+            g++-arm-linux-gnueabihf \
+            git \
+            kmod \
+            libncurses-dev \
+            libssl-dev \
+            make
+
+      - name: Build IMX662 module and overlay
+        run: |
+          bash scripts/build_imx662_module.sh
+
+      - name: Upload IMX662 artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: imx662-build-artifacts
+          path: artifacts/imx662
+          if-no-files-found: error

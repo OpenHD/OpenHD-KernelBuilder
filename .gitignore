@@ -8,6 +8,7 @@ v4l2loopback
 workdir
 .config
 *.log
+artifacts/
 
 arm-linux-gnueabihf-c\+\+
 
