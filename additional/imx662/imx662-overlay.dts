@@ -11,7 +11,7 @@
                 __overlay__ {
                         data-lanes = <1 2>;
                         link-frequencies =
-                                /bits/ 64 <594000000 891000000 1188000000>;
+                                /bits/ 64 <594000000>;
                 };
         };
 

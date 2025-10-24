@@ -75,17 +75,11 @@
 #define V4L2_CID_IMX662_MODE    (V4L2_CID_USER_BASE + 0x1001)
 
 enum imx662_sensor_mode {
-	IMX662_MODE_1080P_30,
 	IMX662_MODE_BINNING_60,
-	IMX662_MODE_BINNING_90,
-	IMX662_MODE_CLEARHDR_45,
 };
 
 static const char * const imx662_mode_names[] = {
-	"All-pixel 1080p30",
 	"2/2-line binning 60fps LCG",
-	"2/2-line binning 90fps LCG",
-	"2/2-line binning 45fps ClearHDR",
 };
 
 #define IMX662_NATIVE_WIDTH		1956U
@@ -415,7 +409,7 @@ static const struct imx662_regval imx662_binning_60fps_settings[] = {
 	{0x4549, 0x03},
 };
 
-static const struct imx662_regval imx662_binning_90fps_settings[] = {
+static const struct imx662_regval imx662_binning_90fps_settings[] __maybe_unused = {
 	{0x3015, 0x05},
 	{0x301b, 0x01},
 	{0x3022, 0x00},
@@ -517,7 +511,7 @@ static const struct imx662_regval imx662_binning_90fps_settings[] = {
 	{0x4549, 0x03},
 };
 
-static const struct imx662_regval imx662_clearhdr_binning_45fps_settings[] = {
+static const struct imx662_regval imx662_clearhdr_binning_45fps_settings[] __maybe_unused = {
 	{0x3015, 0x05},
 	{0x301a, 0x08},
 	{0x301b, 0x01},
@@ -624,20 +618,14 @@ static const struct imx662_regval imx662_clearhdr_binning_45fps_settings[] = {
 	{0x4549, 0x03},
 };
 
-static const struct imx662_regval imx662_1080p_common_settings[] = {
-	/* mode settings */
-	{0x3018, 0x00}, // WINMODE
-	{ IMX662_FR_FDG_SEL1, 0x00 },
-	{ IMX662_FR_FDG_SEL2, 0x00 },
-	//{ IMX662_FR_FDG_SEL1, 0x01 },
-	//{ IMX662_FR_FDG_SEL2, 0x01 },
-};
-
+/*
+ * Only keep link frequencies that are supported by the Raspberry Pi
+ * CSI receiver. Higher rates prevent the platform from detecting the
+ * camera properly.
+ */
 /* supported link frequencies */
 static const s64 imx662_link_freq_2lanes[] = {
 	594000000,
-	891000000,
-	1188000000,
 };
 
 static const s64 imx662_link_freq_4lanes[] = {
@@ -665,79 +653,27 @@ static inline int imx662_link_freqs_num(const struct imx662 *imx662)
 }
 
 /* Mode configs */
+/*
+ * Modes requiring higher link frequencies have been disabled to ensure
+ * Raspberry Pi platforms can detect the sensor reliably.
+ */
 static const struct imx662_mode imx662_modes[] = {
 	{
-	        .id = IMX662_MODE_1080P_30,
-	        /*
-	         * Note that this mode reads out the areas documented as
-	         * "effective matrgin for color processing" and "effective pixel
-	         * ignored area" in the datasheet.
-	         */
-	        .width = 1936,
-	        .height = 1100,
-	        .hmax = (1980 * 2),
-	        .vmax = 0x04e2,
-	        .crop = {
-	                .left = IMX662_PIXEL_ARRAY_LEFT,
-	                .top = IMX662_PIXEL_ARRAY_TOP,
-	                .width = IMX662_NATIVE_WIDTH,
-	                .height = IMX662_NATIVE_HEIGHT,
-	        },
-	        .mode_data = imx662_1080p_common_settings,
-	        .mode_data_size = ARRAY_SIZE(imx662_1080p_common_settings),
-	        .lane_rate = IMX662_LANE_RATE_1188,
-	        .supports_gain_switch = true,
-	},
-	{
-	        .id = IMX662_MODE_BINNING_60,
-	        .width = 1936,
-	        .height = 1100,
-	        .hmax = (990 * 2),
-	        .vmax = 0x04e2,
-	        .crop = {
-	                .left = IMX662_PIXEL_ARRAY_LEFT,
-	                .top = IMX662_PIXEL_ARRAY_TOP,
-	                .width = IMX662_NATIVE_WIDTH,
-	                .height = IMX662_NATIVE_HEIGHT,
-	        },
-	        .mode_data = imx662_binning_60fps_settings,
-	        .mode_data_size = ARRAY_SIZE(imx662_binning_60fps_settings),
-	        .lane_rate = IMX662_LANE_RATE_594,
-	        .supports_gain_switch = true,
-	},
-	{
-	        .id = IMX662_MODE_BINNING_90,
-	        .width = 1936,
-	        .height = 1100,
-	        .hmax = (660 * 2),
-	        .vmax = 0x04e2,
-	        .crop = {
-	                .left = IMX662_PIXEL_ARRAY_LEFT,
-	                .top = IMX662_PIXEL_ARRAY_TOP,
-	                .width = IMX662_NATIVE_WIDTH,
-	                .height = IMX662_NATIVE_HEIGHT,
-	        },
-	        .mode_data = imx662_binning_90fps_settings,
-	        .mode_data_size = ARRAY_SIZE(imx662_binning_90fps_settings),
-	        .lane_rate = IMX662_LANE_RATE_891,
-	        .supports_gain_switch = true,
-	},
-	{
-	        .id = IMX662_MODE_CLEARHDR_45,
-	        .width = 1936,
-	        .height = 1100,
-	        .hmax = (660 * 2),
-	        .vmax = 0x09c4,
-	        .crop = {
-	                .left = IMX662_PIXEL_ARRAY_LEFT,
-	                .top = IMX662_PIXEL_ARRAY_TOP,
-	                .width = IMX662_NATIVE_WIDTH,
-	                .height = IMX662_NATIVE_HEIGHT,
-	        },
-	        .mode_data = imx662_clearhdr_binning_45fps_settings,
-	        .mode_data_size = ARRAY_SIZE(imx662_clearhdr_binning_45fps_settings),
-	        .lane_rate = IMX662_LANE_RATE_891,
-	        .supports_gain_switch = false,
+		.id = IMX662_MODE_BINNING_60,
+		.width = 1936,
+		.height = 1100,
+		.hmax = (990 * 2),
+		.vmax = 0x04e2,
+		.crop = {
+			.left = IMX662_PIXEL_ARRAY_LEFT,
+			.top = IMX662_PIXEL_ARRAY_TOP,
+			.width = IMX662_NATIVE_WIDTH,
+			.height = IMX662_NATIVE_HEIGHT,
+		},
+		.mode_data = imx662_binning_60fps_settings,
+		.mode_data_size = ARRAY_SIZE(imx662_binning_60fps_settings),
+		.lane_rate = IMX662_LANE_RATE_594,
+		.supports_gain_switch = true,
 	},
 };
 
