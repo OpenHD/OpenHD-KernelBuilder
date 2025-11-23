@@ -73,7 +73,7 @@ function package() {
 function package_headers() {
     PACKAGE_NAME=openhd-linux-${PLATFORM}-headers
 
-    VERSION="2.6-evo-$(date '+%m%d%H%M')-$(git rev-parse --short HEAD)"
+    VERSION="2.7-evo-$(date '+%m%d%H%M')-$(git rev-parse --short HEAD)"
     rm ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb >/dev/null 2>&1
     if [[ "${PLATFORM}" == "pi" ]]; then
         cd ${SRC_DIR}
@@ -106,12 +106,12 @@ function package_headers() {
         if [[ $? -eq 0 ]]; then
 	    # TODO : add a --exact-match for release mode to ensure we have a tag on the commit
 	    # git describe --exact-match HEAD >/dev/null 2>&1 || exit 1
-            echo "Pushing package to OpenHD 2.3 repository"
+            echo "Pushing package to OpenHD 2.7 repository"
             cloudsmith push deb openhd/release/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
         else
 	    # TODO : add a --exact-match for release mode to ensure we have a tag on the commit
 	    # git describe --exact-match HEAD >/dev/null 2>&1 || exit 1
-            echo "Pushing package to OpenHD 2.3 repository"
+            echo "Pushing package to OpenHD 2.7 repository"
             cloudsmith push deb openhd/release/raspbian/${DISTRO} ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb || exit 1
         fi
     fi
