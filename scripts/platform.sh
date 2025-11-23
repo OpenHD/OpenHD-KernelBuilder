@@ -1,28 +1,31 @@
 #!/bin/bash
 
+function setup_ccache_prefix() {
+        local prefix=$1
+        local wrapper_dir=${CCACHE_WRAPPER_DIR:-${HOME}/.cache/ccache/bin}
+
+        mkdir -p "${wrapper_dir}"
+
+        pushd "${wrapper_dir}" >/dev/null
+                for tool in gcc g++ cpp cc; do
+                        ln -fs "$(which ccache)" "${prefix}${tool}"
+                done
+        popd >/dev/null
+
+        if [[ ${PATH} != *${wrapper_dir}* ]]; then
+                export PATH=${wrapper_dir}:${PATH}
+        fi
+}
+
 function setup_platform_env() {
-	if [[ "${PLATFORM}" == "pi" ]]; then
-		# CCACHE workaround
-		CCACHE_PATH=${PI_TOOLS_COMPILER_PATH}/../bin-ccache
+        if [[ "${PLATFORM}" == "pi" ]]; then
+                export ARCH=arm
+                PACKAGE_ARCH=armhf
+                export CROSS_COMPILE=arm-linux-gnueabihf-
+                KERNEL_REPO=https://github.com/OpenHD/linux.git
 
-		if [[ ! "$(ls -A ${CCACHE_PATH})" ]]; then
-			mkdir -p ${CCACHE_PATH}
-			pushd ${CCACHE_PATH}
-			ln -fs $(which ccache) arm-linux-gnueabihf-gcc
-			ln -fs $(which ccache) arm-linux-gnueabihf-g++
-			ln -fs $(which ccache) arm-linux-gnueabihf-cpp
-			ln -fs $(which ccache) arm-linux-gnueabihf-c++
-			popd
-		fi
-		if [[ ${PATH} != *${CCACHE_PATH}* ]]; then
-			export PATH=${CCACHE_PATH}:${PATH}
-		fi
-
-		export ARCH=arm
-		PACKAGE_ARCH=armhf
-		export CROSS_COMPILE=arm-linux-gnueabihf-
-		KERNEL_REPO=https://github.com/OpenHD/linux.git
-	fi
+                setup_ccache_prefix "${CROSS_COMPILE}"
+        fi
 
 	if [[ "${PLATFORM}" == "jetson" ]]; then
 		
