@@ -67,6 +67,10 @@ SRC_DIR=$(pwd)
 CONFIGS=$(pwd)/configs
 J_CORES=$(nproc)
 PACKAGE_DIR=$(pwd)/package
+export CCACHE_DIR=${CCACHE_DIR:-$HOME/.ccache}
+export CCACHE_BASEDIR=${CCACHE_BASEDIR:-${SRC_DIR}}
+export CCACHE_NOHASHDIR=1
+export CCACHE_COMPILERCHECK=${CCACHE_COMPILERCHECK:-content}
 
 # load helper scripts
 for File in scripts/*.sh; do
@@ -259,7 +263,7 @@ prepare_build() {
     cd $SRC_DIR/workdir/mods/
     fetch_rtl8812au_driver
     fetch_rtl8812bu_driver
-    # fetch_rtl8812cu_driver
+    fetch_rtl8812cu_driver
     fetch_rtl8812eu_driver
     #fetch_rtl8188eus_driver
     fetch_v4l2loopback_driver

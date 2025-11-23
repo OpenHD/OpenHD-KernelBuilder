@@ -41,6 +41,9 @@ jobs:
           ccache --set-config=compiler_check=content && ccache --set-config=hash_dir=false
           echo "DT=$(date +'%Y-%m-%d_%H%M')" >> $GITHUB_ENV
           echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
+          echo "CCACHE_DIR=$HOME/.ccache" >> $GITHUB_ENV
+          echo "CCACHE_BASEDIR=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+          echo "CCACHE_WRAPPER_DIR=$HOME/.cache/ccache/bin" >> $GITHUB_ENV
       
       - name: Setup cache
         id: cache
@@ -54,7 +57,7 @@ jobs:
             
       - name: Build ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }}
         run: |
-          export PATH=/usr/lib/ccache:$PATH
+          export PATH=$CCACHE_WRAPPER_DIR:/usr/lib/ccache:$PATH
           bash buildwithlog.sh ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }} ONLINE
           
       - name: Compose release filename
