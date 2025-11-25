@@ -294,18 +294,28 @@ static const struct imx662_regval imx662_global_settings[] = {
 };
 
 static const struct imx662_regval imx662_1080p_common_settings[] = {
-	/* mode settings */
-	{0x3018, 0x00}, // WINMODE
-	{ IMX662_FR_FDG_SEL1, 0x00 },
-	{ IMX662_FR_FDG_SEL2, 0x00 },
-	//{ IMX662_FR_FDG_SEL1, 0x01 },
-	//{ IMX662_FR_FDG_SEL2, 0x01 },
+/* mode settings */
+{0x3018, 0x00}, // WINMODE
+{ IMX662_FR_FDG_SEL1, 0x00 },
+{ IMX662_FR_FDG_SEL2, 0x00 },
+//{ IMX662_FR_FDG_SEL1, 0x01 },
+//{ IMX662_FR_FDG_SEL2, 0x01 },
+};
+
+static const struct imx662_regval imx662_2k60_settings[] = {
+{0x301A, 0x00}, // WDMODE Normal mode
+{0x301B, 0x00}, // ADDMODE non-binning
+{0x3022, 0x00}, // ADBIT 10-bit
+{0x3023, 0x01}, // MDBIT 12-bit
+{0x3A50, 0x62}, // Normal 12bit
+{0x3A51, 0x01}, // Normal 12bit
+{0x3A52, 0x19}, // AD 12bit
 };
 
 /* supported link frequencies */
 static const s64 imx662_link_freq_2lanes[] = {
-	//800000000,
-	594000000,
+//800000000,
+594000000,
 };
 
 static const s64 imx662_link_freq_4lanes[] = {
@@ -326,33 +336,48 @@ static inline const s64 *imx662_link_freqs_ptr(const struct imx662 *imx662)
 
 static inline int imx662_link_freqs_num(const struct imx662 *imx662)
 {
-	if (imx662->nlanes == 2)
-		return ARRAY_SIZE(imx662_link_freq_2lanes);
-	else
-		return ARRAY_SIZE(imx662_link_freq_4lanes);
+        if (imx662->nlanes == 2)
+                return ARRAY_SIZE(imx662_link_freq_2lanes);
+        else
+                return ARRAY_SIZE(imx662_link_freq_4lanes);
 }
 
 /* Mode configs */
 static const struct imx662_mode imx662_modes[] = {
-	{
-		/*
-		 * Note that this mode reads out the areas documented as
-		 * "effective matrgin for color processing" and "effective pixel
-		 * ignored area" in the datasheet.
-		 */
-		.width = 1936,
-		.height = 1100,
-		.hmax = (1980 * 2), // 0x0284 @720Mbps case
-		//.hmax = (0x3de * 2), // 0x0284 @1188Mbps case
-		.vmax = 0x04e2, //0x0ea6, // 30fps, default 0x04e2
-		.crop = {
-			.left = IMX662_PIXEL_ARRAY_LEFT,
-			.top = IMX662_PIXEL_ARRAY_TOP,
-			.width = IMX662_NATIVE_WIDTH,
-			.height = IMX662_NATIVE_HEIGHT,
-		},
-		.mode_data = imx662_1080p_common_settings,
-		.mode_data_size = ARRAY_SIZE(imx662_1080p_common_settings),
+        {
+                /* 2K60 all pixel readout */
+                .width = 1936,
+                .height = 1100,
+                .hmax = (990 * 2),
+                .vmax = 0x04e2,
+                .crop = {
+                        .left = IMX662_PIXEL_ARRAY_LEFT,
+                        .top = IMX662_PIXEL_ARRAY_TOP,
+                        .width = IMX662_NATIVE_WIDTH,
+                        .height = IMX662_NATIVE_HEIGHT,
+                },
+                .mode_data = imx662_2k60_settings,
+                .mode_data_size = ARRAY_SIZE(imx662_2k60_settings),
+        },
+        {
+                /*
+                 * Note that this mode reads out the areas documented as
+                 * "effective matrgin for color processing" and "effective pixel
+                 * ignored area" in the datasheet.
+                 */
+                .width = 1936,
+                .height = 1100,
+                .hmax = (1980 * 2), // 0x0284 @720Mbps case
+                //.hmax = (0x3de * 2), // 0x0284 @1188Mbps case
+                .vmax = 0x04e2, //0x0ea6, // 30fps, default 0x04e2
+                .crop = {
+                        .left = IMX662_PIXEL_ARRAY_LEFT,
+                        .top = IMX662_PIXEL_ARRAY_TOP,
+                        .width = IMX662_NATIVE_WIDTH,
+                        .height = IMX662_NATIVE_HEIGHT,
+                },
+                .mode_data = imx662_1080p_common_settings,
+                .mode_data_size = ARRAY_SIZE(imx662_1080p_common_settings),
 	},
 };
 
