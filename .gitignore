@@ -18,6 +18,5 @@ arm-linux-gnueabihf-g\+\+
 arm-linux-gnueabihf-gcc
 
 *.deb
-
 #if opened in intelli
 .idea
