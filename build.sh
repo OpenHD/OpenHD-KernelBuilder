@@ -32,7 +32,7 @@ RTL_8812CU_REPO=https://github.com/OpenHD/rtl88x2cu
 RTL_8812CU_BRANCH=master
 
 RTL_8812EU_REPO=https://github.com/OpenHD/rtl88x2eu
-RTL_8812EU_BRANCH=v5.15.0.1
+RTL_8812EU_BRANCH=openhd
 
 RTL_8188EUS_REPO=https://github.com/gglluukk/rtl8188eus
 RTL_8188EUS_BRANCH=v5.3.9
