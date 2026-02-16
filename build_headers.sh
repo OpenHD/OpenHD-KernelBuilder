@@ -113,6 +113,35 @@ build_pi_kernel() {
 
 }
 
+stage_pi_headers() {
+    local headers_dir="${PACKAGE_DIR}/usr/src/linux-headers-${KERNEL_VERSION}"
+    local modules_dir="${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}"
+
+    mkdir -p "${headers_dir}" "${headers_dir}/arch" "${modules_dir}" || exit 1
+
+    rm -f "${modules_dir}/build" "${modules_dir}/source"
+    ln -s "/usr/src/linux-headers-${KERNEL_VERSION}" "${modules_dir}/build" || exit 1
+    ln -s "/usr/src/linux-headers-${KERNEL_VERSION}" "${modules_dir}/source" || exit 1
+
+    cp -a include "${headers_dir}/" || exit 1
+    cp -a arch/arm "${headers_dir}/arch/" || exit 1
+    cp -a scripts "${headers_dir}/" || exit 1
+    cp -a tools "${headers_dir}/" || exit 1
+    cp -a Makefile Kconfig "${headers_dir}/" || exit 1
+
+    [[ -f Module.symvers ]] && cp -a Module.symvers "${headers_dir}/" || true
+    [[ -f System.map ]] && cp -a System.map "${headers_dir}/" || true
+    [[ -f .kernelvariables ]] && cp -a .kernelvariables "${headers_dir}/" || true
+    [[ -f .config ]] && cp -a .config "${headers_dir}/" || true
+}
+
+cleanup_headers_package() {
+    rm -rf "${PACKAGE_DIR}/etc" \
+        "${PACKAGE_DIR}/boot" \
+        "${PACKAGE_DIR}/lib/firmware" \
+        "${PACKAGE_DIR}/usr/local"
+}
+
 build_jetson_kernel() {
 
     
@@ -253,41 +282,20 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7
     prepare_build
     build_pi_kernel
-	echo "Copy kernel7"
+	echo "Stage headers for ${KERNEL_VERSION}"
 	pushd ${LINUX_DIR}
-	sudo mkdir -p /usr/src/6.1.55-common
-	sudo mkdir -p /usr/src/6.1.55-rpi
-	sudo mkdir -p ${PACKAGE_DIR}/lib/modules/6.1.55-v7+/
-	sudo ln -s /usr/src/6.1.55-common/ ${PACKAGE_DIR}/lib/modules/6.1.55-v7+/source
-	sudo ln -s /usr/src/6.1.55-rpi ${PACKAGE_DIR}/lib/modules/6.1.55-v7+/build
-	sudo mkdir -p ${PACKAGE_DIR}/usr/src/6.1.55-rpi/include
-	sudo mkdir -p ${PACKAGE_DIR}/usr/src/6.1.55-rpi/arch/arm
-	echo "$pwd"
-	sudo cp -r include/generated ${PACKAGE_DIR}/usr/src/6.1.55-rpi/include
-	sudo cp -r include/config ${PACKAGE_DIR}/usr/src/6.1.55-rpi/include
-	sudo cp -r arch/arm ${PACKAGE_DIR}/usr/src/6.1.55-rpi/arch/
-	sudo cp -r tools ${PACKAGE_DIR}/usr/src/6.1.55-rpi/
-	sudo cp -r scripts ${PACKAGE_DIR}/usr/src/6.1.55-rpi/
-	sudo cp -r Module.symvers ${PACKAGE_DIR}/usr/src/6.1.55-rpi/
-	sudo cp -r Makefile ${PACKAGE_DIR}/usr/src/6.1.55-rpi/
-	sudo cp -r .kernelvariables ${PACKAGE_DIR}/usr/src/6.1.55-rpi/
-	sudo cp -r .config ${PACKAGE_DIR}/usr/src/6.1.55-rpi/
-	sudo rm -Rf ${PACKAGE_DIR}/etc
-	sudo rm -Rf ${PACKAGE_DIR}/boot
-	sudo rm -Rf ${PACKAGE_DIR}/lib/firmware
-	sudo rm -Rf ${PACKAGE_DIR}/usr/local
-	ls -a
+	stage_pi_headers
+	popd
+	cleanup_headers_package
 
 
     source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7l
     prepare_build
     build_pi_kernel
-	echo "Copy kernel7l"
+	echo "Stage headers for ${KERNEL_VERSION}"
 	pushd ${LINUX_DIR}
-	sudo mkdir -p ${PACKAGE_DIR}/lib/modules/6.1.55-v7l+/
-	sudo ln -s /usr/src/6.1.55-common/ ${PACKAGE_DIR}/lib/modules/6.1.55-v7l+/source
-	sudo ln -s /usr/src/6.1.55-rpi ${PACKAGE_DIR}/lib/modules/6.1.55-v7l+/build
-	sudo ls -a
+	stage_pi_headers
+	popd
 
 fi
 
