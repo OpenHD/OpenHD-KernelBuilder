@@ -60,7 +60,7 @@ jobs:
         run: echo "artifact_name=ohd-kernel-${{ matrix.PLATFORM }}-${{ matrix.DISTRO }}-${GITHUB_REF##*/}" >> $GITHUB_ENV
         
       - name: Package firmware ${{ matrix.PLATFORM }} ${{ matrix.DISTRO }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: "${{ env.artifact_name }}"
           path: |
