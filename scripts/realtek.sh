@@ -1,5 +1,41 @@
 #!/bin/bash
 
+function resolve_latest_ref() {
+    local requested="$1"
+    if [[ -z "${requested}" || "${requested}" == "latest" ]]; then
+        local head
+        head=$(git symbolic-ref -q --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##')
+        if [[ -z "${head}" ]]; then
+            head=$(git remote show origin 2>/dev/null | sed -n 's/.*HEAD branch: //p')
+        fi
+        if [[ -z "${head}" ]]; then
+            head="master"
+        fi
+        echo "${head}"
+        return
+    fi
+    echo "${requested}"
+}
+
+function checkout_latest_ref() {
+    local requested="$1"
+    local ref
+    ref=$(resolve_latest_ref "${requested}")
+
+    if git show-ref --verify --quiet "refs/tags/${ref}"; then
+        git checkout -f "tags/${ref}" || exit 1
+        return
+    fi
+
+    if git show-ref --verify --quiet "refs/remotes/origin/${ref}"; then
+        git checkout -f -B "${ref}" "origin/${ref}" || exit 1
+        git reset --hard "origin/${ref}" || exit 1
+        return
+    fi
+
+    git checkout -f "${ref}" || exit 1
+}
+
 function fetch_rtl8812au_driver() {
 
     if [[ ! "$(ls -A rtl8812au)" ]]; then
@@ -8,10 +44,8 @@ function fetch_rtl8812au_driver() {
     fi
 
     pushd rtl8812au
-        git fetch || exit 1
-        git reset --hard || exit 1
-        git checkout ${RTL_8812AU_BRANCH} || exit 1
-        git pull || exit 1
+        git fetch --all --tags --prune || exit 1
+        checkout_latest_ref "${RTL_8812AU_BRANCH}"
 
         if [[ "${PLATFORM}" == "pi" ]]; then
             sed -i 's/CONFIG_PLATFORM_I386_PC = y/CONFIG_PLATFORM_I386_PC = n/' Makefile || exit 1
@@ -70,10 +104,8 @@ function prepare_rtl88x2_repo() {
     fi
 
     pushd ${repo_dir}
-        git fetch --all --tags || exit 1
-        git reset --hard || exit 1
-        git checkout ${branch} || exit 1
-        git pull --ff-only || exit 1
+        git fetch --all --tags --prune || exit 1
+        checkout_latest_ref "${branch}"
 
         if [[ "${PLATFORM}" == "pi" ]]; then
             sed -i 's/CONFIG_PLATFORM_I386_PC = y/CONFIG_PLATFORM_I386_PC = n/' Makefile || exit 1
@@ -143,10 +175,8 @@ function fetch_rtl8188eus_driver() {
     fi
 
     pushd rtl8188eus
-        git fetch || exit 1
-        git reset --hard || exit 1
-        git checkout ${RTL_8188EUS_BRANCH} || exit 1
-        git pull || exit 1
+        git fetch --all --tags --prune || exit 1
+        checkout_latest_ref "${RTL_8188EUS_BRANCH}"
 
         if [[ "${PLATFORM}" == "pi" ]]; then
             sed -i 's/CONFIG_PLATFORM_I386_PC = y/CONFIG_PLATFORM_I386_PC = n/' Makefile || exit 1

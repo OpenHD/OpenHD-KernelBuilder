@@ -21,21 +21,21 @@ echo "Youre building for $PLATFORM $DISTRO"
 ### Config ###
 ##############
 
-# Fixed at v5.2.20 until 5.3.4 works for injection
-RTL_8812AU_REPO=https://github.com/OpenHD/rtl8812au
-RTL_8812AU_BRANCH=v5.6.4.2
+# Use "latest" to track the repo default branch.
+RTL_8812AU_REPO=${RTL_8812AU_REPO:-https://github.com/OpenHD/rtl8812au}
+RTL_8812AU_BRANCH=${RTL_8812AU_BRANCH:-latest}
 
-RTL_8812BU_REPO=https://github.com/OpenHD/rtl88x2bu
-RTL_8812BU_BRANCH=master
+RTL_8812BU_REPO=${RTL_8812BU_REPO:-https://github.com/OpenHD/rtl88x2bu}
+RTL_8812BU_BRANCH=${RTL_8812BU_BRANCH:-master}
 
-RTL_8812CU_REPO=https://github.com/OpenHD/rtl88x2cu
-RTL_8812CU_BRANCH=master
+RTL_8812CU_REPO=${RTL_8812CU_REPO:-https://github.com/OpenHD/rtl88x2cu}
+RTL_8812CU_BRANCH=${RTL_8812CU_BRANCH:-master}
 
-RTL_8812EU_REPO=https://github.com/OpenHD/rtl88x2eu
-RTL_8812EU_BRANCH=openhd
+RTL_8812EU_REPO=${RTL_8812EU_REPO:-https://github.com/OpenHD/rtl88x2eu}
+RTL_8812EU_BRANCH=${RTL_8812EU_BRANCH:-openhd}
 
-RTL_8188EUS_REPO=https://github.com/gglluukk/rtl8188eus
-RTL_8188EUS_BRANCH=v5.3.9
+RTL_8188EUS_REPO=${RTL_8188EUS_REPO:-https://github.com/gglluukk/rtl8188eus}
+RTL_8188EUS_BRANCH=${RTL_8188EUS_BRANCH:-latest}
 # Testing Driver not stable, yet
 
 

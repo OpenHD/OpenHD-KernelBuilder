@@ -19,7 +19,7 @@ function init() {
 function package() {
     PACKAGE_NAME=openhd-linux-${PLATFORM}
 
-    VERSION="2.7-evo-$(date '+%m%d%H%M')-$(git rev-parse --short HEAD)"
+    VERSION="${PACKAGE_VERSION:-3.0-alpha}"
 
     rm ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb >/dev/null 2>&1
     if [[ "${PLATFORM}" == "pi" ]]; then
@@ -73,7 +73,7 @@ function package() {
 function package_headers() {
     PACKAGE_NAME=openhd-linux-${PLATFORM}-headers
 
-    VERSION="2.7-evo-$(date '+%m%d%H%M')-$(git rev-parse --short HEAD)"
+    VERSION="${PACKAGE_VERSION:-3.0-alpha}"
     rm ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb >/dev/null 2>&1
     if [[ "${PLATFORM}" == "pi" ]]; then
         cd ${SRC_DIR}

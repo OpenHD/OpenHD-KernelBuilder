@@ -22,16 +22,15 @@ echo "Youre building for $PLATFORM $DISTRO"
 ### Config ###
 ##############
 
-# Fixed at v5.2.20 until 5.3.4 works for injection
-RTL_8812AU_REPO=https://github.com/svpcom/rtl8812au.git
-RTL_8812AU_BRANCH=v5.2.20
+RTL_8812AU_REPO=${RTL_8812AU_REPO:-https://github.com/svpcom/rtl8812au.git}
+RTL_8812AU_BRANCH=${RTL_8812AU_BRANCH:-latest}
 
-RTL_8812BU_REPO=hhttps://github.com/OpenHD/rtl88x2bu
-RTL_8812BU_BRANCH=master
+RTL_8812BU_REPO=${RTL_8812BU_REPO:-https://github.com/OpenHD/rtl88x2bu}
+RTL_8812BU_BRANCH=${RTL_8812BU_BRANCH:-master}
 # Testing Driver, not verified, yet
 
-RTL_8188EUS_REPO=https://github.com/aircrack-ng/rtl8188eus
-RTL_8188EUS_BRANCH=v5.3.9
+RTL_8188EUS_REPO=${RTL_8188EUS_REPO:-https://github.com/aircrack-ng/rtl8188eus}
+RTL_8188EUS_BRANCH=${RTL_8188EUS_BRANCH:-latest}
 # Testing Driver not stable, yet
 
 
