@@ -27,6 +27,7 @@ jobs:
     env:
       DOWNLOAD_KEY: ${{ secrets.DOWNLOAD_KEY }}
       DOWNLOAD_URL: ${{ secrets.DOWNLOAD_URL }}
+      ARTLINK_GIT_AUTH: ${{ secrets.DOWNLOAD_KEY }}
 
     steps:
       - name: Checkout

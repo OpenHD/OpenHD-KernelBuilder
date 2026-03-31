@@ -7,6 +7,34 @@ ARTLINK_REPO_DIR=${ARTLINK_REPO_DIR:-OpenHD-ArtLink}
 # Reuse the OpenHD secret contract when present.
 ARTLINK_DOWNLOAD_URL=${ARTLINK_DOWNLOAD_URL:-${DOWNLOAD_URL:-}}
 ARTLINK_DOWNLOAD_KEY=${ARTLINK_DOWNLOAD_KEY:-${DOWNLOAD_KEY:-}}
+ARTLINK_GIT_AUTH=${ARTLINK_GIT_AUTH:-${ARTLINK_DOWNLOAD_KEY:-}}
+
+function _artlink_git_auth_basic() {
+    if [[ -z "${ARTLINK_GIT_AUTH}" ]]; then
+        return 1
+    fi
+
+    local raw_auth
+    if [[ "${ARTLINK_GIT_AUTH}" == *:* ]]; then
+        raw_auth="${ARTLINK_GIT_AUTH}"
+    else
+        raw_auth="x-access-token:${ARTLINK_GIT_AUTH}"
+    fi
+
+    # shellcheck disable=SC2005
+    echo "$(printf '%s' "${raw_auth}" | base64 | tr -d '\n')"
+}
+
+function _artlink_git() {
+    local auth_b64
+    auth_b64=$(_artlink_git_auth_basic) || true
+
+    if [[ -n "${auth_b64}" && "${ARTLINK_REPO}" == https://github.com/* ]]; then
+        GIT_TERMINAL_PROMPT=0 git -c http.https://github.com/.extraheader="AUTHORIZATION: basic ${auth_b64}" "$@"
+    else
+        GIT_TERMINAL_PROMPT=0 git "$@"
+    fi
+}
 
 function _artlink_repo_path() {
     echo "${SRC_DIR}/workdir/mods/${ARTLINK_REPO_DIR}"
@@ -70,18 +98,18 @@ function fetch_artlink_driver() {
         rm -rf "${extract_dir}" "${archive_path}" || exit 1
     else
         echo "Download the ArtLink driver source from git"
-        git clone "${ARTLINK_REPO}" "${repo_dir}" || exit 1
+        _artlink_git clone "${ARTLINK_REPO}" "${repo_dir}" || exit 1
     fi
 
     if [[ -d "${repo_dir}/.git" ]]; then
         pushd "${repo_dir}"
-            git fetch --all --tags --prune || exit 1
+            _artlink_git fetch --all --tags --prune || exit 1
 
             if [[ -n "${ARTLINK_BRANCH}" && "${ARTLINK_BRANCH}" != "latest" ]]; then
-                if git show-ref --verify --quiet "refs/remotes/origin/${ARTLINK_BRANCH}"; then
-                    git checkout -f -B "${ARTLINK_BRANCH}" "origin/${ARTLINK_BRANCH}" || exit 1
+                if _artlink_git show-ref --verify --quiet "refs/remotes/origin/${ARTLINK_BRANCH}"; then
+                    _artlink_git checkout -f -B "${ARTLINK_BRANCH}" "origin/${ARTLINK_BRANCH}" || exit 1
                 else
-                    git checkout -f "${ARTLINK_BRANCH}" || exit 1
+                    _artlink_git checkout -f "${ARTLINK_BRANCH}" || exit 1
                 fi
             fi
         popd
