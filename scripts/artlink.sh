@@ -74,37 +74,36 @@ function fetch_artlink_driver() {
 
     if [[ -d "${repo_dir}/host_drv/driver/linux" ]]; then
         echo "ArtLink driver source already present"
-        return
-    fi
-
-    rm -rf "${repo_dir}" || exit 1
-
-    if [[ -n "${ARTLINK_DOWNLOAD_URL}" ]]; then
-        local archive_path="${SRC_DIR}/workdir/mods/artlink-source.archive"
-        local extract_dir="${SRC_DIR}/workdir/mods/artlink-source-extract"
-
-        echo "Download the ArtLink driver source via secured URL"
-        if [[ -n "${ARTLINK_DOWNLOAD_KEY}" ]]; then
-            curl --fail --location --retry 3 -u "${ARTLINK_DOWNLOAD_KEY}" --output "${archive_path}" "${ARTLINK_DOWNLOAD_URL}" || exit 1
-        else
-            curl --fail --location --retry 3 --output "${archive_path}" "${ARTLINK_DOWNLOAD_URL}" || exit 1
-        fi
-
-        _extract_artlink_archive "${archive_path}" "${extract_dir}"
-
-        local source_root
-        source_root=$(find "${extract_dir}" -type d -path "*/host_drv/driver/linux" | head -n 1)
-        if [[ -z "${source_root}" ]]; then
-            echo "Downloaded ArtLink archive does not contain host_drv/driver/linux" >&2
-            exit 1
-        fi
-
-        source_root=$(dirname "$(dirname "$(dirname "${source_root}")")")
-        mv "${source_root}" "${repo_dir}" || exit 1
-        rm -rf "${extract_dir}" "${archive_path}" || exit 1
     else
-        echo "Download the ArtLink driver source from git"
-        _artlink_git clone "${ARTLINK_REPO}" "${repo_dir}" || exit 1
+        rm -rf "${repo_dir}" || exit 1
+
+        if [[ -n "${ARTLINK_DOWNLOAD_URL}" ]]; then
+            local archive_path="${SRC_DIR}/workdir/mods/artlink-source.archive"
+            local extract_dir="${SRC_DIR}/workdir/mods/artlink-source-extract"
+
+            echo "Download the ArtLink driver source via secured URL"
+            if [[ -n "${ARTLINK_DOWNLOAD_KEY}" ]]; then
+                curl --fail --location --retry 3 -u "${ARTLINK_DOWNLOAD_KEY}" --output "${archive_path}" "${ARTLINK_DOWNLOAD_URL}" || exit 1
+            else
+                curl --fail --location --retry 3 --output "${archive_path}" "${ARTLINK_DOWNLOAD_URL}" || exit 1
+            fi
+
+            _extract_artlink_archive "${archive_path}" "${extract_dir}"
+
+            local source_root
+            source_root=$(find "${extract_dir}" -type d -path "*/host_drv/driver/linux" | head -n 1)
+            if [[ -z "${source_root}" ]]; then
+                echo "Downloaded ArtLink archive does not contain host_drv/driver/linux" >&2
+                exit 1
+            fi
+
+            source_root=$(dirname "$(dirname "$(dirname "${source_root}")")")
+            mv "${source_root}" "${repo_dir}" || exit 1
+            rm -rf "${extract_dir}" "${archive_path}" || exit 1
+        else
+            echo "Download the ArtLink driver source from git"
+            _artlink_git clone "${ARTLINK_REPO}" "${repo_dir}" || exit 1
+        fi
     fi
 
     if [[ -d "${repo_dir}/.git" ]]; then
@@ -124,6 +123,19 @@ function fetch_artlink_driver() {
     if [[ ! -d "${repo_dir}/host_drv/driver/linux" ]]; then
         echo "ArtLink driver source missing expected host_drv/driver/linux path" >&2
         exit 1
+    fi
+
+    local patch_file="${SRC_DIR}/scripts/patches/artlink-sdio-div64.patch"
+    if [[ -f "${patch_file}" ]]; then
+        if git -C "${repo_dir}" apply --check "${patch_file}" >/dev/null 2>&1; then
+            echo "Apply ArtLink kernel patch: div64_u64"
+            git -C "${repo_dir}" apply --whitespace=nowarn "${patch_file}" || exit 1
+        elif git -C "${repo_dir}" apply --reverse --check "${patch_file}" >/dev/null 2>&1; then
+            echo "ArtLink kernel patch already applied"
+        else
+            echo "ArtLink kernel patch failed to apply" >&2
+            exit 1
+        fi
     fi
 }
 

@@ -1,0 +1,60 @@
+diff --git a/host_drv/driver/linux/bus/sdio.c b/host_drv/driver/linux/bus/sdio.c
+index 3bc8c3a..0e7b3a1 100644
+--- a/host_drv/driver/linux/bus/sdio.c
++++ b/host_drv/driver/linux/bus/sdio.c
+@@ -19,6 +19,7 @@
+ #include <linux/kernel.h>
+ #include <linux/netdevice.h>
+ #include <linux/module.h>
++#include <linux/math64.h>
+ #include <linux/firmware.h>
+ #include <linux/vmalloc.h>
+ #include <linux/mmc/core.h>
+@@ -1405,6 +1406,9 @@ int sdio_tp_test_stats_thread_func(void *data)
+     oal_handle *handle = (oal_handle *) data;
+ 
+     AR_DBG(DM_GENERIC, DL_INF, AR_FN_ENTRY_STR);
++
++    /* Use kernel helpers for 64-bit division to avoid libgcc symbols. */
++    /* div64_u64 and do_div are provided by the kernel. */
+ 
+     /** Reset the stats */
+     total_rx_pkts = 0;
+@@ -1435,7 +1439,7 @@ int sdio_tp_test_stats_thread_func(void *data)
+ 
+         cur = ktime_get();
+ 
+-        time = ((uint64_t)ktime_to_ns(ktime_sub(cur, last)))/1000/1000;  //ms
++        time = div64_u64((uint64_t)ktime_to_ns(ktime_sub(cur, last)), 1000000);  //ms
+ 
+         //rx
+         if (sdio_rx_tp_test) {
+-            rate = sdio_rx_bytes_period * 8 * 1000 / time;
++            rate = div64_u64(sdio_rx_bytes_period * 8 * 1000, time);
+ 
+             AR_DBG(DM_SDIO, DL_MSG, "=====sdio rx stats=====\n");
+             AR_DBG(DM_SDIO, DL_MSG, "[total stats]--- pkts: %llu, bytes %llu\n", total_rx_pkts, total_rx_bytes);
+             AR_DBG(DM_SDIO, DL_MSG, "[rate stats] --- pkts_rate: %llu pps, bytes_rate %llu.%llu Mbps\n",
+-                        sdio_rx_pkts_period * 1000 / time, rate / 1024 / 1024, ((rate / 1024 * 1000 / 1024) % 1000));
++                        div64_u64(sdio_rx_pkts_period * 1000, time), div64_u64(rate, 1024 * 1024),
++                        ((div64_u64(rate, 1024) * 1000 / 1024) % 1000));
+ 
+             sdio_rx_pkts_period = 0;
+             sdio_rx_bytes_period = 0;
+         }
+@@ -1447,12 +1451,12 @@ int sdio_tp_test_stats_thread_func(void *data)
+ 
+         //tx
+         if (sdio_tx_tp_test) {
+-            rate = sdio_tx_bytes_period * 8 * 1000 / time;
++            rate = div64_u64(sdio_tx_bytes_period * 8 * 1000, time);
+ 
+             AR_DBG(DM_SDIO, DL_MSG, "=====sdio tx stats=====\n");
+             AR_DBG(DM_SDIO, DL_MSG, "[total stats]--- pkts: %llu, bytes %llu\n", total_tx_pkts, total_tx_bytes);
+             AR_DBG(DM_SDIO, DL_MSG, "[rate stats] --- pkts_rate: %llu pps, bytes_rate %llu.%llu Mbps\n",
+-                        sdio_tx_pkts_period * 1000 / time, rate / 1024 / 1024, ((rate / 1024 * 1000 / 1024) % 1000));
++                        div64_u64(sdio_tx_pkts_period * 1000, time), div64_u64(rate, 1024 * 1024),
++                        ((div64_u64(rate, 1024) * 1000 / 1024) % 1000));
+ 
+             sdio_tx_pkts_period = 0;
+             sdio_tx_bytes_period = 0;
