@@ -2,9 +2,11 @@
 PLATFORM=$1
 DISTRO=$2
 ONLINE=$3
+BUILD_MODE=${4:-${BUILD_MODE:-FULL}}
 
 if  [[ "${PLATFORM}" != "pi" ]] && [[ "${PLATFORM}" != "jetson" ]];  then
     echo "Usage: ./build.sh pi bullseye"
+    echo "Optional modes: FULL (default), DRYBUILD"
     echo ""
     echo "Target kernels:"
     echo ""
@@ -15,6 +17,7 @@ fi
 
 
 echo "Youre building for $PLATFORM $DISTRO"
+echo "Build mode: ${BUILD_MODE}"
 
 
 ##############
@@ -46,6 +49,12 @@ V4L2LOOPBACK_BRANCH=openhd
 EXFAT_REPO=https://github.com/OpenHD/exfat-linux.git
 EXFAT_BRANCH=openhd2
 #needed for writing to exfat-usb-sticks, not needed on most (all ?) platforms [but doesn't hurt]
+
+ARTLINK_REPO=${ARTLINK_REPO:-https://github.com/OpenHD-Technologies/OpenHD-ArtLink.git}
+ARTLINK_BRANCH=${ARTLINK_BRANCH:-main}
+# Reuse OpenHD secret names for secure artifact downloads when set.
+ARTLINK_DOWNLOAD_URL=${ARTLINK_DOWNLOAD_URL:-${DOWNLOAD_URL:-}}
+ARTLINK_DOWNLOAD_KEY=${ARTLINK_DOWNLOAD_KEY:-${DOWNLOAD_KEY:-}}
 
 # VEYEV4L2_REPO=https://github.com/OpenHD/veyev4l2.git
 # VEYEV4L2_BRANCH=2.1-milestones
@@ -140,6 +149,7 @@ build_pi_kernel() {
     build_rtl8812bu_driver 
     build_rtl8812cu_driver
     build_rtl8812eu_driver
+    build_artlink_driver
     #build_rtl8188eus_driver
     #build_reterminal_driver
 
@@ -242,10 +252,12 @@ build_jetson_kernel() {
    	build_rtl8812au_driver
 	fetch_rtl8812bu_driver    
  	build_rtl8812bu_driver
-    fetch_rtl8812cu_driver    
+	fetch_rtl8812cu_driver    
     build_rtl8812cu_driver
     fetch_rtl8812eu_driver    
     build_rtl8812eu_driver
+    fetch_artlink_driver
+    build_artlink_driver
 
         depmod -b ${PACKAGE_DIR} ${KERNEL_VERSION}
 
@@ -265,6 +277,7 @@ prepare_build() {
     fetch_rtl8812bu_driver
     fetch_rtl8812cu_driver
     fetch_rtl8812eu_driver
+    fetch_artlink_driver
     #fetch_rtl8188eus_driver
     fetch_v4l2loopback_driver
     #fetch_reterminal_driver
@@ -283,8 +296,72 @@ prepare_build() {
      echo "Download the v4l2loopback_driver"
 	fetch_v4l2loopback_driver
         cp -af v4l2loopback/. $JETSON_NANO_KERNEL_SOURCE/kernel/kernel-4.9/drivers/media/v4l2loopback/ || exit 1
+     fetch_artlink_driver
     fi 
 }
+
+prepare_pi_for_external_modules() {
+    pushd ${LINUX_DIR}
+        make clean || exit 1
+        if [[ "${ISA}" == "v7l" ]]; then
+            make bcm2711_defconfig || exit 1
+        elif [[ "${ISA}" == "v7" ]]; then
+            make bcm2709_defconfig || exit 1
+        else
+            echo "Unsupported ISA for ArtLink drybuild: ${ISA}" >&2
+            exit 1
+        fi
+        KERNEL=${KERNEL} KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES modules_prepare || exit 1
+    popd
+}
+
+collect_artlink_artifacts() {
+    local target_dir="${SRC_DIR}/artifacts/artlink-${PLATFORM}-${DISTRO}-${ISA}"
+    local module_path="${PACKAGE_DIR}/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/artlink/artosyn_drv.ko"
+
+    mkdir -p "${target_dir}" || exit 1
+    cp "${module_path}" "${target_dir}/artosyn_drv.ko" || exit 1
+
+    if [[ -d "${PACKAGE_DIR}/lib/firmware/artlink" ]]; then
+        cp -af "${PACKAGE_DIR}/lib/firmware/artlink/." "${target_dir}/" || exit 1
+    fi
+}
+
+run_artlink_drybuild_pi() {
+    echo "Running ArtLink drybuild (pi)"
+
+    fetch_SBC_source
+    mkdir -p "${SRC_DIR}/workdir/mods" "${SRC_DIR}/artifacts" || exit 1
+    cd "${SRC_DIR}/workdir/mods" || exit 1
+    fetch_artlink_driver
+    cd "${SRC_DIR}" || exit 1
+
+    source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7
+    prepare_pi_for_external_modules
+    build_artlink_driver
+    collect_artlink_artifacts
+
+    source $SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7l
+    prepare_pi_for_external_modules
+    build_artlink_driver
+    collect_artlink_artifacts
+}
+
+run_drybuild() {
+    if [[ "${PLATFORM}" == "pi" ]]; then
+        run_artlink_drybuild_pi
+        return
+    fi
+
+    echo "DRYBUILD is currently implemented for platform 'pi' only." >&2
+    exit 1
+}
+
+if [[ "${BUILD_MODE}" == "DRYBUILD" ]]; then
+    run_drybuild
+    ccache -s
+    exit 0
+fi
 
 if [[ "${PLATFORM}" == "pi" ]]; then
     # a simple hack, we want 2 kernels in one package so we source 2 different configs and build them all.

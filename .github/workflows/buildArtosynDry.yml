@@ -1,0 +1,70 @@
+name: build artosyn dry
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/buildArtosynDry.yml"
+      - "build.sh"
+      - "buildwithlog.sh"
+      - "scripts/artlink.sh"
+      - "scripts/platform.sh"
+      - "kernels/pi-bullseye-v7"
+      - "kernels/pi-bullseye-v7l"
+  pull_request:
+    paths:
+      - ".github/workflows/buildArtosynDry.yml"
+      - "build.sh"
+      - "buildwithlog.sh"
+      - "scripts/artlink.sh"
+      - "scripts/platform.sh"
+      - "kernels/pi-bullseye-v7"
+      - "kernels/pi-bullseye-v7l"
+
+jobs:
+  drybuild:
+    runs-on: ubuntu-latest
+    env:
+      DOWNLOAD_KEY: ${{ secrets.DOWNLOAD_KEY }}
+      DOWNLOAD_URL: ${{ secrets.DOWNLOAD_URL }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 10
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y bc bison ccache curl gcc-arm-linux-gnueabihf flex git kmod libelf-dev libssl-dev make unzip
+
+      - name: Setup env
+        run: |
+          ccache --set-config=compiler_check=content && ccache --set-config=hash_dir=false
+          echo "CCACHE_DIR=$HOME/.ccache" >> $GITHUB_ENV
+          echo "CCACHE_BASEDIR=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+          echo "CCACHE_WRAPPER_DIR=$HOME/.cache/ccache/bin" >> $GITHUB_ENV
+
+      - name: Setup cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ccache
+          key: ${{ runner.os }}-ccache-artosyn
+          restore-keys: |
+            ${{ runner.os }}-ccache-artosyn
+            ${{ runner.os }}-ccache
+
+      - name: Drybuild Artosyn driver
+        run: |
+          export PATH=$CCACHE_WRAPPER_DIR:/usr/lib/ccache:$PATH
+          bash buildwithlog.sh pi bullseye OFFLINE DRYBUILD
+
+      - name: Upload Artosyn artifacts
+        uses: actions/upload-artifact@v5
+        with:
+          name: artosyn-drybuild-pi-bullseye
+          path: |
+            artifacts/**
+            buildlog-*.log
+          if-no-files-found: error

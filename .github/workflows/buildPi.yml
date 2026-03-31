@@ -11,6 +11,8 @@ jobs:
         DISTRO: [bullseye]
     env:
       CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
+      DOWNLOAD_KEY: ${{ secrets.DOWNLOAD_KEY }}
+      DOWNLOAD_URL: ${{ secrets.DOWNLOAD_URL }}
 
     steps:
       - name: Checkout
@@ -21,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y bc bison ccache gcc-arm-linux-gnueabihf fakeroot flex git kmod libelf-dev libssl-dev make python3-pip ruby python3-venv
+          sudo apt install -y bc bison ccache curl gcc-arm-linux-gnueabihf fakeroot flex git kmod libelf-dev libssl-dev make python3-pip ruby python3-venv unzip
           sudo gem install --no-document fpm
 
           python3 -m venv venv
