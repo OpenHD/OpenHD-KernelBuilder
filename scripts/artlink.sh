@@ -125,18 +125,16 @@ function fetch_artlink_driver() {
         exit 1
     fi
 
-    if [[ "${ARCH}" == "arm" ]]; then
-        local patch_file="${SRC_DIR}/scripts/patches/artlink-sdio-div64.patch"
-        if [[ -f "${patch_file}" ]]; then
-            if git -C "${repo_dir}" apply --check "${patch_file}" >/dev/null 2>&1; then
-                echo "Apply ArtLink kernel patch: div64_u64 (arm only)"
-                git -C "${repo_dir}" apply --whitespace=nowarn "${patch_file}" || exit 1
-            elif git -C "${repo_dir}" apply --reverse --check "${patch_file}" >/dev/null 2>&1; then
-                echo "ArtLink kernel patch already applied"
-            else
-                echo "ArtLink kernel patch failed to apply" >&2
-                exit 1
-            fi
+    local patch_file="${SRC_DIR}/scripts/patches/artlink-sdio-div64.patch"
+    if [[ -f "${patch_file}" ]]; then
+        if git -C "${repo_dir}" apply --check "${patch_file}" >/dev/null 2>&1; then
+            echo "Apply ArtLink kernel patch: div64_u64"
+            git -C "${repo_dir}" apply --whitespace=nowarn "${patch_file}" || exit 1
+        elif git -C "${repo_dir}" apply --reverse --check "${patch_file}" >/dev/null 2>&1; then
+            echo "ArtLink kernel patch already applied"
+        else
+            echo "ArtLink kernel patch failed to apply" >&2
+            exit 1
         fi
     fi
 }
