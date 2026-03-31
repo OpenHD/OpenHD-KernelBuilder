@@ -15,39 +15,31 @@ if [[ -z "${ARTLINK_GIT_AUTH}" && -n "${ARTLINK_GIT_TOKEN}" ]]; then
     ARTLINK_GIT_AUTH="${ARTLINK_GIT_AUTH_USERNAME}:${ARTLINK_GIT_TOKEN}"
 fi
 
-function _artlink_git() {
-    local user pass askpass_file rc
-
-    if [[ -n "${ARTLINK_GIT_AUTH}" ]]; then
-        if [[ "${ARTLINK_GIT_AUTH}" == *:* ]]; then
-            user="${ARTLINK_GIT_AUTH%%:*}"
-            pass="${ARTLINK_GIT_AUTH#*:}"
-        else
-            user="${ARTLINK_GIT_AUTH_USERNAME}"
-            pass="${ARTLINK_GIT_AUTH}"
-        fi
-
-        askpass_file=$(mktemp) || exit 1
-        cat <<'EOF' > "${askpass_file}"
-#!/bin/sh
-case "$1" in
-  *Username*) printf '%s\n' "${ARTLINK_GIT_USER}" ;;
-  *Password*) printf '%s\n' "${ARTLINK_GIT_PASS}" ;;
-esac
-EOF
-        chmod 700 "${askpass_file}" || exit 1
-
-        ARTLINK_GIT_USER="${user}" \
-        ARTLINK_GIT_PASS="${pass}" \
-        GIT_TERMINAL_PROMPT=0 \
-        GIT_ASKPASS="${askpass_file}" \
-        git "$@"
-        rc=$?
-        rm -f "${askpass_file}" || true
-        return ${rc}
+function _artlink_git_auth_basic() {
+    if [[ -z "${ARTLINK_GIT_AUTH}" ]]; then
+        return 1
     fi
 
-    GIT_TERMINAL_PROMPT=0 git "$@"
+    local raw_auth
+    if [[ "${ARTLINK_GIT_AUTH}" == *:* ]]; then
+        raw_auth="${ARTLINK_GIT_AUTH}"
+    else
+        raw_auth="x-access-token:${ARTLINK_GIT_AUTH}"
+    fi
+
+    # shellcheck disable=SC2005
+    echo "$(printf '%s' "${raw_auth}" | base64 | tr -d '\n')"
+}
+
+function _artlink_git() {
+    local auth_b64
+    auth_b64=$(_artlink_git_auth_basic) || true
+
+    if [[ -n "${auth_b64}" && "${ARTLINK_REPO}" == https://github.com/* ]]; then
+        GIT_TERMINAL_PROMPT=0 git -c http.https://github.com/.extraheader="AUTHORIZATION: basic ${auth_b64}" "$@"
+    else
+        GIT_TERMINAL_PROMPT=0 git "$@"
+    fi
 }
 
 function _artlink_repo_path() {
@@ -112,10 +104,6 @@ function fetch_artlink_driver() {
         rm -rf "${extract_dir}" "${archive_path}" || exit 1
     else
         echo "Download the ArtLink driver source from git"
-        if [[ "${ARTLINK_REPO}" == https://github.com/OpenHD-Technologies/OpenHD-ArtLink* ]] && [[ -z "${ARTLINK_GIT_AUTH}" ]]; then
-            echo "Missing Git credentials for private ArtLink repo. Set OPENHD_SUBMODULE_TOKEN (or ARTLINK_GIT_AUTH)." >&2
-            exit 1
-        fi
         _artlink_git clone "${ARTLINK_REPO}" "${repo_dir}" || exit 1
     fi
 
