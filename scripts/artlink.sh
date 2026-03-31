@@ -128,11 +128,12 @@ function fetch_artlink_driver() {
 }
 
 function build_artlink_driver() {
-    local repo_dir driver_dir kernel_build_dir target_kernel_version module_dst firmware_dst
+    local repo_dir driver_dir kernel_build_dir kernel_obj_dir target_kernel_version module_dst firmware_dst
 
     repo_dir="$(_artlink_repo_path)"
     driver_dir="${repo_dir}/host_drv/driver/linux"
     kernel_build_dir="${LINUX_DIR}"
+    kernel_obj_dir=""
     target_kernel_version="${KERNEL_VERSION}"
 
     if [[ ! -d "${driver_dir}" ]]; then
@@ -143,14 +144,19 @@ function build_artlink_driver() {
     if [[ "${PLATFORM}" == "jetson" ]]; then
         target_kernel_version="4.9.253OpenHD-2.1-tegra"
         if [[ -d "${LINUX_DIR}/build" ]]; then
-            kernel_build_dir="${LINUX_DIR}/build"
+            kernel_obj_dir="${LINUX_DIR}/build"
         fi
     fi
 
     echo "Build ArtLink driver"
     pushd "${driver_dir}"
-        make -C "${kernel_build_dir}" M="$(pwd)" ARCH="${ARCH}" CROSS_COMPILE="${CROSS_COMPILE}" clean || exit 1
-        make -C "${kernel_build_dir}" M="$(pwd)" ARCH="${ARCH}" CROSS_COMPILE="${CROSS_COMPILE}" modules || exit 1
+        make clean || exit 1
+
+        if [[ -n "${kernel_obj_dir}" ]]; then
+            make KERNELDIR="${kernel_build_dir}" KBUILDDIR="${kernel_obj_dir}" ARCH="${ARCH}" CROSS_COMPILE="${CROSS_COMPILE}" || exit 1
+        else
+            make KERNELDIR="${kernel_build_dir}" ARCH="${ARCH}" CROSS_COMPILE="${CROSS_COMPILE}" || exit 1
+        fi
 
         module_dst="${PACKAGE_DIR}/lib/modules/${target_kernel_version}/kernel/drivers/net/artlink"
         mkdir -p "${module_dst}" || exit 1
