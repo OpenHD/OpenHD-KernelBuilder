@@ -10,6 +10,7 @@ ARTLINK_DOWNLOAD_KEY=${ARTLINK_DOWNLOAD_KEY:-${DOWNLOAD_KEY:-}}
 ARTLINK_GIT_AUTH_USERNAME=${ARTLINK_GIT_AUTH_USERNAME:-raphael@openhdfpv.org}
 ARTLINK_GIT_TOKEN=${ARTLINK_GIT_TOKEN:-${OPENHD_SUBMODULE_TOKEN:-}}
 ARTLINK_GIT_AUTH=${ARTLINK_GIT_AUTH:-${ARTLINK_DOWNLOAD_KEY:-}}
+ARTLINK_COMMIT_HASH=""
 
 if [[ -z "${ARTLINK_GIT_AUTH}" && -n "${ARTLINK_GIT_TOKEN}" ]]; then
     ARTLINK_GIT_AUTH="${ARTLINK_GIT_AUTH_USERNAME}:${ARTLINK_GIT_TOKEN}"
@@ -110,14 +111,40 @@ function fetch_artlink_driver() {
         pushd "${repo_dir}"
             _artlink_git fetch --all --tags --prune || exit 1
 
+            local target_ref target_branch origin_head_ref
             if [[ -n "${ARTLINK_BRANCH}" && "${ARTLINK_BRANCH}" != "latest" ]]; then
                 if _artlink_git show-ref --verify --quiet "refs/remotes/origin/${ARTLINK_BRANCH}"; then
-                    _artlink_git checkout -f -B "${ARTLINK_BRANCH}" "origin/${ARTLINK_BRANCH}" || exit 1
+                    target_ref="origin/${ARTLINK_BRANCH}"
+                    target_branch="${ARTLINK_BRANCH}"
                 else
-                    _artlink_git checkout -f "${ARTLINK_BRANCH}" || exit 1
+                    target_ref="${ARTLINK_BRANCH}"
+                    target_branch="${ARTLINK_BRANCH}"
+                fi
+            else
+                origin_head_ref=$(_artlink_git symbolic-ref --quiet --short refs/remotes/origin/HEAD || true)
+                if [[ -n "${origin_head_ref}" ]]; then
+                    target_ref="${origin_head_ref}"
+                    target_branch="${origin_head_ref#origin/}"
+                elif _artlink_git show-ref --verify --quiet "refs/remotes/origin/main"; then
+                    target_ref="origin/main"
+                    target_branch="main"
+                elif _artlink_git show-ref --verify --quiet "refs/remotes/origin/master"; then
+                    target_ref="origin/master"
+                    target_branch="master"
+                else
+                    target_branch=$(_artlink_git rev-parse --abbrev-ref HEAD) || exit 1
+                    target_ref="${target_branch}"
                 fi
             fi
+
+            _artlink_git checkout -f -B "${target_branch}" "${target_ref}" || exit 1
+
+            ARTLINK_COMMIT_HASH=$(_artlink_git rev-parse --short=12 HEAD) || exit 1
+            echo "ArtLink commit hash: ${ARTLINK_COMMIT_HASH}"
         popd
+    else
+        ARTLINK_COMMIT_HASH="archive-source"
+        echo "ArtLink commit hash: ${ARTLINK_COMMIT_HASH}"
     fi
 
     if [[ ! -d "${repo_dir}/host_drv/driver/linux" ]]; then
@@ -148,7 +175,7 @@ function build_artlink_driver() {
         fi
     fi
 
-    echo "Build ArtLink driver"
+    echo "Build ArtLink driver (${ARTLINK_COMMIT_HASH})"
     pushd "${driver_dir}"
         make clean || exit 1
 
