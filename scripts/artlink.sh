@@ -11,6 +11,9 @@ ARTLINK_GIT_AUTH_USERNAME=${ARTLINK_GIT_AUTH_USERNAME:-raphael@openhdfpv.org}
 ARTLINK_GIT_TOKEN=${ARTLINK_GIT_TOKEN:-${OPENHD_SUBMODULE_TOKEN:-}}
 ARTLINK_GIT_AUTH=${ARTLINK_GIT_AUTH:-${ARTLINK_DOWNLOAD_KEY:-}}
 ARTLINK_COMMIT_HASH=""
+# Keep ArtLink USB support explicit at build time.
+ARTLINK_CONFIG_BUS_USB=${ARTLINK_CONFIG_BUS_USB:-y}
+ARTLINK_CONFIGURE_HOST_DRV=${ARTLINK_CONFIGURE_HOST_DRV:-1}
 
 if [[ -z "${ARTLINK_GIT_AUTH}" && -n "${ARTLINK_GIT_TOKEN}" ]]; then
     ARTLINK_GIT_AUTH="${ARTLINK_GIT_AUTH_USERNAME}:${ARTLINK_GIT_TOKEN}"
@@ -154,8 +157,46 @@ function fetch_artlink_driver() {
 
 }
 
+function configure_artlink_host_drv() {
+    local repo_dir host_drv_dir build_dir
+
+    repo_dir="$(_artlink_repo_path)"
+    host_drv_dir="${repo_dir}/host_drv"
+    build_dir="${host_drv_dir}/build-kernelbuilder"
+
+    if [[ "${ARTLINK_CONFIGURE_HOST_DRV}" != "1" ]]; then
+        return 0
+    fi
+
+    if [[ ! -f "${host_drv_dir}/CMakeLists.txt" ]]; then
+        echo "ArtLink host_drv CMakeLists.txt not found, skipping host_drv configure step"
+        return 0
+    fi
+
+    cmake -S "${host_drv_dir}" -B "${build_dir}" \
+        -DAPP_STATIC_LIB=ON \
+        -DBUILD_TEST_APP=OFF \
+        -DBUILD_ARTOSYN_EXAMPLE=OFF \
+        -DBUILD_RAM_INIT=OFF \
+        -DBUILD_TUNTAP=OFF \
+        -DBUILD_BW_UPDATE_DEMO=OFF \
+        -DBUILD_IMG_UPGRADE=OFF \
+        -DBUILD_XDATA_TEST=OFF \
+        -DBUILD_REPEATER_TEST=OFF \
+        -DBUILD_BB_TEST=OFF \
+        -DBUILD_WORK_MODE_CFG=OFF \
+        -DBUILD_NET_DEV_DEMO=OFF \
+        -DENABLE_PYTHON=OFF \
+        -DENABLE_JAVA=OFF \
+        -DUSING_8030USB=ON \
+        -DUSING_8030SDIO=OFF \
+        -DUSING_8030UART=OFF \
+        -DUSING_8030DRV=OFF >&2 || return 1
+}
+
 function build_artlink_driver() {
     local repo_dir driver_dir kernel_build_dir kernel_obj_dir target_kernel_version module_dst firmware_dst
+    local -a make_args
 
     repo_dir="$(_artlink_repo_path)"
     driver_dir="${repo_dir}/host_drv/driver/linux"
@@ -175,15 +216,22 @@ function build_artlink_driver() {
         fi
     fi
 
+    configure_artlink_host_drv || exit 1
+
     echo "Build ArtLink driver (${ARTLINK_COMMIT_HASH})"
     pushd "${driver_dir}"
         make clean || exit 1
-
+        make_args=(
+            KERNELDIR="${kernel_build_dir}"
+            ARCH="${ARCH}"
+            CROSS_COMPILE="${CROSS_COMPILE}"
+            CONFIG_BUS_USB="${ARTLINK_CONFIG_BUS_USB}"
+        )
         if [[ -n "${kernel_obj_dir}" ]]; then
-            make KERNELDIR="${kernel_build_dir}" KBUILDDIR="${kernel_obj_dir}" ARCH="${ARCH}" CROSS_COMPILE="${CROSS_COMPILE}" || exit 1
-        else
-            make KERNELDIR="${kernel_build_dir}" ARCH="${ARCH}" CROSS_COMPILE="${CROSS_COMPILE}" || exit 1
+            make_args+=(KBUILDDIR="${kernel_obj_dir}")
         fi
+
+        make "${make_args[@]}" || exit 1
 
         module_dst="${PACKAGE_DIR}/lib/modules/${target_kernel_version}/kernel/drivers/net/artlink"
         mkdir -p "${module_dst}" || exit 1
