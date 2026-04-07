@@ -19,7 +19,11 @@ function init() {
 function package() {
     PACKAGE_NAME=openhd-linux-${PLATFORM}
 
-    VERSION="${PACKAGE_VERSION:-3.0-alpha}"
+    BASE_VERSION="${PACKAGE_VERSION:-3.0-alpha}"
+    VERSION="${BASE_VERSION}"
+    if [[ "${ONLINE}" == "ONLINE" ]]; then
+        VERSION="${BASE_VERSION}+$(date -u +%Y%m%d%H%M%S)"
+    fi
 
     rm ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb >/dev/null 2>&1
     if [[ "${PLATFORM}" == "pi" ]]; then
@@ -73,7 +77,11 @@ function package() {
 function package_headers() {
     PACKAGE_NAME=openhd-linux-${PLATFORM}-headers
 
-    VERSION="${PACKAGE_VERSION:-3.0-alpha}"
+    BASE_VERSION="${PACKAGE_VERSION:-3.0-alpha}"
+    VERSION="${BASE_VERSION}"
+    if [[ "${ONLINE}" == "ONLINE" ]]; then
+        VERSION="${BASE_VERSION}+$(date -u +%Y%m%d%H%M%S)"
+    fi
     rm ${PACKAGE_NAME}_${VERSION}_${PACKAGE_ARCH}.deb >/dev/null 2>&1
     if [[ "${PLATFORM}" == "pi" ]]; then
         cd ${SRC_DIR}
