@@ -379,6 +379,8 @@ set -x
          #copy drivers, not copying the makefile (the makefile will make the kernel not build)
         cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-6.1.y/*.c workdir/linux-pi/drivers/media/i2c/ || exit 1
         cp -r $RELEASE_PACK_DIR/driver_source/cam_drv_src/rpi-6.1.y/*.h workdir/linux-pi/drivers/media/i2c/ || exit 1
+        cp additional/veye-gx/veye_gxcam.c additional/veye-gx/veye_gxcam.h workdir/linux-pi/drivers/media/i2c/ || exit 1
+        echo 'obj-m += veye_gxcam.o' >> workdir/linux-pi/drivers/media/i2c/Makefile
         echo 'obj-m += veye_mvcam.o csimx307.o veyecam2m.o cssc132.o' >> workdir/linux-pi/drivers/media/i2c/Makefile
         cp additional/imx662/imx662.c workdir/linux-pi/drivers/media/i2c/ || exit 1
         if ! grep -q "CONFIG_VIDEO_IMX662" workdir/linux-pi/drivers/media/i2c/Makefile; then
@@ -391,6 +393,8 @@ set -x
         #copying the dts-files
         cp -r $RELEASE_PACK_DIR/driver_source/dts/rpi-6.1.y/* workdir/linux-pi/arch/arm/boot/dts/overlays/ || exit 1
         cp additional/imx662/imx662.dts workdir/linux-pi/arch/arm/boot/dts/overlays/ || exit 1
+        cp additional/veye-gx/veye_gxcam-overlay.dts workdir/linux-pi/arch/arm/boot/dts/overlays/veye_gxcam.dts || exit 1
+        echo 'dtbo-y += veye_gxcam.dtbo' >> workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile
         rm -f workdir/linux-pi/arch/arm/boot/dts/overlays/csimx307-dual-cm4-overlay*
         sed -i '280 i csimx307-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
         sed -i '281 i cssc132-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
