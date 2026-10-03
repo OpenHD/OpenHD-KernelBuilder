@@ -124,6 +124,8 @@ build_pi_kernel() {
                 make bcm2709_defconfig || exit 1
             # currently only doing default config, modified config can follow later, but standart eases the possibility to upgrade to a newer kernel 
             fi
+        scripts/config --module VIDEO_IMX415 || exit 1
+        make olddefconfig || exit 1
         KERNEL=${KERNEL} KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
 
         echo "Copy kernel modules"
@@ -367,6 +369,7 @@ if [[ "${PLATFORM}" == "pi" ]]; then
     # a simple hack, we want 2 kernels in one package so we source 2 different configs and build them all.
     # note that pi zero kernels are not being generated here because they are prepackaged with a specific 
     # kernel build. this is a temporary thing due to the unique issues with USB on the pi zero.
+    source "$SRC_DIR/kernels/${PLATFORM}-${DISTRO}-v7"
     fetch_SBC_source
     ls -a
 set -x 
@@ -402,6 +405,7 @@ set -x
         sed -i '283 i veye_mvcam-overlay.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
         sed -i '284 i imx662.dtbo \\' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
         sed -i '280,284s/^/        /' workdir/linux-pi/arch/arm/boot/dts/overlays/Makefile || exit 1
+        install_imx415_backport || exit 1
         #git clone https://github.com/Seeed-Studio/seeed-linux-dtoverlays workdir/mods/seeed-linux-dtoverlays
         #export RETERMINAL_DIR=workdir/mods/seeed-linux-dtoverlays
         #cp -r $RETERMINAL_DIR/overlays/rpi/reTerminal* workdir/linux-pi/arch/arm/boot/dts/overlays/

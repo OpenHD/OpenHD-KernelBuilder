@@ -1,0 +1,11 @@
+
+config VIDEO_IMX415
+	tristate "Sony IMX415 sensor support"
+	depends on I2C && VIDEO_DEV
+	select MEDIA_CONTROLLER
+	select VIDEO_V4L2_SUBDEV_API
+	select V4L2_FWNODE
+	select REGMAP_I2C
+	help
+	  V4L2 driver for the Sony IMX415 CMOS image sensor.
+	  The module is called imx415.

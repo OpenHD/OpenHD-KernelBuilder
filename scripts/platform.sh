@@ -76,6 +76,16 @@ function fetch_SBC_source() {
 			popd
 		fi
 
+		# Use the ABI pinned by kernels/* before injecting camera sources.
+		if [[ -n "${KERNEL_COMMIT:-}" ]] &&
+		   [[ "$(git -C "${LINUX_DIR}" rev-parse HEAD)" != "${KERNEL_COMMIT}" ]]; then
+			if [[ -n "$(git -C "${LINUX_DIR}" status --porcelain)" ]]; then
+				echo "Kernel checkout has changes; cannot switch to ${KERNEL_COMMIT}." >&2
+				exit 1
+			fi
+			git -C "${LINUX_DIR}" fetch origin "${KERNEL_COMMIT}" || exit 1
+			git -C "${LINUX_DIR}" checkout --detach "${KERNEL_COMMIT}" || exit 1
+		fi
 	fi
 
 	if [[ "${PLATFORM}" == "jetson" ]]; then
