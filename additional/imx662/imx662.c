@@ -526,23 +526,8 @@ static int imx662_set_vmax(struct imx662 *imx662, u32 val)
 	if (ret)
 		dev_err(imx662->dev, "Unable to write vmax\n");
 
-	/*
-	 * Changing vblank changes the allowed range for exposure.
-	 * We don't supply the current exposure as default here as it
-	 * may lie outside the new range. We will reset it just below.
-	 */
-	__v4l2_ctrl_modify_range(imx662->exposure,
-				 IMX662_EXPOSURE_MIN,
-				 vmax - IMX662_EXPOSURE_OFFSET,
-				 IMX662_EXPOSURE_STEP,
-				 vmax - IMX662_EXPOSURE_OFFSET);
-
-	/*
-	 * Becuse of the way exposure works for this sensor, updating
-	 * vblank causes the effective exposure to change, so we must
-	 * set it back to the "new" correct value.
-	 */
-	imx662_set_exposure(imx662, imx662->exposure->val);
+	if (!ret)
+		ret = imx662_set_exposure(imx662, imx662->exposure->val);
 
 	return ret;
 }
@@ -566,6 +551,17 @@ static int imx662_set_ctrl(struct v4l2_ctrl *ctrl)
 	struct imx662 *imx662 = container_of(ctrl->handler,
 					     struct imx662, ctrls);
 	int ret = 0;
+
+	/* Keep libcamera's exposure limits correct even while powered down. */
+	if (ctrl->id == V4L2_CID_VBLANK) {
+		u32 vmax = imx662->current_mode->height + ctrl->val;
+
+		__v4l2_ctrl_modify_range(imx662->exposure,
+					 IMX662_EXPOSURE_MIN,
+					 vmax - IMX662_EXPOSURE_OFFSET,
+					 IMX662_EXPOSURE_STEP,
+					 vmax - IMX662_EXPOSURE_OFFSET);
+	}
 
 	/* V4L2 controls values will be applied only when power is already up */
 	if (!pm_runtime_get_if_in_use(imx662->dev))
@@ -733,9 +729,9 @@ static int imx662_set_fmt(struct v4l2_subdev *sd,
 		if (imx662->exposure)
 			__v4l2_ctrl_modify_range(imx662->exposure,
 						 IMX662_EXPOSURE_MIN,
-						 mode->vmax - 2,
+						 mode->vmax - IMX662_EXPOSURE_OFFSET,
 						 IMX662_EXPOSURE_STEP,
-						 mode->vmax - 2);
+						 mode->vmax - IMX662_EXPOSURE_OFFSET);
 	}
 
 	*format = fmt->format;
@@ -889,7 +885,7 @@ static int imx662_start_streaming(struct imx662 *imx662)
 		return ret;
 
 	/* Apply customized values from user */
-	ret = v4l2_ctrl_handler_setup(imx662->sd.ctrl_handler);
+	ret = __v4l2_ctrl_handler_setup(imx662->sd.ctrl_handler);
 	if (ret) {
 		dev_err(imx662->dev, "Could not sync v4l2 controls\n");
 		return ret;
@@ -909,6 +905,8 @@ static int imx662_set_stream(struct v4l2_subdev *sd, int enable)
 {
 	struct imx662 *imx662 = to_imx662(sd);
 	int ret = 0;
+
+	mutex_lock(&imx662->lock);
 
 	if (enable) {
 		ret = pm_runtime_resume_and_get(imx662->dev);
@@ -930,6 +928,7 @@ static int imx662_set_stream(struct v4l2_subdev *sd, int enable)
 	__v4l2_ctrl_grab(imx662->hflip, enable);
 
 unlock_and_return:
+	mutex_unlock(&imx662->lock);
 
 	return ret;
 }
@@ -1189,6 +1188,7 @@ static int imx662_probe(struct i2c_client *client,
 	imx662_entity_init_cfg(&imx662->sd, NULL);
 
 	v4l2_ctrl_handler_init(&imx662->ctrls, 11);
+	imx662->ctrls.lock = &imx662->lock;
 
 	v4l2_ctrl_new_std(&imx662->ctrls, &imx662_ctrl_ops,
 			  V4L2_CID_ANALOGUE_GAIN, 0, 100, 1, 0);
@@ -1209,9 +1209,9 @@ static int imx662_probe(struct i2c_client *client,
 	imx662->exposure = v4l2_ctrl_new_std(&imx662->ctrls, &imx662_ctrl_ops,
 					     V4L2_CID_EXPOSURE,
 					     IMX662_EXPOSURE_MIN,
-					     mode->vmax - 2,
+					     mode->vmax - IMX662_EXPOSURE_OFFSET,
 					     IMX662_EXPOSURE_STEP,
-					     mode->vmax - 2);
+					     mode->vmax - IMX662_EXPOSURE_OFFSET);
 
 	imx662->hflip = v4l2_ctrl_new_std(&imx662->ctrls, &imx662_ctrl_ops,
 					  V4L2_CID_HFLIP, 0, 1, 1, 0);
@@ -1297,8 +1297,7 @@ free_err:
 	return ret;
 }
 
-/*
-static int imx662_remove(struct i2c_client *client)
+static void imx662_remove(struct i2c_client *client)
 {
 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
 	struct imx662 *imx662 = to_imx662(sd);
@@ -1313,17 +1312,14 @@ static int imx662_remove(struct i2c_client *client)
 	if (!pm_runtime_status_suspended(imx662->dev))
 		imx662_power_off(imx662->dev);
 	pm_runtime_set_suspended(imx662->dev);
-
-	return 0;
 }
-*/
 
 MODULE_DEVICE_TABLE(of, imx662_of_match);
 
 static struct i2c_driver imx662_i2c_driver = {
 	.probe  = imx662_probe,
 	//.probe_new  = imx662_probe,
-	//.remove = imx662_remove,
+	.remove = imx662_remove,
 	.driver = {
 		.name  = "imx662",
 		.pm = &imx662_pm_ops,

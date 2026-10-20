@@ -124,6 +124,7 @@ build_pi_kernel() {
                 make bcm2709_defconfig || exit 1
             # currently only doing default config, modified config can follow later, but standart eases the possibility to upgrade to a newer kernel 
             fi
+        scripts/config --module VIDEO_IMX662 || exit 1
         scripts/config --module VIDEO_IMX415 || exit 1
         make olddefconfig || exit 1
         KERNEL=${KERNEL} KBUILD_BUILD_TIMESTAMP='' make -j $J_CORES zImage modules dtbs || exit 1
@@ -385,13 +386,7 @@ set -x
         cp additional/veye-gx/veye_gxcam.c additional/veye-gx/veye_gxcam.h workdir/linux-pi/drivers/media/i2c/ || exit 1
         echo 'obj-m += veye_gxcam.o' >> workdir/linux-pi/drivers/media/i2c/Makefile
         echo 'obj-m += veye_mvcam.o csimx307.o veyecam2m.o cssc132.o' >> workdir/linux-pi/drivers/media/i2c/Makefile
-        cp additional/imx662/imx662.c workdir/linux-pi/drivers/media/i2c/ || exit 1
-        if ! grep -q "CONFIG_VIDEO_IMX662" workdir/linux-pi/drivers/media/i2c/Makefile; then
-            echo 'obj-$(CONFIG_VIDEO_IMX662) += imx662.o' >> workdir/linux-pi/drivers/media/i2c/Makefile
-        fi
-        if ! grep -q '^obj-m += imx662.o' workdir/linux-pi/drivers/media/i2c/Makefile; then
-            echo 'obj-m += imx662.o' >> workdir/linux-pi/drivers/media/i2c/Makefile
-        fi
+        install_imx662_driver || exit 1
         cp -r additional/Kconfig workdir/linux-pi/drivers/media/i2c/ || exit 1
         #copying the dts-files
         cp -r $RELEASE_PACK_DIR/driver_source/dts/rpi-6.1.y/* workdir/linux-pi/arch/arm/boot/dts/overlays/ || exit 1
