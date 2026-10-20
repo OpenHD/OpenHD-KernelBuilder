@@ -33,7 +33,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 10
 
@@ -50,7 +50,7 @@ jobs:
           echo "CCACHE_WRAPPER_DIR=$HOME/.cache/ccache/bin" >> $GITHUB_ENV
 
       - name: Setup cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.ccache
           key: ${{ runner.os }}-ccache-artosyn
@@ -64,7 +64,7 @@ jobs:
           bash buildwithlog.sh pi bullseye OFFLINE DRYBUILD
 
       - name: Upload Artosyn artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: artosyn-drybuild-pi-bullseye
           path: |
