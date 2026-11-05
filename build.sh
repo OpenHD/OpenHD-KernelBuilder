@@ -131,6 +131,11 @@ build_pi_kernel() {
 
         echo "Copy kernel modules"
         make -j $J_CORES INSTALL_MOD_PATH="${PACKAGE_DIR}" modules_install || exit 1
+
+        # GX support is a driver/overlay pair. Do not publish a kernel package
+        # that advertises the camera but leaves firmware unable to instantiate it.
+        test -s arch/arm/boot/dts/overlays/veye_gxcam.dtbo || exit 1
+        find "${PACKAGE_DIR}/lib/modules" -type f -name 'veye_gxcam.ko*' -print -quit | grep -q . || exit 1
 	
 	    echo "Copy DTBs"
         cp -f arch/arm/boot/dts/*.dtb "${PACKAGE_DIR}/usr/local/share/openhd/kernel/dtb/" || exit 1
